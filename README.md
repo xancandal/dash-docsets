@@ -6,7 +6,7 @@ Software developers who wish to develop new parallel applications or wish to add
 
 * [Fortran](https://gcc.gnu.org/onlinedocs/gfortran/)
 * [OpenMP](https://gcc.gnu.org/onlinedocs/libgomp/)
-* [MPI](hhttp://www.mpi-forum.org/docs/mpi-2.0/mpi-20-html/mpi2-report.html)
+* [MPI](http://www.mpi-forum.org/docs/mpi-2.0/mpi-20-html/mpi2-report.html)
 
 All docsets are set to use the Python language family and are added under the `python:` keyword by default. The scripts used to build the docsets are included.
 
