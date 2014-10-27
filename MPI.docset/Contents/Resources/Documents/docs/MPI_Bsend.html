@@ -1,0 +1,305 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"><head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>MPI_Bsend(void *buf, 
+  int count, 
+  MPI_Datatype datatype, 
+  int dest, 
+  int tag, 
+  MPI_Comm comm
+) function</title>
+<link rel="stylesheet" href="../style.css" type="text/css" charset="utf-8">
+
+</head>
+
+<body>
+	<div class="background">
+    	<div class="tab_box">
+
+            <div class="tab_box_middle">
+            	<div class="main_box">
+                	<div class="text_box">
+                    	<div class="text_box_top">
+                        </div>
+                        <div class="text_box_middle">
+                        	<div class="text_box_middle_text">
+
+<a name="MPI_Bsend"><h1><font size="5">MPI_Bsend</font></h1></a>
+Basic send with user-provided buffering 
+<font size="3">
+<pre class="syntax" xml:space="preserve" style="background-color: #DDDDDD"><b>int MPI_Bsend(</b>
+  <b>void</b> *<i>buf</i><b>,</b>
+  <b>int</b> <i>count</i><b>,</b>
+  <b>MPI_Datatype</b> <i>datatype</i><b>,</b>
+  <b>int</b> <i>dest</i><b>,</b>
+  <b>int</b> <i>tag</i><b>,</b>
+  <b>MPI_Comm</b> <i>comm</i>
+<b>);</b>
+</pre></font>
+<h4>Parameters</h4>
+<dl>
+<dt><i>buf </i></dt><dd>[in] initial address of send buffer (choice) 
+
+</dd><dt><i>count </i></dt><dd>[in] number of elements in send buffer (nonnegative integer) 
+
+</dd><dt><i>datatype </i></dt><dd>[in] datatype of each send buffer element (handle) 
+
+</dd><dt><i>dest </i></dt><dd>[in] rank of destination (integer) 
+
+</dd><dt><i>tag </i></dt><dd>[in] message tag (integer) 
+
+</dd><dt><i>comm </i></dt><dd>[in] communicator (handle) 
+</dd></dl>
+<p>
+</p><h4>Remarks</h4>
+This send is provided as a convenience function; it allows the user to
+send messages without worring about where they are buffered (because the
+user <em>must</em> have provided buffer space with <tt><font size="2"><a href="MPI_Buffer_attach.html">MPI_Buffer_attach</a></font></tt>).
+<p>
+In deciding how much buffer space to allocate, remember that the buffer space
+is not available for reuse by subsequent <tt><font size="2"><a href="MPI_Bsend.html">MPI_Bsend</a></font></tt>s unless you are certain
+that the message
+has been received (not just that it should have been received).  For example,
+this code does not allocate enough buffer space
+<font size="3">
+</font></p><pre class="syntax" xml:space="preserve"><font size="3">    <a href="MPI_Buffer_attach.html">MPI_Buffer_attach</a>( b, n*sizeof(double) + MPI_BSEND_OVERHEAD );
+    for (i=0; i&lt;m; i++) {
+        <a href="MPI_Bsend.html">MPI_Bsend</a>( buf, n, MPI_DOUBLE, ... );
+    }
+</font></pre>
+
+because only enough buffer space is provided for a single send, and the
+loop may start a second <tt><font size="2"><a href="MPI_Bsend.html">MPI_Bsend</a></font></tt> before the first is done making use of the
+buffer.
+<p>
+In C, you can
+force the messages to be delivered by
+<font size="3">
+</font></p><pre class="syntax" xml:space="preserve"><font size="3">    <a href="MPI_Buffer_detach.html">MPI_Buffer_detach</a>( &amp;b, &amp;n );
+    <a href="MPI_Buffer_attach.html">MPI_Buffer_attach</a>( b, n );
+</font></pre>
+
+(The <tt><font size="2"><a href="MPI_Buffer_detach.html">MPI_Buffer_detach</a></font></tt> will not complete until all buffered messages are
+delivered.)
+<p>
+A <b>buffered</b> mode send operation can be started whether or not a matching 
+receive has been posted. It may complete before a matching receive is posted. 
+However, unlike the standard send, this operation is <b>local</b>, and its 
+completion does not depend on the occurrence of a matching receive. Thus, if a 
+send is executed and no matching receive is posted, then MPI must buffer the 
+outgoing message, so as to allow the send call to complete. An error will occur 
+if there is insufficient buffer space. The amount of available buffer space is 
+controlled by the user. Buffer allocation by the user may be required for the 
+buffered mode to be effective.</p><h4>Thread and Interrupt Safety</h4>
+<p>
+This routine is thread-safe.  This means that this routine may be
+safely used by multiple threads without the need for any user-provided
+thread locks.  However, the routine is not interrupt safe.  Typically,
+this is due to the use of memory allocation routines such as <tt><font size="2">malloc
+</font></tt>or other non-MPICH runtime routines that are themselves not interrupt-safe.
+</p><p>
+</p><h4>Notes for Fortran</h4>
+All MPI routines in Fortran (except for <tt><font size="2">MPI_WTIME</font></tt> and <tt><font size="2">MPI_WTICK</font></tt>) have
+an additional argument <tt><font size="2">ierr</font></tt> at the end of the argument list.  <tt><font size="2">ierr
+</font></tt>is an integer and has the same meaning as the return value of the routine
+in C.  In Fortran, MPI routines are subroutines, and are invoked with the
+<tt><font size="2">call</font></tt> statement.
+<p>
+All MPI objects (e.g., <tt><font size="2">MPI_Datatype</font></tt>, <tt><font size="2">MPI_Comm</font></tt>) are of type <tt><font size="2">INTEGER
+</font></tt>in Fortran.
+</p><p>
+</p><h4>Errors</h4>
+<p>
+All MPI routines (except <tt><font size="2"><a href="MPI_Wtime.html">MPI_Wtime</a></font></tt> and <tt><font size="2"><a href="MPI_Wtick.html">MPI_Wtick</a></font></tt>) return an error value;
+C routines as the value of the function and Fortran routines in the last
+argument.  Before the value is returned, the current MPI error handler is
+called.  By default, this error handler aborts the MPI job.  The error handler
+may be changed with <tt><font size="2"><a href="MPI_Comm_set_errhandler.html">MPI_Comm_set_errhandler</a></font></tt> (for communicators),
+<tt><font size="2"><a href="MPI_File_set_errhandler.html">MPI_File_set_errhandler</a></font></tt> (for files), and <tt><font size="2"><a href="MPI_Win_set_errhandler.html">MPI_Win_set_errhandler</a></font></tt> (for
+RMA windows).  The MPI-1 routine <tt><font size="2"><a href="MPI_Errhandler_set.html">MPI_Errhandler_set</a></font></tt> may be used but
+its use is deprecated.  The predefined error handler
+<tt><font size="2">MPI_ERRORS_RETURN</font></tt> may be used to cause error values to be returned.
+Note that MPI does <em>not</em> guarentee that an MPI program can continue past
+an error; however, MPI implementations will attempt to continue whenever
+possible.
+</p><p>
+</p><dl><dt><i>MPI_SUCCESS </i></dt> <dd> No error; MPI routine completed successfully.
+</dd></dl>
+<dl><dt><i>MPI_ERR_COMM </i></dt> <dd> Invalid communicator.  A common error is to use a null
+communicator in a call (not even allowed in <tt><font size="2"><a href="MPI_Comm_rank.html">MPI_Comm_rank</a></font></tt>).
+</dd></dl>
+<dl><dt><i>MPI_ERR_COUNT </i></dt> <dd> Invalid count argument.  Count arguments must be 
+non-negative; a count of zero is often valid.
+</dd></dl>
+<dl><dt><i>MPI_ERR_TYPE </i></dt> <dd> Invalid datatype argument.  May be an uncommitted 
+MPI_Datatype (see <tt><font size="2"><a href="MPI_Type_commit.html">MPI_Type_commit</a></font></tt>).
+</dd></dl>
+<dl><dt><i>MPI_ERR_RANK </i></dt> <dd> Invalid source or destination rank.  Ranks must be between
+zero and the size of the communicator minus one; ranks in a receive
+(<tt><font size="2"><a href="MPI_Recv.html">MPI_Recv</a></font></tt>, <tt><font size="2"><a href="MPI_Irecv.html">MPI_Irecv</a></font></tt>, <tt><font size="2"><a href="MPI_Sendrecv.html">MPI_Sendrecv</a></font></tt>, etc.) may also be <tt><font size="2">MPI_ANY_SOURCE</font></tt>.
+</dd></dl>
+<dl><dt><i>MPI_ERR_TAG </i></dt> <dd> Invalid tag argument.  Tags must be non-negative; tags
+in a receive (<tt><font size="2"><a href="MPI_Recv.html">MPI_Recv</a></font></tt>, <tt><font size="2"><a href="MPI_Irecv.html">MPI_Irecv</a></font></tt>, <tt><font size="2"><a href="MPI_Sendrecv.html">MPI_Sendrecv</a></font></tt>, etc.) may
+also be <tt><font size="2">MPI_ANY_TAG</font></tt>.  The largest tag value is available through the 
+the attribute <tt><font size="2">MPI_TAG_UB</font></tt>.
+</dd></dl>
+<p>
+</p><h4>See Also</h4>
+ <a href="MPI_Buffer_attach.html">MPI_Buffer_attach</a>, <a href="MPI_Ibsend.html">MPI_Ibsend</a>, 
+<a href="MPI_Bsend_init.html">MPI_Bsend_init</a>
+<br>
+<h4>Example Code</h4>
+<p>The following sample code illustrates <a href="MPI_Bsend.html">MPI_Bsend</a>.
+</p>
+<font size="2" color="#0000ff">
+#include</font><font size="2"> "mpi.h"<br>
+</font><font size="2" color="#0000ff">
+#include</font><font size="2"> &lt;stdio.h&gt;<br>
+</font><font size="2" color="#0000ff">
+#include</font><font size="2"> &lt;stdlib.h&gt;<br>
+</font><font size="2" color="#0000ff">
+#include</font><font size="2"> &lt;string.h&gt;<br>
+</font><font size="2" color="#008000">
+/* <br>
+* This is a simple program that tests bsend. It may be run as a single<br>
+* process; in addition, bsend allows send-to-self programs.<br>
+*/<br>
+</font><font size="2" color="#0000ff">
+int</font><font size="2"> main( </font><font size="2" color="#0000ff">int</font><font size="2"> 
+argc, </font><font size="2" color="#0000ff">char</font><font size="2"> *argv[] )<br>
+{<br>
+&nbsp;&nbsp;&nbsp;
+MPI_Comm comm = MPI_COMM_WORLD;<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">int</font><font size="2"> dest = 0, src 
+= 0, tag = 1;<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">int</font><font size="2"> s1, s2, s3;<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">char</font><font size="2"> *buf, *bbuf;<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">char</font><font size="2"> msg1[7], 
+msg3[17];<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">double</font><font size="2"> msg2[2];<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">char</font><font size="2"> rmsg1[64], 
+rmsg3[64];<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">double</font><font size="2"> rmsg2[64];<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">int</font><font size="2"> errs = 0, 
+rank;<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">int</font><font size="2"> bufsize, 
+bsize;<br>
+<br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Init.html">MPI_Init</a>( &amp;argc, &amp;argv );<br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Comm_rank.html">MPI_Comm_rank</a>( MPI_COMM_WORLD, &amp;rank );<br>
+<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#008000">/* According to the standard, we must 
+use the PACK_SIZE length of each<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+message in the computation of the message buffer size */<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2">
+<a href="MPI_Pack_size.html">MPI_Pack_size</a>( 7, MPI_CHAR, comm, &amp;s1 );<br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Pack_size.html">MPI_Pack_size</a>( 2, MPI_DOUBLE, comm, &amp;s2 );<br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Pack_size.html">MPI_Pack_size</a>( 17, MPI_CHAR, comm, &amp;s3 );<br>
+&nbsp;&nbsp;&nbsp;
+bufsize = 3 * MPI_BSEND_OVERHEAD + s1 + s2 + s3;<br>
+&nbsp;&nbsp;&nbsp;
+buf = (</font><font size="2" color="#0000ff">char</font><font size="2"> *)malloc( 
+bufsize );<br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Buffer_attach.html">MPI_Buffer_attach</a>( buf, bufsize );<br>
+&nbsp;&nbsp;&nbsp;
+strncpy( msg1, "012345", 7 );<br>
+&nbsp;&nbsp;&nbsp;
+strncpy( msg3, "0123401234012341", 17 );<br>
+&nbsp;&nbsp;&nbsp;
+msg2[0] = 1.23; msg2[1] = 3.21;<br>
+<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">if</font><font size="2"> (rank == src) 
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#008000">/* These message sizes are chosen to 
+expose any alignment problems */<br>
+</font><font size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="MPI_Bsend.html">MPI_Bsend</a>( msg1, 7, MPI_CHAR, dest, tag, comm );<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="MPI_Bsend.html">MPI_Bsend</a>( msg2, 2, MPI_DOUBLE, dest, tag, comm );<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="MPI_Bsend.html">MPI_Bsend</a>( msg3, 17, MPI_CHAR, dest, tag, comm );<br>
+&nbsp;&nbsp;&nbsp;
+}<br>
+<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">if</font><font size="2"> (rank == dest) 
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="MPI_Recv.html">MPI_Recv</a>( rmsg1, 7, MPI_CHAR, src, tag, comm, MPI_STATUS_IGNORE );<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="MPI_Recv.html">MPI_Recv</a>( rmsg2, 10, MPI_DOUBLE, src, tag, comm, MPI_STATUS_IGNORE );<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="MPI_Recv.html">MPI_Recv</a>( rmsg3, 17, MPI_CHAR, src, tag, comm, MPI_STATUS_IGNORE );<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">if</font><font size="2"> (strcmp( 
+rmsg1, msg1 ) != 0) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+errs++;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+fprintf( stderr, "message 1 (%s) should be %s\n", rmsg1, msg1 );fflush(stderr);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">if</font><font size="2"> (rmsg2[0] != 
+msg2[0] || rmsg2[1] != msg2[1]) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+errs++;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+fprintf( stderr, <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+"message 2 incorrect, values are (%f,%f) but should be (%f,%f)\n",<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+rmsg2[0], rmsg2[1], msg2[0], msg2[1] );fflush(stderr);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">if</font><font size="2"> (strcmp( 
+rmsg3, msg3 ) != 0) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+errs++;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+fprintf( stderr, "message 3 (%s) should be %s\n", rmsg3, msg3 );fflush(stderr);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}<br>
+&nbsp;&nbsp;&nbsp;
+}<br>
+<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#008000">/* We can't guarantee that messages 
+arrive until the detach */<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2">
+<a href="MPI_Buffer_detach.html">MPI_Buffer_detach</a>( &amp;bbuf, &amp;bsize );<br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Finalize.html">MPI_Finalize</a>( errs );<br>
+<br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Finalize.html">MPI_Finalize</a>();<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">return</font><font size="2"> 0;<br>
+}<br>
+</font>
+</div>
+
+
+</body></html>

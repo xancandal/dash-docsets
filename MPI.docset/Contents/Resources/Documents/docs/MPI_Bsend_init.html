@@ -1,0 +1,255 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"><head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>MPI_Bsend_init(void *buf, 
+  int count, 
+  MPI_Datatype datatype, 
+  int dest, 
+  int tag, 
+  MPI_Comm comm, 
+  MPI_Request *request) function</title>
+<link rel="stylesheet" href="../style.css" type="text/css" charset="utf-8">
+
+</head>
+
+<body>
+	<div class="background">
+    	<div class="tab_box">
+
+            <div class="tab_box_middle">
+            	<div class="main_box">
+                	<div class="text_box">
+                    	<div class="text_box_top">
+                        </div>
+                        <div class="text_box_middle">
+                        	<div class="text_box_middle_text">
+
+<a name="MPI_Bsend_init"><h1><font size="5">MPI_Bsend_init</font></h1></a>
+Builds a handle for a buffered send 
+<font size="3">
+<pre class="syntax" xml:space="preserve" style="background-color: #DDDDDD"><b>int MPI_Bsend_init(</b>
+  <b>void</b> *<i>buf</i><b>,</b>
+  <b>int</b> <i>count</i><b>,</b>
+  <b>MPI_Datatype</b> <i>datatype</i><b>,</b>
+  <b>int</b> <i>dest</i><b>,</b>
+  <b>int</b> <i>tag</i><b>,</b>
+  <b>MPI_Comm</b> <i>comm</i><b>,</b>
+  <b>MPI_Request</b> *<i>request</i>
+<b>);</b>
+</pre></font>
+<h4>Parameters</h4>
+<dl>
+<dt><i>buf </i></dt><dd>[in] initial address of send buffer (choice) 
+
+</dd><dt><i>count </i></dt><dd>[in] number of elements sent (integer) 
+
+</dd><dt><i>datatype </i></dt><dd>[in] type of each element (handle) 
+
+</dd><dt><i>dest </i></dt><dd>[in] rank of destination (integer) 
+
+</dd><dt><i>tag </i></dt><dd>[in] message tag (integer) 
+
+</dd><dt><i>comm </i></dt><dd>[in] communicator (handle) 
+</dd><dt><i>request </i></dt>
+<dd>[out] communication request (handle) 
+</dd></dl>
+<p>
+</p><h4>Remarks</h4>
+		<p>Creates a persistent communication request for a standard mode send 
+		operation, and binds to it all the arguments of a send operation.</p>
+		<p>Often a communication with the same argument list is repeatedly 
+		executed within the inner loop of a parallel computation. In such a 
+		situation, it may be possible to optimize the communication by binding 
+		the list of communication arguments to a <b>persistent</b> communication 
+		request once and, then, repeatedly using the request to initiate and 
+		complete messages. The persistent request thus created can be thought of 
+		as a communication port or a "half-channel." It does not provide the 
+		full functionality of a conventional channel, since there is no binding 
+		of the send port to the receive port. This construct allows reduction of 
+		the overhead for communication between the process and communication 
+		controller, but not of the overhead for communication between one 
+		communication controller and another. It is not necessary that messages 
+		sent with a persistent request be received by a receive operation using 
+		a persistent request, or vice versa.</p>
+		<h4>Thread and Interrupt Safety</h4>
+<p>
+This routine is thread-safe.  This means that this routine may be
+safely used by multiple threads without the need for any user-provided
+thread locks.  However, the routine is not interrupt safe.  Typically,
+this is due to the use of memory allocation routines such as <tt><font size="2">malloc
+</font></tt>or other non-MPICH runtime routines that are themselves not interrupt-safe.
+</p><p>
+</p><h4>Notes for Fortran</h4>
+All MPI routines in Fortran (except for <tt><font size="2">MPI_WTIME</font></tt> and <tt><font size="2">MPI_WTICK</font></tt>) have
+an additional argument <tt><font size="2">ierr</font></tt> at the end of the argument list.  <tt><font size="2">ierr
+</font></tt>is an integer and has the same meaning as the return value of the routine
+in C.  In Fortran, MPI routines are subroutines, and are invoked with the
+<tt><font size="2">call</font></tt> statement.
+<p>
+All MPI objects (e.g., <tt><font size="2">MPI_Datatype</font></tt>, <tt><font size="2">MPI_Comm</font></tt>) are of type <tt><font size="2">INTEGER
+</font></tt>in Fortran.
+</p><p>
+</p><h4>Errors</h4>
+<p>
+All MPI routines (except <tt><font size="2"><a href="MPI_Wtime.html">MPI_Wtime</a></font></tt> and <tt><font size="2"><a href="MPI_Wtick.html">MPI_Wtick</a></font></tt>) return an error value;
+C routines as the value of the function and Fortran routines in the last
+argument.  Before the value is returned, the current MPI error handler is
+called.  By default, this error handler aborts the MPI job.  The error handler
+may be changed with <tt><font size="2"><a href="MPI_Comm_set_errhandler.html">MPI_Comm_set_errhandler</a></font></tt> (for communicators),
+<tt><font size="2"><a href="MPI_File_set_errhandler.html">MPI_File_set_errhandler</a></font></tt> (for files), and <tt><font size="2"><a href="MPI_Win_set_errhandler.html">MPI_Win_set_errhandler</a></font></tt> (for
+RMA windows).  The MPI-1 routine <tt><font size="2"><a href="MPI_Errhandler_set.html">MPI_Errhandler_set</a></font></tt> may be used but
+its use is deprecated.  The predefined error handler
+<tt><font size="2">MPI_ERRORS_RETURN</font></tt> may be used to cause error values to be returned.
+Note that MPI does <em>not</em> guarentee that an MPI program can continue past
+an error; however, MPI implementations will attempt to continue whenever
+possible.
+</p><p>
+</p><dl><dt><i>MPI_SUCCESS </i></dt> <dd> No error; MPI routine completed successfully.
+</dd></dl>
+<dl><dt><i>MPI_ERR_COMM </i></dt> <dd> Invalid communicator.  A common error is to use a null
+communicator in a call (not even allowed in <tt><font size="2"><a href="MPI_Comm_rank.html">MPI_Comm_rank</a></font></tt>).
+</dd></dl>
+<dl><dt><i>MPI_ERR_COUNT </i></dt> <dd> Invalid count argument.  Count arguments must be 
+non-negative; a count of zero is often valid.
+</dd></dl>
+<dl><dt><i>MPI_ERR_TYPE </i></dt> <dd> Invalid datatype argument.  May be an uncommitted 
+MPI_Datatype (see <tt><font size="2"><a href="MPI_Type_commit.html">MPI_Type_commit</a></font></tt>).
+</dd></dl>
+<dl><dt><i>MPI_ERR_RANK </i></dt> <dd> Invalid source or destination rank.  Ranks must be between
+zero and the size of the communicator minus one; ranks in a receive
+(<tt><font size="2"><a href="MPI_Recv.html">MPI_Recv</a></font></tt>, <tt><font size="2"><a href="MPI_Irecv.html">MPI_Irecv</a></font></tt>, <tt><font size="2"><a href="MPI_Sendrecv.html">MPI_Sendrecv</a></font></tt>, etc.) may also be <tt><font size="2">MPI_ANY_SOURCE</font></tt>.
+</dd></dl>
+<dl><dt><i>MPI_ERR_TAG </i></dt> <dd> Invalid tag argument.  Tags must be non-negative; tags
+in a receive (<tt><font size="2"><a href="MPI_Recv.html">MPI_Recv</a></font></tt>, <tt><font size="2"><a href="MPI_Irecv.html">MPI_Irecv</a></font></tt>, <tt><font size="2"><a href="MPI_Sendrecv.html">MPI_Sendrecv</a></font></tt>, etc.) may
+also be <tt><font size="2">MPI_ANY_TAG</font></tt>.  The largest tag value is available through the 
+the attribute <tt><font size="2">MPI_TAG_UB</font></tt>.
+</dd></dl>
+<p>
+</p><h4>See Also</h4>
+ <a href="MPI_Buffer_attach.html">MPI_Buffer_attach</a>
+<br>
+<h4>Example Code</h4>
+<p>The following sample code illustrates <a href="MPI_Bsend_init.html">MPI_Bsend_init</a>.
+</p>
+<font size="2" color="#0000ff">
+#include</font><font size="2"> &lt;stdio.h&gt;<br>
+</font><font size="2" color="#0000ff">
+#include</font><font size="2"> "mpi.h"<br>
+<br>
+</font><font size="2" color="#0000ff">
+#define</font><font size="2"> BUFSIZE 2000<br>
+</font><font size="2" color="#0000ff">
+int</font><font size="2"> main( </font><font size="2" color="#0000ff">int</font><font size="2"> 
+argc, </font><font size="2" color="#0000ff">char</font><font size="2"> *argv[] )<br>
+{<br>
+&nbsp;&nbsp;&nbsp;
+MPI_Status status;<br>
+&nbsp;&nbsp;&nbsp;
+MPI_Request request;<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">int</font><font size="2"> a[10], b[10];<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">int</font><font size="2"> buf[BUFSIZE], 
+*bptr, bl, i, j, rank, size;<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">int</font><font size="2"> errs = 0;<br>
+<br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Init.html">MPI_Init</a>( 0, 0 );<br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Comm_rank.html">MPI_Comm_rank</a>( MPI_COMM_WORLD, &amp;rank );<br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Comm_size.html">MPI_Comm_size</a>( MPI_COMM_WORLD, &amp;size );<br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Buffer_attach.html">MPI_Buffer_attach</a>( buf, BUFSIZE );<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">for</font><font size="2"> (j=0; j&lt;10; 
+j++) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="MPI_Bsend_init.html">MPI_Bsend_init</a>( a, 10, MPI_INT, 0, 27+j, MPI_COMM_WORLD, &amp;request );<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">for</font><font size="2"> (i=0; i&lt;10; i++) 
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+a[i] = (rank + 10 * j) * size + i;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="MPI_Start.html">MPI_Start</a>( &amp;request );<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="MPI_Wait.html">MPI_Wait</a>( &amp;request, &amp;status );<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="MPI_Request_free.html">MPI_Request_free</a>( &amp;request );<br>
+&nbsp;&nbsp;&nbsp;
+}<br>
+<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">if</font><font size="2"> (rank == 0) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">for</font><font size="2"> (i=0; i&lt;size; 
+i++) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">for</font><font size="2"> (j=0; j&lt;10; 
+j++) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">int</font><font size="2"> k;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+status.MPI_TAG = -10;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+status.MPI_SOURCE = -20;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="MPI_Recv.html">MPI_Recv</a>( b, 10, MPI_INT, i, 27+j, MPI_COMM_WORLD, &amp;status );<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">if</font><font size="2"> (status.MPI_TAG 
+!= 27+j) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+errs++;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+printf( "Wrong tag = %d\n", status.MPI_TAG );fflush(stdout);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">if</font><font size="2"> (status.MPI_SOURCE 
+!= i) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+errs++;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+printf( "Wrong source = %d\n", status.MPI_SOURCE );fflush(stdout);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">for</font><font size="2"> (k=0; k&lt;10; 
+k++) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">if</font><font size="2"> (b[k] != (i + 
+10 * j) * size + k) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+errs++;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+printf( "received b[%d] = %d from %d tag %d\n",<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+k, b[k], i, 27+j );fflush(stdout);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}<br>
+&nbsp;&nbsp;&nbsp;
+}<br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Buffer_detach.html">MPI_Buffer_detach</a>( &amp;bptr, &amp;bl );<br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Finalize.html">MPI_Finalize</a>();<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">return</font><font size="2"> 0;<br>
+}<br>
+</font>
+
+</div>
+
+</body></html>

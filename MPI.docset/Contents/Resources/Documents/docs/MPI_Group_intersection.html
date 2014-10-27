@@ -1,0 +1,509 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"><head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>MPI_Group_intersection(MPI_Group group1, 
+  MPI_Group group2, 
+  MPI_Group *newgroup
+) function</title>
+<link rel="stylesheet" href="../style.css" type="text/css" charset="utf-8">
+
+</head>
+
+<body>
+	<div class="background">
+    	<div class="tab_box">
+ 
+            <div class="tab_box_middle">
+            	<div class="main_box">
+                	<div class="text_box">
+                    	<div class="text_box_top">
+                        </div>
+                        <div class="text_box_middle">
+                        	<div class="text_box_middle_text">
+ 
+<a name="MPI_Group_intersection"><h1><font size="5">MPI_Group_intersection</font></h1></a>
+Produces a group as the intersection of two existing groups 
+<font size="3">
+<pre class="syntax" xml:space="preserve" style="background-color: #DDDDDD"><b>int MPI_Group_intersection(</b>
+  <b>MPI_Group</b> <i>group1</i><b>,</b>
+  <b>MPI_Group</b> <i>group2</i><b>,</b>
+  <b>MPI_Group</b> *<i>newgroup</i>
+<b>);</b>
+</pre></font>
+<h4>Parameters</h4>
+<dl>
+<dt><i>group1 </i></dt><dd>[in] first group (handle) 
+
+</dd><dt><i>group2 </i></dt><dd>[in] second group (handle) 
+</dd><dt><i>newgroup </i></dt>
+<dd>[out] intersection group (handle) 
+</dd></dl>
+<p>
+</p><h4>Remarks</h4>
+The output group contains those processes that are in both <tt><font size="2">group1</font></tt> and
+<tt><font size="2">group2</font></tt>.
+<p>
+</p><h4>Thread and Interrupt Safety</h4>
+<p>
+This routine is thread-safe.  This means that this routine may be
+safely used by multiple threads without the need for any user-provided
+thread locks.  However, the routine is not interrupt safe.  Typically,
+this is due to the use of memory allocation routines such as <tt><font size="2">malloc
+</font></tt>or other non-MPICH runtime routines that are themselves not interrupt-safe.
+</p><p>
+</p><h4>Notes for Fortran</h4>
+All MPI routines in Fortran (except for <tt><font size="2">MPI_WTIME</font></tt> and <tt><font size="2">MPI_WTICK</font></tt>) have
+an additional argument <tt><font size="2">ierr</font></tt> at the end of the argument list.  <tt><font size="2">ierr
+</font></tt>is an integer and has the same meaning as the return value of the routine
+in C.  In Fortran, MPI routines are subroutines, and are invoked with the
+<tt><font size="2">call</font></tt> statement.
+<p>
+All MPI objects (e.g., <tt><font size="2">MPI_Datatype</font></tt>, <tt><font size="2">MPI_Comm</font></tt>) are of type <tt><font size="2">INTEGER
+</font></tt>in Fortran.
+</p><p>
+</p><h4>Errors</h4>
+<p>
+All MPI routines (except <tt><font size="2"><a href="MPI_Wtime.html">MPI_Wtime</a></font></tt> and <tt><font size="2"><a href="MPI_Wtick.html">MPI_Wtick</a></font></tt>) return an error value;
+C routines as the value of the function and Fortran routines in the last
+argument.  Before the value is returned, the current MPI error handler is
+called.  By default, this error handler aborts the MPI job.  The error handler
+may be changed with <tt><font size="2"><a href="MPI_Comm_set_errhandler.html">MPI_Comm_set_errhandler</a></font></tt> (for communicators),
+<tt><font size="2"><a href="MPI_File_set_errhandler.html">MPI_File_set_errhandler</a></font></tt> (for files), and <tt><font size="2"><a href="MPI_Win_set_errhandler.html">MPI_Win_set_errhandler</a></font></tt> (for
+RMA windows).  The MPI-1 routine <tt><font size="2"><a href="MPI_Errhandler_set.html">MPI_Errhandler_set</a></font></tt> may be used but
+its use is deprecated.  The predefined error handler
+<tt><font size="2">MPI_ERRORS_RETURN</font></tt> may be used to cause error values to be returned.
+Note that MPI does <em>not</em> guarentee that an MPI program can continue past
+an error; however, MPI implementations will attempt to continue whenever
+possible.
+</p><p>
+</p><dl><dt><i>MPI_SUCCESS </i></dt> <dd> No error; MPI routine completed successfully.
+</dd></dl>
+<dl><dt><i>MPI_ERR_GROUP </i></dt> <dd> Null or invalid group passed to function.  
+</dd></dl>
+<dl><dt><i>MPI_ERR_INTERN </i></dt> <dd> This error is returned when some part of the MPICH 
+implementation is unable to acquire memory.  
+</dd></dl>
+<p>
+</p><h4>See Also</h4>
+ <a href="MPI_Group_free.html">MPI_Group_free</a>
+<br>
+<h4>Example Code</h4>
+<p>The following sample code illustrates <a href="MPI_Group_intersection.html">MPI_Group_intersection</a>.
+</p>
+<font size="2" color="#008000">
+/*<br>
+Test the group routines<br>
+<a href="MPI_Group_compare.html">MPI_Group_compare</a><br>
+<a href="MPI_Group_excl.html">MPI_Group_excl</a><br>
+<a href="MPI_Group_intersection.html">MPI_Group_intersection</a><br>
+<a href="MPI_Group_range_excl.html">MPI_Group_range_excl</a><br>
+<a href="MPI_Group_rank.html">MPI_Group_rank</a><br>
+<a href="MPI_Group_size.html">MPI_Group_size</a><br>
+<a href="MPI_Group_translate_ranks.html">MPI_Group_translate_ranks</a><br>
+<a href="MPI_Group_union.html">MPI_Group_union</a><br>
+*/<br>
+</font><font size="2" color="#0000ff">
+#include</font><font size="2"> "mpi.h"<br>
+</font><font size="2" color="#0000ff">
+#include</font><font size="2"> &lt;stdio.h&gt;<br>
+</font><font size="2" color="#0000ff">
+#include</font><font size="2"> &lt;stdlib.h&gt;<br>
+&nbsp;<br>
+</font><font size="2" color="#0000ff">
+int</font><font size="2"> main( </font><font size="2" color="#0000ff">int</font><font size="2"> 
+argc, </font><font size="2" color="#0000ff">char</font><font size="2"> **argv )<br>
+{<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">int</font><font size="2"> errs=0, 
+toterr;<br>
+&nbsp;&nbsp;&nbsp;
+MPI_Group basegroup;<br>
+&nbsp;&nbsp;&nbsp;
+MPI_Group g1, g2, g3, g4, g5, g6, g7, g8, g9, g10;<br>
+&nbsp;&nbsp;&nbsp;
+MPI_Group g3a, g3b;<br>
+&nbsp;&nbsp;&nbsp;
+MPI_Comm comm, newcomm, splitcomm, dupcomm;<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">int</font><font size="2"> i, grp_rank, 
+rank, grp_size, size, result;<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">int</font><font size="2"> nranks, 
+*ranks, *ranks_out;<br>
+</font><font size="2" color="#0000ff">&nbsp;&nbsp;&nbsp; int</font><font size="2"> range[1][3];<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">int</font><font size="2"> worldrank;<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Init.html">MPI_Init</a>( &amp;argc, &amp;argv );<br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Comm_rank.html">MPI_Comm_rank</a>( MPI_COMM_WORLD, &amp;worldrank );<br>
+&nbsp;&nbsp;&nbsp;
+comm = MPI_COMM_WORLD;<br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Comm_group.html">MPI_Comm_group</a>( comm, &amp;basegroup );<br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Comm_rank.html">MPI_Comm_rank</a>( comm, &amp;rank );<br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Comm_size.html">MPI_Comm_size</a>( comm, &amp;size );<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#008000">
+/* Get the basic information on this group */<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2">
+<a href="MPI_Group_rank.html">MPI_Group_rank</a>( basegroup, &amp;grp_rank );<br>
+</font><font size="2" color="#0000ff">&nbsp;&nbsp;&nbsp; if</font><font size="2"> (grp_rank != 
+rank) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+errs++;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+fprintf( stdout, "group rank %d != comm rank %d\n", grp_rank, rank );fflush(stdout);<br>
+&nbsp;&nbsp;&nbsp;
+}<br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Group_size.html">MPI_Group_size</a>( basegroup, &amp;grp_size );<br>
+</font><font size="2" color="#0000ff">&nbsp;&nbsp;&nbsp; if</font><font size="2"> (grp_size != 
+size) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+errs++;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+fprintf( stdout, "group size %d != comm size %d\n", grp_size, size );<br>
+&nbsp;&nbsp;&nbsp;
+}<br>
+&nbsp;<br>
+</font><font size="2" color="#008000">
+&nbsp;&nbsp;&nbsp;
+/* Form a new communicator with inverted ranking */<br>
+</font><font size="2">
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Comm_split.html">MPI_Comm_split</a>( comm, 0, size - rank, &amp;newcomm );<br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Comm_group.html">MPI_Comm_group</a>( newcomm, &amp;g1 );<br>
+&nbsp;&nbsp;&nbsp;
+ranks = (</font><font size="2" color="#0000ff">int</font><font size="2"> 
+*)malloc( size * </font><font size="2" color="#0000ff">sizeof</font><font size="2">(</font><font size="2" color="#0000ff">int</font><font size="2">) 
+);<br>
+&nbsp;&nbsp;&nbsp;
+ranks_out = (</font><font size="2" color="#0000ff">int</font><font size="2"> 
+*)malloc( size * </font><font size="2" color="#0000ff">sizeof</font><font size="2">(</font><font size="2" color="#0000ff">int</font><font size="2">) 
+);<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">for</font><font size="2"> (i=0; i&lt;size; 
+i++) ranks[i] = i;<br>
+&nbsp;&nbsp;&nbsp;
+nranks = size;<br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Group_translate_ranks.html">MPI_Group_translate_ranks</a>( g1, nranks, ranks, basegroup, ranks_out );<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">for</font><font size="2"> (i=0; i&lt;size; 
+i++) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">if</font><font size="2"> (ranks_out[i] 
+!= (size - 1) - i) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+errs++;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+fprintf( stdout, "Translate ranks got %d expected %d\n", ranks_out[i], (size 
+- 1) - i );fflush(stdout);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}<br>
+&nbsp;&nbsp;&nbsp;
+}<br>
+&nbsp;<br>
+</font><font size="2" color="#008000">
+&nbsp;&nbsp;&nbsp;
+/* Check Compare */<br>
+</font><font size="2">
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Group_compare.html">MPI_Group_compare</a>( basegroup, g1, &amp;result );<br>
+</font><font size="2" color="#0000ff">&nbsp;&nbsp;&nbsp; if</font><font size="2"> (result != 
+MPI_SIMILAR) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+errs++;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+fprintf( stdout, "Group compare should have been similar, was %d\n", result 
+);fflush(stdout);<br>
+&nbsp;&nbsp;&nbsp;
+}<br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Comm_dup.html">MPI_Comm_dup</a>( comm, &amp;dupcomm );<br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Comm_group.html">MPI_Comm_group</a>( dupcomm, &amp;g2 );<br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Group_compare.html">MPI_Group_compare</a>( basegroup, g2, &amp;result );<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">if</font><font size="2"> (result != 
+MPI_IDENT) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+errs++;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+fprintf( stdout, "Group compare should have been ident, was %d\n", result );fflush(stdout);<br>
+&nbsp;&nbsp;&nbsp;
+}<br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Comm_split.html">MPI_Comm_split</a>( comm, rank &lt; size/2, rank, &amp;splitcomm );<br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Comm_group.html">MPI_Comm_group</a>( splitcomm, &amp;g3 );<br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Group_compare.html">MPI_Group_compare</a>( basegroup, g3, &amp;result );<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">if</font><font size="2"> (result != 
+MPI_UNEQUAL) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+errs++;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+fprintf( stdout, "Group compare should have been unequal, was %d\n", result 
+);fflush(stdout);<br>
+&nbsp;&nbsp;&nbsp;
+}<br>
+&nbsp;<br>
+</font><font size="2" color="#008000">&nbsp;&nbsp;&nbsp; /* Build two groups that have this 
+process and one other, but do not have the same processes */<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2">
+ranks[0] = rank;<br>
+&nbsp;&nbsp;&nbsp;
+ranks[1] = (rank + 1) % size;<br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Group_incl.html">MPI_Group_incl</a>( basegroup, 2, ranks, &amp;g3a );<br>
+&nbsp;&nbsp;&nbsp;
+ranks[1] = (rank + size - 1) % size;<br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Group_incl.html">MPI_Group_incl</a>( basegroup, 2, ranks, &amp;g3b );<br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Group_compare.html">MPI_Group_compare</a>( g3a, g3b, &amp;result );<br>
+</font><font size="2" color="#0000ff">&nbsp;&nbsp;&nbsp; if</font><font size="2"> (result != 
+MPI_UNEQUAL) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+errs++;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+fprintf( stdout, "Group compare of equal sized but different groups should 
+have been unequal, was %d\n", result );fflush(stdout);<br>
+&nbsp;&nbsp;&nbsp;
+}<br>
+<br>
+</font><font size="2" color="#008000">
+&nbsp;&nbsp;&nbsp;
+/* Build two new groups by excluding members; use Union to put them
+together again */<br>
+&nbsp;&nbsp;&nbsp;
+/* Exclude 0 */<br>
+</font><font size="2" color="#0000ff">&nbsp;&nbsp;&nbsp; for</font><font size="2"> (i=0; i&lt;size; 
+i++) ranks[i] = i;<br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Group_excl.html">MPI_Group_excl</a>( basegroup, 1, ranks, &amp;g4 );<br>
+</font><font size="2" color="#008000">
+&nbsp;&nbsp;&nbsp;
+/* Exclude 1-(size-1) */<br>
+</font><font size="2">
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Group_excl.html">MPI_Group_excl</a>( basegroup, size-1, ranks+1, &amp;g5 );<br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Group_union.html">MPI_Group_union</a>( g5, g4, &amp;g6 );<br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Group_compare.html">MPI_Group_compare</a>( basegroup, g6, &amp;result );<br>
+</font><font size="2" color="#0000ff">&nbsp;&nbsp;&nbsp; if</font><font size="2"> (result != 
+MPI_IDENT) {<br>
+</font><font size="2" color="#0000ff">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int</font><font size="2"> usize;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+errs++;<br>
+</font><font size="2" color="#008000">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* See ordering requirements on union 
+*/<br>
+</font><font size="2">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+fprintf( stdout, "Group excl and union did not give ident groups\n" );<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+fprintf( stdout, "[%d] result of compare was %d\n", rank, result );<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="MPI_Group_size.html">MPI_Group_size</a>( g6, &amp;usize );<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+fprintf( stdout, "Size of union is %d, should be %d\n", usize, size );<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+fflush(stdout);<br>
+&nbsp;&nbsp;&nbsp;
+}<br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Group_union.html">MPI_Group_union</a>( basegroup, g4, &amp;g7 );<br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Group_compare.html">MPI_Group_compare</a>( basegroup, g7, &amp;result );<br>
+</font><font size="2" color="#0000ff">&nbsp;&nbsp;&nbsp; if</font><font size="2"> (result != 
+MPI_IDENT) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">int</font><font size="2"> usize;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+errs++;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+fprintf( stdout, "Group union of overlapping groups failed\n" );<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+fprintf( stdout, "[%d] result of compare was %d\n", rank, result );<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="MPI_Group_size.html">MPI_Group_size</a>( g7, &amp;usize );<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+fprintf( stdout, "Size of union is %d, should be %d\n", usize, size );<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+fflush(stdout);<br>
+&nbsp;&nbsp;&nbsp;
+}<br>
+&nbsp;<br>
+</font><font size="2" color="#008000">
+&nbsp;&nbsp;&nbsp;
+/* Use range_excl instead of ranks */<br>
+&nbsp;&nbsp;&nbsp; /* printf ("range excl\n" ); fflush( 
+stdout ); */<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2">
+range[0][0] = 1;<br>
+&nbsp;&nbsp;&nbsp;
+range[0][1] = size-1;<br>
+&nbsp;&nbsp;&nbsp;
+range[0][2] = 1;<br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Group_range_excl.html">MPI_Group_range_excl</a>( basegroup, 1, range, &amp;g8 );<br>
+</font><font size="2" color="#008000">&nbsp;&nbsp;&nbsp; /* printf( "out of range excl\n" ); 
+fflush( stdout ); */<br>
+</font><font size="2">
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Group_compare.html">MPI_Group_compare</a>( g5, g8, &amp;result );<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#008000">/* printf( "out of compare\n" ); fflush( 
+stdout ); */<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">if</font><font size="2"> (result != 
+MPI_IDENT) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+errs++;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+fprintf( stdout, "Group range excl did not give ident groups\n" );<br>
+&nbsp;&nbsp;&nbsp;
+}<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#008000">/* printf( "intersection\n" ); fflush( 
+stdout ); */<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2">
+<a href="MPI_Group_intersection.html">MPI_Group_intersection</a>( basegroup, g4, &amp;g9 );<br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Group_compare.html">MPI_Group_compare</a>( g9, g4, &amp;result );<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">if</font><font size="2"> (result != 
+MPI_IDENT) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+errs++;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+fprintf( stdout, "Group intersection did not give ident groups\n" );<br>
+&nbsp;&nbsp;&nbsp;
+}<br>
+&nbsp;<br>
+</font><font size="2" color="#008000">
+&nbsp;&nbsp;&nbsp;
+/* Exclude EVERYTHING and check against MPI_GROUP_EMPTY */<br>
+&nbsp;&nbsp;&nbsp; /* printf( "range excl all\n" ); 
+fflush( stdout ); */<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2">
+range[0][0] = 0;<br>
+&nbsp;&nbsp;&nbsp;
+range[0][1] = size-1;<br>
+&nbsp;&nbsp;&nbsp;
+range[0][2] = 1;<br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Group_range_excl.html">MPI_Group_range_excl</a>( basegroup, 1, range, &amp;g10 );<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Group_compare.html">MPI_Group_compare</a>( g10, MPI_GROUP_EMPTY, &amp;result );<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">if</font><font size="2"> (result != 
+MPI_IDENT) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+errs++;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+fprintf( stdout, "MPI_GROUP_EMPTY didn't compare against empty 
+group\n");fflush(stdout);<br>
+&nbsp;&nbsp;&nbsp;
+}<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Group_free.html">MPI_Group_free</a>( &amp;basegroup );<br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Group_free.html">MPI_Group_free</a>( &amp;g1 );<br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Group_free.html">MPI_Group_free</a>( &amp;g2 );<br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Group_free.html">MPI_Group_free</a>( &amp;g3 );<br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Group_free.html">MPI_Group_free</a>( &amp;g3a );<br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Group_free.html">MPI_Group_free</a>( &amp;g3b );<br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Group_free.html">MPI_Group_free</a>( &amp;g4 );<br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Group_free.html">MPI_Group_free</a>( &amp;g5 );<br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Group_free.html">MPI_Group_free</a>( &amp;g6 );<br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Group_free.html">MPI_Group_free</a>( &amp;g7 );<br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Group_free.html">MPI_Group_free</a>( &amp;g8 );<br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Group_free.html">MPI_Group_free</a>( &amp;g9 );<br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Group_free.html">MPI_Group_free</a>( &amp;g10 );<br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Comm_free.html">MPI_Comm_free</a>( &amp;dupcomm );<br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Comm_free.html">MPI_Comm_free</a>( &amp;splitcomm );<br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Comm_free.html">MPI_Comm_free</a>( &amp;newcomm );<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Finalize.html">MPI_Finalize</a>();<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">return</font><font size="2"> errs;<br>
+}<br>
+</font>
+</div>
+                        </div>
+                        <div class="text_box_bottom">
+                        </div>
+                    </div>
+                    <div class="note_text_box">
+                        <div class="note_text_box_top"></div>
+                        <div class="note_text_box_middle">
+ 
+                        </div>
+                        <div class="note_text_box_bottom"></div>
+                    </div>
+                    <div class="ad_under_text_box">
+                        <div class="ad_under_text_box_top"></div>
+                        <div class="ad_under_text_box_middle">
+                            <div class="ad_under_text_box_middle_text">
+                            <script type="text/javascript"><!--
+google_ad_client = "pub-0347391630140593";
+/* Right panel wide skyscraper ad */
+google_ad_slot = "3437924454";
+google_ad_width = 160;
+google_ad_height = 600;
+//-->
+</script>
+<script type="text/javascript" src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script><ins style="display:inline-table;border:none;height:600px;margin:0;padding:0;position:relative;visibility:visible;width:160px;background-color:transparent"><ins id="aswift_0_anchor" style="display:block;border:none;height:600px;margin:0;padding:0;position:relative;visibility:visible;width:160px;background-color:transparent"><iframe width="160" height="600" frameborder="0" marginwidth="0" marginheight="0" vspace="0" hspace="0" allowtransparency="true" scrolling="no" onload="var i=this.id,s=window.google_iframe_oncopy,H=s&amp;&amp;s.handlers,h=H&amp;&amp;H[i],w=this.contentWindow,d;try{d=w.document}catch(e){}if(h&amp;&amp;d&amp;&amp;(!d.body||!d.body.firstChild)){if(h.call){setTimeout(h,0)}else if(h.match){try{h=s.upd(h,i)}catch(e){}w.location.replace(h)}}" id="aswift_0" name="aswift_0" style="left:0;position:absolute;top:0;"></iframe></ins></ins>
+                            </div>
+                        </div>
+                        <div class="ad_under_text_box_bottom"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="tab_box_bottom">
+            </div>
+        </div>
+        <div class="copyright">
+ 
+        </div>
+	</div>
+
+
+</body></html>

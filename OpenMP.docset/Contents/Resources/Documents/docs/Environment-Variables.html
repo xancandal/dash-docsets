@@ -1,0 +1,81 @@
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>Environment Variables - GNU libgomp</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="GNU libgomp">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="prev" href="Runtime-Library-Routines.html#Runtime-Library-Routines" title="Runtime Library Routines">
+<link rel="next" href="The-libgomp-ABI.html#The-libgomp-ABI" title="The libgomp ABI">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+Copyright (C) 2006-2013 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Funding Free Software'', the Front-Cover
+texts being (a) (see below), and with the Back-Cover Texts being (b)
+(see below).  A copy of the license is included in the section entitled
+``GNU Free Documentation License''.
+
+(a) The FSF's Front-Cover Text is:
+
+     A GNU Manual
+
+(b) The FSF's Back-Cover Text is:
+
+     You have freedom to copy and modify this GNU Manual, like GNU
+     software.  Copies published by the Free Software Foundation raise
+     funds for GNU development.-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Environment-Variables"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="The-libgomp-ABI.html#The-libgomp-ABI">The libgomp ABI</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Runtime-Library-Routines.html#Runtime-Library-Routines">Runtime Library Routines</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="index.html#Top">Top</a>
+<hr>
+</div>
+
+<h2 class="chapter">3 Environment Variables</h2>
+
+<p>The environment variables which beginning with <samp><span class="env">OMP_</span></samp> are defined by
+section 4 of the OpenMP specification in version 4.0, while those
+beginning with <samp><span class="env">GOMP_</span></samp> are GNU extensions.
+
+<ul class="menu">
+<li><a accesskey="1" href="OMP_005fCANCELLATION.html#OMP_005fCANCELLATION">OMP_CANCELLATION</a>:       Set whether cancellation is activated
+<li><a accesskey="2" href="OMP_005fDISPLAY_005fENV.html#OMP_005fDISPLAY_005fENV">OMP_DISPLAY_ENV</a>:        Show OpenMP version and environment variables
+<li><a accesskey="3" href="OMP_005fDEFAULT_005fDEVICE.html#OMP_005fDEFAULT_005fDEVICE">OMP_DEFAULT_DEVICE</a>:     Set the device used in target regions
+<li><a accesskey="4" href="OMP_005fDYNAMIC.html#OMP_005fDYNAMIC">OMP_DYNAMIC</a>:            Dynamic adjustment of threads
+<li><a accesskey="5" href="OMP_005fMAX_005fACTIVE_005fLEVELS.html#OMP_005fMAX_005fACTIVE_005fLEVELS">OMP_MAX_ACTIVE_LEVELS</a>:  Set the maximum number of nested parallel regions
+<li><a accesskey="6" href="OMP_005fNESTED.html#OMP_005fNESTED">OMP_NESTED</a>:             Nested parallel regions
+<li><a accesskey="7" href="OMP_005fNUM_005fTHREADS.html#OMP_005fNUM_005fTHREADS">OMP_NUM_THREADS</a>:        Specifies the number of threads to use
+<li><a accesskey="8" href="OMP_005fPROC_005fBIND.html#OMP_005fPROC_005fBIND">OMP_PROC_BIND</a>:          Whether theads may be moved between CPUs
+<li><a accesskey="9" href="OMP_005fPLACES.html#OMP_005fPLACES">OMP_PLACES</a>:             Specifies on which CPUs the theads should be placed
+<li><a href="OMP_005fSTACKSIZE.html#OMP_005fSTACKSIZE">OMP_STACKSIZE</a>:          Set default thread stack size
+<li><a href="http://gcc.gnu.org/onlinedocs/libgomp/OMP_005fSCHEDULE.html#OMP_005fSCHEDULE">OMP_SCHEDULE</a>:           How threads are scheduled
+<li><a href="OMP_005fTHREAD_005fLIMIT.html#OMP_005fTHREAD_005fLIMIT">OMP_THREAD_LIMIT</a>:       Set the maximum number of threads
+<li><a href="OMP_005fWAIT_005fPOLICY.html#OMP_005fWAIT_005fPOLICY">OMP_WAIT_POLICY</a>:        How waiting threads are handled
+<li><a href="GOMP_005fCPU_005fAFFINITY.html#GOMP_005fCPU_005fAFFINITY">GOMP_CPU_AFFINITY</a>:      Bind threads to specific CPUs
+<li><a href="GOMP_005fSTACKSIZE.html#GOMP_005fSTACKSIZE">GOMP_STACKSIZE</a>:         Set default thread stack size
+<li><a href="http://gcc.gnu.org/onlinedocs/libgomp/GOMP_005fSPINCOUNT.html#GOMP_005fSPINCOUNT">GOMP_SPINCOUNT</a>:         Set the busy-wait spin count
+</ul>
+
+   </body></html>
+

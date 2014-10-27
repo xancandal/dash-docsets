@@ -1,0 +1,286 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"><head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>MPI_Buffer_detach(void *buffer, 
+  int *size) function</title>
+<link rel="stylesheet" href="../style.css" type="text/css" charset="utf-8">
+
+</head>
+
+<body>
+	<div class="background">
+    	<div class="tab_box">
+
+            <div class="tab_box_middle">
+            	<div class="main_box">
+                	<div class="text_box">
+                    	<div class="text_box_top">
+                        </div>
+                        <div class="text_box_middle">
+                        	<div class="text_box_middle_text">
+
+<a name="MPI_Buffer_detach"><h1><font size="5">MPI_Buffer_detach</font></h1></a>
+Removes an existing buffer (for use in <a href="MPI_Bsend.html">MPI_Bsend</a> etc) 
+<font size="3">
+<pre class="syntax" xml:space="preserve" style="background-color: #DDDDDD"><b>int MPI_Buffer_detach(</b>
+  <b>void</b> *<i>buffer</i><b>,</b>
+  <b>int</b> *<i>size</i>
+<b>);</b>
+</pre></font>
+<h4>Parameters</h4>
+<dl>
+<dt><i>buffer </i></dt><dd>[out] initial buffer address (choice) 
+
+</dd><dt><i>size </i></dt><dd>[out] buffer size, in bytes (integer) 
+</dd></dl>
+<p>
+</p><h4>Remarks</h4>
+		Detach the buffer currently associated with MPI. The call returns the 
+		address and the size of the detached buffer. This operation will block 
+		until all messages currently in the buffer have been transmitted. Upon 
+		return of this function, the user may reuse or deallocate the space 
+		taken by the buffer.<p>The reason that <tt><font size="2"><a href="MPI_Buffer_detach.html">MPI_Buffer_detach</a></font></tt> returns the address and size of the
+buffer being detached is to allow nested libraries to replace and restore
+the buffer.  For example, consider
+</p>
+<p>
+<font size="3">
+</font></p><pre class="syntax" xml:space="preserve"><font size="3">    int size, mysize, idummy;
+    void *ptr, *myptr, *dummy;     
+    <a href="MPI_Buffer_detach.html">MPI_Buffer_detach</a>( &amp;ptr, &amp;size );
+    <a href="MPI_Buffer_attach.html">MPI_Buffer_attach</a>( myptr, mysize );
+    ...
+    ... library code ...
+    ...
+    <a href="MPI_Buffer_detach.html">MPI_Buffer_detach</a>( &amp;dummy, &amp;idummy );
+    <a href="MPI_Buffer_attach.html">MPI_Buffer_attach</a>( ptr, size );
+</font></pre>
+
+<p>
+This is much like the action of the Unix signal routine and has the same
+strengths (it is simple) and weaknesses (it only works for nested usages).
+</p><p>
+Note that for this approach to work, <a href="MPI_Buffer_detach.html">MPI_Buffer_detach</a> must return MPI_SUCCESS
+even when there is no buffer to detach.  In that case, it returns a size of
+zero.  The MPI 1.1 standard for <tt><font size="2">MPI_BUFFER_DETACH</font></tt> contains the text
+</p><p>
+<font size="3">
+</font></p><pre class="syntax" xml:space="preserve"><font size="3">   The statements made in this section describe the behavior of MPI for
+   buffered-mode sends. When no buffer is currently associated, MPI behaves 
+   as if a zero-sized buffer is associated with the process.
+</font></pre>
+
+<p>
+This could be read as applying only to the various Bsend routines.  This
+implementation takes the position that this applies to <tt><font size="2">MPI_BUFFER_DETACH
+</font></tt>as well.
+</p><p>
+		</p><p><em>Advice to users.</em> </p>
+		<p>Even though the C functions MPI_Buffer_attach and MPI_Buffer_detach 
+		both have a first argument of type void*, these arguments are used 
+		differently: A pointer to the buffer is passed to MPI_Buffer_attach; the 
+		address of the pointer is passed to MPI_Buffer_detach, so that this call 
+		can return the pointer value. <br>
+		<br>
+		<em>Rationale.</em> </p>
+		<p>Both arguments are defined to be of type void* (rather than void* and 
+		void**, respectively), so as to avoid complex type casts. E.g., in the 
+		last example, &amp;buff, which is of type char**, can be passed as argument 
+		to MPI_Buffer_detach without type casting. If the formal parameter had 
+		type void** then we would need a type cast before and after the call. (<em> 
+		End of rationale.</em>) <br>
+&nbsp;</p>
+		<p>The statements made in this section describe the behavior of MPI for 
+		buffered-mode sends. When no buffer is currently associated, MPI behaves 
+		as if a zero-sized buffer is associated with the process. </p>
+		<p>MPI must provide as much buffering for outgoing messages <em>as if</em> 
+		outgoing message data were buffered by the sending process, in the 
+		specified buffer space, using a circular, contiguous-space allocation 
+		policy. We outline below a model implementation that defines this 
+		policy. MPI may provide more buffering, and may use a better buffer 
+		allocation algorithm than described below. On the other hand, MPI may 
+		signal an error whenever the simple buffering allocator described below 
+		would run out of space. In particular, if no buffer is explicitly 
+		associated with the process, then any buffered send may cause an error.
+		</p>
+		<p>MPI does not provide mechanisms for querying or controlling buffering 
+		done by standard mode sends. It is expected that vendors will provide 
+		such information for their implementations. </p>
+		<p><br>
+		<em>Rationale.</em> </p>
+		<p>There is a wide spectrum of possible implementations of buffered 
+		communication: buffering can be done at sender, at receiver, or both; 
+		buffers can be dedicated to one sender-receiver pair, or be shared by 
+		all communications; buffering can be done in real or in virtual memory; 
+		it can use dedicated memory, or memory shared by other processes; buffer 
+		space may be allocated statically or be changed dynamically; etc. It 
+		does not seem feasible to provide a portable mechanism for querying or 
+		controlling buffering that would be compatible with all these choices, 
+		yet provide meaningful information.</p>
+		<p>
+</p><h4>Thread and Interrupt Safety</h4>
+<p>
+The user is responsible for ensuring that multiple threads do not try to
+update the same MPI object from different threads.  This routine should
+not be used from within a signal handler.
+</p><p>
+The MPI standard defined a thread-safe interface but this does not
+mean that all routines may be called without any thread locks.  For
+example, two threads must not attempt to change the contents of the
+same <tt><font size="2">MPI_Info</font></tt> object concurrently.  The user is responsible in this
+case for using some mechanism, such as thread locks, to ensure that
+only one thread at a time makes use of this routine.
+Because the buffer for buffered sends (e.g., <tt><font size="2"><a href="MPI_Bsend.html">MPI_Bsend</a></font></tt>) is shared by all
+threads in a process, the user is responsible for ensuring that only
+one thread at a time calls this routine or <tt><font size="2"><a href="MPI_Buffer_attach.html">MPI_Buffer_attach</a></font></tt>.
+</p><p>
+</p><h4>Notes for Fortran</h4>
+All MPI routines in Fortran (except for <tt><font size="2">MPI_WTIME</font></tt> and <tt><font size="2">MPI_WTICK</font></tt>) have
+an additional argument <tt><font size="2">ierr</font></tt> at the end of the argument list.  <tt><font size="2">ierr
+</font></tt>is an integer and has the same meaning as the return value of the routine
+in C.  In Fortran, MPI routines are subroutines, and are invoked with the
+<tt><font size="2">call</font></tt> statement.
+<p>
+All MPI objects (e.g., <tt><font size="2">MPI_Datatype</font></tt>, <tt><font size="2">MPI_Comm</font></tt>) are of type <tt><font size="2">INTEGER
+</font></tt>in Fortran.
+</p><p>
+The Fortran binding for this routine is different.  Because Fortran
+does not have pointers, it is impossible to provide a way to use the
+output of this routine to exchange buffers.  In this case, only the
+size field is set.
+</p><p>
+</p><h4>Notes for C</h4>
+Even though the <tt><font size="2">bufferptr</font></tt> argument is declared as <tt><font size="2">void *</font></tt>, it is
+really the address of a void pointer.  See the rationale in the
+standard for more details.
+<p>
+</p><h4>See Also</h4>
+ <a href="MPI_Buffer_attach.html">MPI_Buffer_attach</a>
+<br>
+<h4>Example Code</h4>
+<p>The following sample code illustrates <a href="MPI_Buffer_detach.html">MPI_Buffer_detach</a>.
+</p>
+<p><font face="Verdana" size="2">
+<font size="2" color="#0000ff">
+#include</font><font size="2"> &lt;stdio.h&gt;<br>
+</font><font size="2" color="#0000ff">
+#include</font><font size="2"> "mpi.h"<br>
+<br>
+</font><font size="2" color="#0000ff">
+#define</font><font size="2"> BUFSIZE 2000<br>
+</font><font size="2" color="#0000ff">
+int</font><font size="2"> main( </font><font size="2" color="#0000ff">int</font><font size="2"> 
+argc, </font><font size="2" color="#0000ff">char</font><font size="2"> *argv[] )<br>
+{<br>
+&nbsp;&nbsp;&nbsp;
+MPI_Status status;<br>
+&nbsp;&nbsp;&nbsp;
+MPI_Request request;<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">int</font><font size="2"> a[10], b[10];<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">int</font><font size="2"> buf[BUFSIZE], 
+*bptr, bl, i, j, rank, size;<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">int</font><font size="2"> errs = 0;<br>
+<br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Init.html">MPI_Init</a>( 0, 0 );<br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Comm_rank.html">MPI_Comm_rank</a>( MPI_COMM_WORLD, &amp;rank );<br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Comm_size.html">MPI_Comm_size</a>( MPI_COMM_WORLD, &amp;size );<br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Buffer_attach.html">MPI_Buffer_attach</a>( buf, BUFSIZE );<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">for</font><font size="2"> (j=0; j&lt;10; 
+j++) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="MPI_Bsend_init.html">MPI_Bsend_init</a>( a, 10, MPI_INT, 0, 27+j, MPI_COMM_WORLD, &amp;request );<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">for</font><font size="2"> (i=0; i&lt;10; i++) 
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+a[i] = (rank + 10 * j) * size + i;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="MPI_Start.html">MPI_Start</a>( &amp;request );<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="MPI_Wait.html">MPI_Wait</a>( &amp;request, &amp;status );<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="MPI_Request_free.html">MPI_Request_free</a>( &amp;request );<br>
+&nbsp;&nbsp;&nbsp;
+}<br>
+<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">if</font><font size="2"> (rank == 0) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">for</font><font size="2"> (i=0; i&lt;size; 
+i++) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">for</font><font size="2"> (j=0; j&lt;10; 
+j++) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">int</font><font size="2"> k;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+status.MPI_TAG = -10;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+status.MPI_SOURCE = -20;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="MPI_Recv.html">MPI_Recv</a>( b, 10, MPI_INT, i, 27+j, MPI_COMM_WORLD, &amp;status );<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">if</font><font size="2"> (status.MPI_TAG 
+!= 27+j) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+errs++;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+printf( "Wrong tag = %d\n", status.MPI_TAG );fflush(stdout);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">if</font><font size="2"> (status.MPI_SOURCE 
+!= i) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+errs++;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+printf( "Wrong source = %d\n", status.MPI_SOURCE );fflush(stdout);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">for</font><font size="2"> (k=0; k&lt;10; 
+k++) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">if</font><font size="2"> (b[k] != (i + 
+10 * j) * size + k) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+errs++;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+printf( "received b[%d] = %d from %d tag %d\n",<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+k, b[k], i, 27+j );fflush(stdout);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}<br>
+&nbsp;&nbsp;&nbsp;
+}<br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Buffer_detach.html">MPI_Buffer_detach</a>( &amp;bptr, &amp;bl );<br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Finalize.html">MPI_Finalize</a>();<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">return</font><font size="2"> 0;<br>
+}<br>
+</font>
+</font>
+</p>
+</div>
+
+</body></html>

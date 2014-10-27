@@ -1,0 +1,197 @@
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>GNU libgomp</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="GNU libgomp">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+Copyright (C) 2006-2013 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Funding Free Software", the Front-Cover
+texts being (a) (see below), and with the Back-Cover Texts being (b)
+(see below).  A copy of the license is included in the section entitled
+"GNU Free Documentation License".
+
+(a) The FSF's Front-Cover Text is:
+
+     A GNU Manual
+
+(b) The FSF's Back-Cover Text is:
+
+     You have freedom to copy and modify this GNU Manual, like GNU
+     software.  Copies published by the Free Software Foundation raise
+     funds for GNU development.-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<h1 class="settitle">GNU libgomp</h1>
+<div class="shortcontents">
+<h2>Short Contents</h2>
+<ul>
+<li><a href="index.html#toc_Top">Introduction</a></li>
+<li><a href="index.html#toc_Enabling-OpenMP">1 Enabling OpenMP</a></li>
+<li><a href="index.html#toc_Runtime-Library-Routines">2 Runtime Library Routines</a></li>
+<li><a href="index.html#toc_Environment-Variables">3 Environment Variables</a></li>
+<li><a href="index.html#toc_The-libgomp-ABI">4 The libgomp ABI</a></li>
+<li><a href="index.html#toc_Reporting-Bugs">5 Reporting Bugs</a></li>
+<li><a href="index.html#toc_Copying">GNU General Public License</a></li>
+<li><a href="index.html#toc_GNU-Free-Documentation-License">GNU Free Documentation License</a></li>
+<li><a href="index.html#toc_Funding">Funding Free Software</a></li>
+<li><a href="index.html#toc_Library-Index">Library Index</a></li>
+</ul>
+</div>
+
+
+
+   <div class="contents">
+<h2>Table of Contents</h2>
+<ul>
+<li><a name="toc_Top" href="index.html#Top">Introduction</a>
+<li><a name="toc_Enabling-OpenMP" href="Enabling-OpenMP.html#Enabling-OpenMP">1 Enabling OpenMP</a>
+<li><a name="toc_Runtime-Library-Routines" href="Runtime-Library-Routines.html#Runtime-Library-Routines">2 Runtime Library Routines</a>
+<ul>
+<li><a href="omp_005fget_005factive_005flevel.html#omp_005fget_005factive_005flevel">2.1 <code>omp_get_active_level</code> &ndash; Number of parallel regions</a>
+<li><a href="omp_005fget_005fancestor_005fthread_005fnum.html#omp_005fget_005fancestor_005fthread_005fnum">2.2 <code>omp_get_ancestor_thread_num</code> &ndash; Ancestor thread ID</a>
+<li><a href="omp_005fget_005fcancellation.html#omp_005fget_005fcancellation">2.3 <code>omp_get_cancellation</code> &ndash; Whether cancellation support is enabled</a>
+<li><a href="omp_005fget_005fdefault_005fdevice.html#omp_005fget_005fdefault_005fdevice">2.4 <code>omp_get_default_device</code> &ndash; Get the default device for target regions</a>
+<li><a href="omp_005fget_005fdynamic.html#omp_005fget_005fdynamic">2.5 <code>omp_get_dynamic</code> &ndash; Dynamic teams setting</a>
+<li><a href="omp_005fget_005flevel.html#omp_005fget_005flevel">2.6 <code>omp_get_level</code> &ndash; Obtain the current nesting level</a>
+<li><a href="omp_005fget_005fmax_005factive_005flevels.html#omp_005fget_005fmax_005factive_005flevels">2.7 <code>omp_get_max_active_levels</code> &ndash; Maximum number of active regions</a>
+<li><a href="omp_005fget_005fmax_005fthreads.html#omp_005fget_005fmax_005fthreads">2.8 <code>omp_get_max_threads</code> &ndash; Maximum number of threads of parallel region</a>
+<li><a href="omp_005fget_005fnested.html#omp_005fget_005fnested">2.9 <code>omp_get_nested</code> &ndash; Nested parallel regions</a>
+<li><a href="omp_005fget_005fnum_005fdevices.html#omp_005fget_005fnum_005fdevices">2.10 <code>omp_get_num_devices</code> &ndash; Number of target devices</a>
+<li><a href="omp_005fget_005fnum_005fprocs.html#omp_005fget_005fnum_005fprocs">2.11 <code>omp_get_num_procs</code> &ndash; Number of processors online</a>
+<li><a href="omp_005fget_005fnum_005fteams.html#omp_005fget_005fnum_005fteams">2.12 <code>omp_get_num_teams</code> &ndash; Number of teams</a>
+<li><a href="omp_005fget_005fnum_005fthreads.html#omp_005fget_005fnum_005fthreads">2.13 <code>omp_get_num_threads</code> &ndash; Size of the active team</a>
+<li><a href="omp_005fget_005fproc_005fbind.html#omp_005fget_005fproc_005fbind">2.14 <code>omp_get_proc_bind</code> &ndash; Whether theads may be moved between CPUs</a>
+<li><a href="omp_005fget_005fschedule.html#omp_005fget_005fschedule">2.15 <code>omp_get_schedule</code> &ndash; Obtain the runtime scheduling method</a>
+<li><a href="omp_005fget_005fteam_005fnum.html#omp_005fget_005fteam_005fnum">2.16 <code>omp_get_team_num</code> &ndash; Get team number</a>
+<li><a href="http://gcc.gnu.org/onlinedocs/libgomp/omp_005fget_005fteam_005fsize.html#omp_005fget_005fteam_005fsize">2.17 <code>omp_get_team_size</code> &ndash; Number of threads in a team</a>
+<li><a href="omp_005fget_005fthread_005flimit.html#omp_005fget_005fthread_005flimit">2.18 <code>omp_get_thread_limit</code> &ndash; Maximum number of threads</a>
+<li><a href="omp_005fget_005fthread_005fnum.html#omp_005fget_005fthread_005fnum">2.19 <code>omp_get_thread_num</code> &ndash; Current thread ID</a>
+<li><a href="omp_005fin_005fparallel.html#omp_005fin_005fparallel">2.20 <code>omp_in_parallel</code> &ndash; Whether a parallel region is active</a>
+<li><a href="http://gcc.gnu.org/onlinedocs/libgomp/omp_005fin_005ffinal.html#omp_005fin_005ffinal">2.21 <code>omp_in_final</code> &ndash; Whether in final or included task region</a>
+<li><a href="http://gcc.gnu.org/onlinedocs/libgomp/omp_005fis_005finitial_005fdevice.html#omp_005fis_005finitial_005fdevice">2.22 <code>omp_is_initial_device</code> &ndash; Whether executing on the host device</a>
+<li><a href="omp_005fset_005fdefault_005fdevice.html#omp_005fset_005fdefault_005fdevice">2.23 <code>omp_set_default_device</code> &ndash; Set the default device for target regions</a>
+<li><a href="omp_005fset_005fdynamic.html#omp_005fset_005fdynamic">2.24 <code>omp_set_dynamic</code> &ndash; Enable/disable dynamic teams</a>
+<li><a href="omp_005fset_005fmax_005factive_005flevels.html#omp_005fset_005fmax_005factive_005flevels">2.25 <code>omp_set_max_active_levels</code> &ndash; Limits the number of active parallel regions</a>
+<li><a href="omp_005fset_005fnested.html#omp_005fset_005fnested">2.26 <code>omp_set_nested</code> &ndash; Enable/disable nested parallel regions</a>
+<li><a href="omp_005fset_005fnum_005fthreads.html#omp_005fset_005fnum_005fthreads">2.27 <code>omp_set_num_threads</code> &ndash; Set upper team size limit</a>
+<li><a href="omp_005fset_005fschedule.html#omp_005fset_005fschedule">2.28 <code>omp_set_schedule</code> &ndash; Set the runtime scheduling method</a>
+<li><a href="omp_005finit_005flock.html#omp_005finit_005flock">2.29 <code>omp_init_lock</code> &ndash; Initialize simple lock</a>
+<li><a href="omp_005fset_005flock.html#omp_005fset_005flock">2.30 <code>omp_set_lock</code> &ndash; Wait for and set simple lock</a>
+<li><a href="omp_005ftest_005flock.html#omp_005ftest_005flock">2.31 <code>omp_test_lock</code> &ndash; Test and set simple lock if available</a>
+<li><a href="omp_005funset_005flock.html#omp_005funset_005flock">2.32 <code>omp_unset_lock</code> &ndash; Unset simple lock</a>
+<li><a href="omp_005fdestroy_005flock.html#omp_005fdestroy_005flock">2.33 <code>omp_destroy_lock</code> &ndash; Destroy simple lock</a>
+<li><a href="omp_005finit_005fnest_005flock.html#omp_005finit_005fnest_005flock">2.34 <code>omp_init_nest_lock</code> &ndash; Initialize nested lock</a>
+<li><a href="omp_005fset_005fnest_005flock.html#omp_005fset_005fnest_005flock">2.35 <code>omp_set_nest_lock</code> &ndash; Wait for and set nested lock</a>
+<li><a href="omp_005ftest_005fnest_005flock.html#omp_005ftest_005fnest_005flock">2.36 <code>omp_test_nest_lock</code> &ndash; Test and set nested lock if available</a>
+<li><a href="omp_005funset_005fnest_005flock.html#omp_005funset_005fnest_005flock">2.37 <code>omp_unset_nest_lock</code> &ndash; Unset nested lock</a>
+<li><a href="omp_005fdestroy_005fnest_005flock.html#omp_005fdestroy_005fnest_005flock">2.38 <code>omp_destroy_nest_lock</code> &ndash; Destroy nested lock</a>
+<li><a href="omp_005fget_005fwtick.html#omp_005fget_005fwtick">2.39 <code>omp_get_wtick</code> &ndash; Get timer precision</a>
+<li><a href="omp_005fget_005fwtime.html#omp_005fget_005fwtime">2.40 <code>omp_get_wtime</code> &ndash; Elapsed wall clock time</a>
+</li></ul>
+<li><a name="toc_Environment-Variables" href="Environment-Variables.html#Environment-Variables">3 Environment Variables</a>
+<ul>
+<li><a href="OMP_005fCANCELLATION.html#OMP_005fCANCELLATION">3.1 <samp><span class="env">OMP_CANCELLATION</span></samp> &ndash; Set whether cancellation is activated</a>
+<li><a href="OMP_005fDISPLAY_005fENV.html#OMP_005fDISPLAY_005fENV">3.2 <samp><span class="env">OMP_DISPLAY_ENV</span></samp> &ndash; Show OpenMP version and environment variables</a>
+<li><a href="OMP_005fDEFAULT_005fDEVICE.html#OMP_005fDEFAULT_005fDEVICE">3.3 <samp><span class="env">OMP_DEFAULT_DEVICE</span></samp> &ndash; Set the device used in target regions</a>
+<li><a href="OMP_005fDYNAMIC.html#OMP_005fDYNAMIC">3.4 <samp><span class="env">OMP_DYNAMIC</span></samp> &ndash; Dynamic adjustment of threads</a>
+<li><a href="OMP_005fMAX_005fACTIVE_005fLEVELS.html#OMP_005fMAX_005fACTIVE_005fLEVELS">3.5 <samp><span class="env">OMP_MAX_ACTIVE_LEVELS</span></samp> &ndash; Set the maximum number of nested parallel regions</a>
+<li><a href="OMP_005fNESTED.html#OMP_005fNESTED">3.6 <samp><span class="env">OMP_NESTED</span></samp> &ndash; Nested parallel regions</a>
+<li><a href="OMP_005fNUM_005fTHREADS.html#OMP_005fNUM_005fTHREADS">3.7 <samp><span class="env">OMP_NUM_THREADS</span></samp> &ndash; Specifies the number of threads to use</a>
+<li><a href="OMP_005fPLACES.html#OMP_005fPLACES">3.8 <samp><span class="env">OMP_PLACES</span></samp> &ndash; Specifies on which CPUs the theads should be placed</a>
+<li><a href="OMP_005fPROC_005fBIND.html#OMP_005fPROC_005fBIND">3.9 <samp><span class="env">OMP_PROC_BIND</span></samp> &ndash; Whether theads may be moved between CPUs</a>
+<li><a href="http://gcc.gnu.org/onlinedocs/libgomp/OMP_005fSCHEDULE.html#OMP_005fSCHEDULE">3.10 <samp><span class="env">OMP_SCHEDULE</span></samp> &ndash; How threads are scheduled</a>
+<li><a href="OMP_005fSTACKSIZE.html#OMP_005fSTACKSIZE">3.11 <samp><span class="env">OMP_STACKSIZE</span></samp> &ndash; Set default thread stack size</a>
+<li><a href="OMP_005fTHREAD_005fLIMIT.html#OMP_005fTHREAD_005fLIMIT">3.12 <samp><span class="env">OMP_THREAD_LIMIT</span></samp> &ndash; Set the maximum number of threads</a>
+<li><a href="OMP_005fWAIT_005fPOLICY.html#OMP_005fWAIT_005fPOLICY">3.13 <samp><span class="env">OMP_WAIT_POLICY</span></samp> &ndash; How waiting threads are handled</a>
+<li><a href="GOMP_005fCPU_005fAFFINITY.html#GOMP_005fCPU_005fAFFINITY">3.14 <samp><span class="env">GOMP_CPU_AFFINITY</span></samp> &ndash; Bind threads to specific CPUs</a>
+<li><a href="GOMP_005fSTACKSIZE.html#GOMP_005fSTACKSIZE">3.15 <samp><span class="env">GOMP_STACKSIZE</span></samp> &ndash; Set default thread stack size</a>
+<li><a href="http://gcc.gnu.org/onlinedocs/libgomp/GOMP_005fSPINCOUNT.html#GOMP_005fSPINCOUNT">3.16 <samp><span class="env">GOMP_SPINCOUNT</span></samp> &ndash; Set the busy-wait spin count</a>
+</li></ul>
+<li><a name="toc_The-libgomp-ABI" href="The-libgomp-ABI.html#The-libgomp-ABI">4 The libgomp ABI</a>
+<ul>
+<li><a href="Implementing-MASTER-construct.html#Implementing-MASTER-construct">4.1 Implementing MASTER construct</a>
+<li><a href="Implementing-CRITICAL-construct.html#Implementing-CRITICAL-construct">4.2 Implementing CRITICAL construct</a>
+<li><a href="Implementing-ATOMIC-construct.html#Implementing-ATOMIC-construct">4.3 Implementing ATOMIC construct</a>
+<li><a href="Implementing-FLUSH-construct.html#Implementing-FLUSH-construct">4.4 Implementing FLUSH construct</a>
+<li><a href="Implementing-BARRIER-construct.html#Implementing-BARRIER-construct">4.5 Implementing BARRIER construct</a>
+<li><a href="Implementing-THREADPRIVATE-construct.html#Implementing-THREADPRIVATE-construct">4.6 Implementing THREADPRIVATE construct</a>
+<li><a href="Implementing-PRIVATE-clause.html#Implementing-PRIVATE-clause">4.7 Implementing PRIVATE clause</a>
+<li><a href="Implementing-FIRSTPRIVATE-LASTPRIVATE-COPYIN-and-COPYPRIVATE-clauses.html#Implementing-FIRSTPRIVATE-LASTPRIVATE-COPYIN-and-COPYPRIVATE-clauses">4.8 Implementing FIRSTPRIVATE LASTPRIVATE COPYIN and COPYPRIVATE clauses</a>
+<li><a href="Implementing-REDUCTION-clause.html#Implementing-REDUCTION-clause">4.9 Implementing REDUCTION clause</a>
+<li><a href="Implementing-PARALLEL-construct.html#Implementing-PARALLEL-construct">4.10 Implementing PARALLEL construct</a>
+<li><a href="Implementing-FOR-construct.html#Implementing-FOR-construct">4.11 Implementing FOR construct</a>
+<li><a href="Implementing-ORDERED-construct.html#Implementing-ORDERED-construct">4.12 Implementing ORDERED construct</a>
+<li><a href="Implementing-SECTIONS-construct.html#Implementing-SECTIONS-construct">4.13 Implementing SECTIONS construct</a>
+<li><a href="Implementing-SINGLE-construct.html#Implementing-SINGLE-construct">4.14 Implementing SINGLE construct</a>
+</li></ul>
+<li><a name="toc_Reporting-Bugs" href="Reporting-Bugs.html#Reporting-Bugs">5 Reporting Bugs</a>
+<li><a name="toc_Copying" href="Copying.html#Copying">GNU General Public License</a>
+<li><a name="toc_GNU-Free-Documentation-License" href="GNU-Free-Documentation-License.html#GNU-Free-Documentation-License">GNU Free Documentation License</a>
+<ul>
+<li><a href="GNU-Free-Documentation-License.html#GNU-Free-Documentation-License">ADDENDUM: How to use this License for your documents</a>
+</li></ul>
+<li><a name="toc_Funding" href="Funding.html#Funding">Funding Free Software</a>
+<li><a name="toc_Library-Index" href="Library-Index.html#Library-Index">Library Index</a>
+</li></ul>
+</div>
+
+<div class="node">
+<a name="Top"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Enabling-OpenMP.html#Enabling-OpenMP">Enabling OpenMP</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="../index.html#dir">(dir)</a>
+<hr>
+</div>
+
+<h2 class="unnumbered">Introduction</h2>
+
+<p><a name="index-Introduction-1"></a>
+This manual documents the usage of libgomp, the GNU implementation of the
+<a href="http://www.openmp.org">OpenMP</a> Application Programming Interface (API)
+for multi-platform shared-memory parallel programming in C/C++ and Fortran.
+
+<!-- When you add a new menu item, please keep the right hand -->
+<!-- aligned to the same column.  Do not use tabs.  This provides -->
+<!-- better formatting. -->
+<ul class="menu">
+<li><a accesskey="1" href="Enabling-OpenMP.html#Enabling-OpenMP">Enabling OpenMP</a>:             How to enable OpenMP for your applications. 
+<li><a accesskey="2" href="Runtime-Library-Routines.html#Runtime-Library-Routines">Runtime Library Routines</a>:    The OpenMP runtime application programming
+                               interface. 
+<li><a accesskey="3" href="Environment-Variables.html#Environment-Variables">Environment Variables</a>:       Influencing runtime behavior with environment
+                               variables. 
+<li><a accesskey="4" href="The-libgomp-ABI.html#The-libgomp-ABI">The libgomp ABI</a>:             Notes on the external ABI presented by libgomp. 
+<li><a accesskey="5" href="Reporting-Bugs.html#Reporting-Bugs">Reporting Bugs</a>:              How to report bugs in GNU OpenMP. 
+<li><a accesskey="6" href="Copying.html#Copying">Copying</a>:                     GNU general public license says
+                               how you can copy and share libgomp. 
+<li><a accesskey="7" href="GNU-Free-Documentation-License.html#GNU-Free-Documentation-License">GNU Free Documentation License</a>
+                               How you can copy and share this manual. 
+<li><a accesskey="8" href="Funding.html#Funding">Funding</a>:                     How to help assure continued work for free
+                               software. 
+<li><a accesskey="9" href="Library-Index.html#Library-Index">Library Index</a>:               Index of this documentation. 
+</ul>
+
+<!--  -->
+<!-- Enabling OpenMP -->
+<!--  -->
+   </body></html>
+

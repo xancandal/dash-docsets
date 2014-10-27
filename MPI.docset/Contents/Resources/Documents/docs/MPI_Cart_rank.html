@@ -1,0 +1,186 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"><head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>MPI_Cart_rank(MPI_Comm comm, 
+  int *coords, 
+  int *rank
+) function</title>
+<link rel="stylesheet" href="../style.css" type="text/css" charset="utf-8">
+
+</head>
+
+<body>
+	<div class="background">
+    	<div class="tab_box">
+
+            <div class="tab_box_middle">
+            	<div class="main_box">
+                	<div class="text_box">
+                    	<div class="text_box_top">
+                        </div>
+                        <div class="text_box_middle">
+                        	<div class="text_box_middle_text">
+
+<a name="MPI_Cart_rank"><h1><font size="5">MPI_Cart_rank</font></h1></a>
+Determines process rank in communicator given Cartesian location 
+<font size="3">
+<pre class="syntax" xml:space="preserve" style="background-color: #DDDDDD"><b>int MPI_Cart_rank(</b>
+  <b>MPI_Comm</b> <i>comm</i><b>,</b>
+  <b>int</b> *<i>coords</i><b>,</b>
+  <b>int</b> *<i>rank</i>
+<b>);</b>
+</pre></font>
+<h4>Parameters</h4>
+<dl>
+<dt><i>comm </i></dt><dd>[in] communicator with cartesian structure (handle) 
+
+</dd><dt><i>coords </i></dt><dd>[in] integer array (of size <tt><font size="2">ndims</font></tt>, the number of dimensions of
+the Cartesian topology associated with <tt><font size="2">comm</font></tt>) specifying the cartesian 
+coordinates of a process 
+</dd><dt><i>rank </i></dt>
+<dd>[out] rank of specified process (integer) 
+</dd></dl>
+<p>
+</p><h4>Remarks</h4>
+		<p>For a process group with cartesian structure, the function 
+		MPI_CART_RANK translates the logical process coordinates to process 
+		ranks as they are used by the point-to-point routines. </p>
+		<p>For dimension <tt>i</tt> with <tt>periods(i) = true</tt>, if the 
+		coordinate, <tt>coords(i)</tt>, is out of range, that is, <tt>coords(i)
+		<i>&lt;</i> 0</tt> or <tt>coords(i) <img src="img179.gif"> dims(i)</tt>, it 
+		is shifted back to the interval <br>
+		<tt>0 <img src="img180.gif"> coords(i) <i>&lt;</i> dims(i)</tt> 
+		automatically.</p>
+Out-of-range coordinates are erroneous for non-periodic dimensions.
+Versions of MPICH before 1.2.2 returned <tt><font size="2">MPI_PROC_NULL</font></tt> for the rank in this
+case.
+<p>
+</p><h4>Thread and Interrupt Safety</h4>
+<p>
+This routine is both thread- and interrupt-safe.
+This means that this routine may safely be used by multiple threads and
+from within a signal handler.
+</p><p>
+</p><h4>Notes for Fortran</h4>
+All MPI routines in Fortran (except for <tt><font size="2">MPI_WTIME</font></tt> and <tt><font size="2">MPI_WTICK</font></tt>) have
+an additional argument <tt><font size="2">ierr</font></tt> at the end of the argument list.  <tt><font size="2">ierr
+</font></tt>is an integer and has the same meaning as the return value of the routine
+in C.  In Fortran, MPI routines are subroutines, and are invoked with the
+<tt><font size="2">call</font></tt> statement.
+<p>
+All MPI objects (e.g., <tt><font size="2">MPI_Datatype</font></tt>, <tt><font size="2">MPI_Comm</font></tt>) are of type <tt><font size="2">INTEGER
+</font></tt>in Fortran.
+</p><p>
+</p><h4>Errors</h4>
+<p>
+All MPI routines (except <tt><font size="2"><a href="MPI_Wtime.html">MPI_Wtime</a></font></tt> and <tt><font size="2"><a href="MPI_Wtick.html">MPI_Wtick</a></font></tt>) return an error value;
+C routines as the value of the function and Fortran routines in the last
+argument.  Before the value is returned, the current MPI error handler is
+called.  By default, this error handler aborts the MPI job.  The error handler
+may be changed with <tt><font size="2"><a href="MPI_Comm_set_errhandler.html">MPI_Comm_set_errhandler</a></font></tt> (for communicators),
+<tt><font size="2"><a href="MPI_File_set_errhandler.html">MPI_File_set_errhandler</a></font></tt> (for files), and <tt><font size="2"><a href="MPI_Win_set_errhandler.html">MPI_Win_set_errhandler</a></font></tt> (for
+RMA windows).  The MPI-1 routine <tt><font size="2"><a href="MPI_Errhandler_set.html">MPI_Errhandler_set</a></font></tt> may be used but
+its use is deprecated.  The predefined error handler
+<tt><font size="2">MPI_ERRORS_RETURN</font></tt> may be used to cause error values to be returned.
+Note that MPI does <em>not</em> guarentee that an MPI program can continue past
+an error; however, MPI implementations will attempt to continue whenever
+possible.
+</p><p>
+</p><dl><dt><i>MPI_SUCCESS </i></dt> <dd> No error; MPI routine completed successfully.
+</dd></dl>
+<dl><dt><i>MPI_ERR_TOPOLOGY </i></dt> <dd> Invalid topology.  Either there is no topology 
+associated with this communicator, or it is not the correct type (e.g.,
+<tt><font size="2">MPI_CART</font></tt> when expecting <tt><font size="2">MPI_GRAPH</font></tt>).
+</dd></dl>
+<dl><dt><i>MPI_ERR_RANK </i></dt> <dd> Invalid source or destination rank.  Ranks must be between
+zero and the size of the communicator minus one; ranks in a receive
+(<tt><font size="2"><a href="MPI_Recv.html">MPI_Recv</a></font></tt>, <tt><font size="2"><a href="MPI_Irecv.html">MPI_Irecv</a></font></tt>, <tt><font size="2"><a href="MPI_Sendrecv.html">MPI_Sendrecv</a></font></tt>, etc.) may also be <tt><font size="2">MPI_ANY_SOURCE</font></tt>.
+</dd></dl>
+<dl><dt><i>MPI_ERR_ARG </i></dt> <dd> Invalid argument.  Some argument is invalid and is not
+identified by a specific error class (e.g., <tt><font size="2">MPI_ERR_RANK</font></tt>).
+</dd></dl>
+
+<h4>Example Code</h4>
+<p>The following sample code illustrates <a href="MPI_Cart_rank.html">MPI_Cart_rank</a>.
+</p>
+<p>
+<font size="2" color="#0000ff">
+#include</font><font size="2">&lt;mpi.h&gt;<br>
+<font size="2" color="#0000ff">
+#include</font>&lt;stdio.h&gt;<br>
+&nbsp;</font><font size="2" color="#008000">/* A two-dimensional torus of 12 
+processes in a 4x3 grid */<br>
+</font>
+<font size="2" color="#0000ff">
+int</font><font size="2"> main(</font><font size="2" color="#0000ff">int</font><font size="2"> 
+argc, </font><font size="2" color="#0000ff">char</font><font size="2"> *argv[])<br>
+{<br>
+<font size="2" color="#0000ff">&nbsp;&nbsp;&nbsp; int</font> rank, size;<br>
+&nbsp;&nbsp;&nbsp;
+MPI_Comm comm;<br>
+&nbsp;&nbsp;&nbsp;
+<font size="2" color="#0000ff">int</font> dim[2], 
+period[2], reorder;<br>
+&nbsp;&nbsp;&nbsp;
+<font size="2" color="#0000ff">int</font> coord[2], id;<br>
+<br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Init.html">MPI_Init</a>(&amp;argc, &amp;argv);<br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Comm_rank.html">MPI_Comm_rank</a>(MPI_COMM_WORLD, &amp;rank);<br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Comm_size.html">MPI_Comm_size</a>(MPI_COMM_WORLD, &amp;size);<br>
+&nbsp;&nbsp;&nbsp; <font size="2" color="#0000ff">if</font> (size != 12)<br>
+&nbsp;&nbsp;&nbsp;
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+printf("Please run with 12 processes.\n");fflush(stdout);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="MPI_Abort.html">MPI_Abort</a>(MPI_COMM_WORLD, 1);<br>
+&nbsp;&nbsp;&nbsp;
+}<br>
+<br>
+&nbsp;&nbsp;&nbsp;
+dim[0]=4; dim[1]=3;<br>
+&nbsp;&nbsp;&nbsp;
+period[0]=1; period[1]=0;<br>
+&nbsp;&nbsp;&nbsp;
+reorder=1;<br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Cart_create.html">MPI_Cart_create</a>(MPI_COMM_WORLD, 2, dim, period, reorder, &amp;comm);<br>
+&nbsp;&nbsp;&nbsp;
+<font size="2" color="#0000ff">if</font> (rank == 5)<br>
+&nbsp;&nbsp;&nbsp;
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="MPI_Cart_coords.html">MPI_Cart_coords</a>(comm, rank, 2, coord);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+printf("Rank %d coordinates are %d %d\n", rank, coord[0], coord[1]);fflush(stdout);<br>
+&nbsp;&nbsp;&nbsp;
+}<br>
+&nbsp;&nbsp;&nbsp;
+<font size="2" color="#0000ff">if</font><font size="2">(rank==0)<br>
+&nbsp;&nbsp;&nbsp;
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+coord[0]=3; coord[1]=1;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="MPI_Cart_rank.html">MPI_Cart_rank</a>(comm, coord, &amp;id);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+printf("The processor at position (%d, %d) has rank %d\n", coord[0], 
+coord[1], id);fflush(stdout);<br>
+&nbsp;&nbsp;&nbsp;
+}<br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Finalize.html">MPI_Finalize</a>();<br>
+&nbsp;&nbsp;&nbsp; </font></font><font size="2" color="#0000ff">
+return</font><font size="2"> 0;<br>
+}<br>
+</font>
+</p>
+
+</div>
+
+
+</body></html>

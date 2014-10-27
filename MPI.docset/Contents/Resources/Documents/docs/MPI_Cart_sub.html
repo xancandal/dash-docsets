@@ -1,0 +1,188 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"><head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>MPI_Cart_sub(MPI_Comm comm, 
+  int *remain_dims, 
+  MPI_Comm *newcomm
+) function</title>
+<link rel="stylesheet" href="../style.css" type="text/css" charset="utf-8">
+
+</head>
+
+<body>
+	<div class="background">
+    	<div class="tab_box">
+
+            <div class="tab_box_middle">
+            	<div class="main_box">
+                	<div class="text_box">
+                    	<div class="text_box_top">
+                        </div>
+                        <div class="text_box_middle">
+                        	<div class="text_box_middle_text">
+
+<a name="MPI_Cart_sub"><h1><font size="5">MPI_Cart_sub</font></h1></a>
+Partitions a communicator into subgroups which  form lower-dimensional cartesian subgrids 
+<font size="3">
+<pre class="syntax" xml:space="preserve" style="background-color: #DDDDDD"><b>int MPI_Cart_sub(</b>
+  <b>MPI_Comm</b> <i>comm</i><b>,</b>
+  <b>int</b> *<i>remain_dims</i><b>,</b>
+  <b>MPI_Comm</b> *<i>newcomm</i>
+<b>);</b>
+</pre></font>
+<h4>Parameters</h4>
+<dl>
+<dt><i>comm </i></dt><dd>[in] communicator with cartesian structure (handle) 
+
+</dd><dt><i>remain_dims </i></dt><dd>[in] the  <tt><font size="2">i</font></tt>th entry of remain_dims specifies whether the <tt><font size="2">i</font></tt>th 
+dimension is kept in the subgrid (true) or is dropped (false) (logical 
+vector) 
+</dd><dt><i>newcomm </i></dt>
+<dd>[out] communicator containing the subgrid that includes the calling 
+process (handle) 
+</dd></dl>
+<p>
+</p><h4>Remarks</h4>
+		<p>If a cartesian topology has been created with MPI_CART_CREATE, the 
+		function <br>
+		MPI_CART_SUB can be used to partition the communicator group into 
+		subgroups that form lower-dimensional cartesian subgrids, and to build 
+		for each subgroup a communicator with the associated subgrid cartesian 
+		topology. (This function is closely related to MPI_COMM_SPLIT.) </p>
+		<p><br>
+		<b>Example</b> </p>
+		<p>Assume that MPI_CART_CREATE(..., comm) has defined a
+		<img src="img188.gif"> grid. Let <tt>remain_dims = (true, false, true)</tt>. 
+		Then a call to, <br>
+&nbsp;</p>
+		<pre><tt>MPI_CART_SUB(comm, remain_dims, comm_new), 
+</tt></pre>
+		will create three communicators each with eight processes in a
+		<img src="img189.gif"> cartesian topology. If <tt>remain_dims = (false, 
+		false, true)</tt> then the call to MPI_CART_SUB(comm, remain_dims, 
+		comm_new) will create six non-overlapping communicators, each with four 
+		processes, in a one-dimensional cartesian topology. 
+		<h4>Thread and Interrupt Safety</h4>
+<p>
+This routine is thread-safe.  This means that this routine may be
+safely used by multiple threads without the need for any user-provided
+thread locks.  However, the routine is not interrupt safe.  Typically,
+this is due to the use of memory allocation routines such as <tt><font size="2">malloc
+</font></tt>or other non-MPICH runtime routines that are themselves not interrupt-safe.
+</p><p>
+</p><h4>Notes for Fortran</h4>
+All MPI routines in Fortran (except for <tt><font size="2">MPI_WTIME</font></tt> and <tt><font size="2">MPI_WTICK</font></tt>) have
+an additional argument <tt><font size="2">ierr</font></tt> at the end of the argument list.  <tt><font size="2">ierr
+</font></tt>is an integer and has the same meaning as the return value of the routine
+in C.  In Fortran, MPI routines are subroutines, and are invoked with the
+<tt><font size="2">call</font></tt> statement.
+<p>
+All MPI objects (e.g., <tt><font size="2">MPI_Datatype</font></tt>, <tt><font size="2">MPI_Comm</font></tt>) are of type <tt><font size="2">INTEGER
+</font></tt>in Fortran.
+</p><p>
+</p><h4>Errors</h4>
+<p>
+All MPI routines (except <tt><font size="2"><a href="MPI_Wtime.html">MPI_Wtime</a></font></tt> and <tt><font size="2"><a href="MPI_Wtick.html">MPI_Wtick</a></font></tt>) return an error value;
+C routines as the value of the function and Fortran routines in the last
+argument.  Before the value is returned, the current MPI error handler is
+called.  By default, this error handler aborts the MPI job.  The error handler
+may be changed with <tt><font size="2"><a href="MPI_Comm_set_errhandler.html">MPI_Comm_set_errhandler</a></font></tt> (for communicators),
+<tt><font size="2"><a href="MPI_File_set_errhandler.html">MPI_File_set_errhandler</a></font></tt> (for files), and <tt><font size="2"><a href="MPI_Win_set_errhandler.html">MPI_Win_set_errhandler</a></font></tt> (for
+RMA windows).  The MPI-1 routine <tt><font size="2"><a href="MPI_Errhandler_set.html">MPI_Errhandler_set</a></font></tt> may be used but
+its use is deprecated.  The predefined error handler
+<tt><font size="2">MPI_ERRORS_RETURN</font></tt> may be used to cause error values to be returned.
+Note that MPI does <em>not</em> guarentee that an MPI program can continue past
+an error; however, MPI implementations will attempt to continue whenever
+possible.
+</p><p>
+</p><dl><dt><i>MPI_SUCCESS </i></dt> <dd> No error; MPI routine completed successfully.
+</dd></dl>
+<dl><dt><i>MPI_ERR_TOPOLOGY </i></dt> <dd> Invalid topology.  Either there is no topology 
+associated with this communicator, or it is not the correct type (e.g.,
+<tt><font size="2">MPI_CART</font></tt> when expecting <tt><font size="2">MPI_GRAPH</font></tt>).
+</dd></dl>
+<dl><dt><i>MPI_ERR_COMM </i></dt> <dd> Invalid communicator.  A common error is to use a null
+communicator in a call (not even allowed in <tt><font size="2"><a href="MPI_Comm_rank.html">MPI_Comm_rank</a></font></tt>).
+</dd></dl>
+<dl><dt><i>MPI_ERR_ARG </i></dt> <dd> Invalid argument.  Some argument is invalid and is not
+identified by a specific error class (e.g., <tt><font size="2">MPI_ERR_RANK</font></tt>).
+</dd></dl>
+
+<h4>Example Code</h4>
+<p>The following sample code illustrates <a href="MPI_Cart_sub.html">MPI_Cart_sub</a>.
+</p>
+<font size="2" color="#0000ff">
+#include</font><font size="2"> "mpi.h"<br>
+</font><font size="2" color="#0000ff">
+#include</font><font size="2"> &lt;stdio.h&gt;<br>
+<br>
+</font><font size="2" color="#0000ff">
+int</font><font size="2"> main( </font><font size="2" color="#0000ff">int</font><font size="2"> 
+argc, </font><font size="2" color="#0000ff">char</font><font size="2"> *argv[] )<br>
+{<br>
+</font><font size="2" color="#0000ff">&nbsp;&nbsp;&nbsp; int</font><font size="2"> errs = 0;<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">int</font><font size="2"> size, 
+dims[2], periods[2], remain[2];<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">int</font><font size="2"> result;<br>
+&nbsp;&nbsp;&nbsp;
+MPI_Comm comm, newcomm;<br>
+<br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Init.html">MPI_Init</a>( &amp;argc, &amp;argv );<br>
+<br>
+</font><font size="2" color="#008000">&nbsp;&nbsp;&nbsp; /* First, create a 1-dim cartesian 
+communicator */<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2">
+periods[0] = 0;<br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Comm_size.html">MPI_Comm_size</a>( MPI_COMM_WORLD, &amp;size );<br>
+&nbsp;&nbsp;&nbsp;
+dims[0] = size;<br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Cart_create.html">MPI_Cart_create</a>( MPI_COMM_WORLD, 1, dims, periods, 0, &amp;comm );<br>
+<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#008000">/* Now, extract a communicator with no 
+dimensions */<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2">
+remain[0] = 0;<br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Cart_sub.html">MPI_Cart_sub</a>( comm, remain, &amp;newcomm );<br>
+<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#008000">/* This should be congruent to 
+MPI_COMM_SELF */<br>
+</font><font size="2">&nbsp;&nbsp;&nbsp;
+<a href="MPI_Comm_compare.html">MPI_Comm_compare</a>( MPI_COMM_SELF, newcomm, &amp;result );<br>
+</font><font size="2" color="#0000ff">&nbsp;&nbsp;&nbsp; if</font><font size="2"> (result != 
+MPI_CONGRUENT) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+errs++;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+printf( "cart sub to size 0 did not give self\n" );fflush(stdout);<br>
+&nbsp;&nbsp;&nbsp;
+}<br>
+<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#008000">/* Free the new communicator */<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2">
+<a href="MPI_Comm_free.html">MPI_Comm_free</a>( &amp;newcomm );<br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Comm_free.html">MPI_Comm_free</a>( &amp;comm );<br>
+<br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Finalize.html">MPI_Finalize</a>();<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">return</font><font size="2"> 0;<br>
+}<br>
+</font>
+
+</div>
+
+</body></html>

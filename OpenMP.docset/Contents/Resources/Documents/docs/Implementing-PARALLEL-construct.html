@@ -1,0 +1,97 @@
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>Implementing PARALLEL construct - GNU libgomp</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="GNU libgomp">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="The-libgomp-ABI.html#The-libgomp-ABI" title="The libgomp ABI">
+<link rel="prev" href="Implementing-REDUCTION-clause.html#Implementing-REDUCTION-clause" title="Implementing REDUCTION clause">
+<link rel="next" href="Implementing-FOR-construct.html#Implementing-FOR-construct" title="Implementing FOR construct">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+Copyright (C) 2006-2013 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Funding Free Software'', the Front-Cover
+texts being (a) (see below), and with the Back-Cover Texts being (b)
+(see below).  A copy of the license is included in the section entitled
+``GNU Free Documentation License''.
+
+(a) The FSF's Front-Cover Text is:
+
+     A GNU Manual
+
+(b) The FSF's Back-Cover Text is:
+
+     You have freedom to copy and modify this GNU Manual, like GNU
+     software.  Copies published by the Free Software Foundation raise
+     funds for GNU development.-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Implementing-PARALLEL-construct"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Implementing-FOR-construct.html#Implementing-FOR-construct">Implementing FOR construct</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Implementing-REDUCTION-clause.html#Implementing-REDUCTION-clause">Implementing REDUCTION clause</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="The-libgomp-ABI.html#The-libgomp-ABI">The libgomp ABI</a>
+<hr>
+</div>
+
+<h3 class="section">4.10 Implementing PARALLEL construct</h3>
+
+<pre class="smallexample">       #pragma omp parallel
+       {
+         body;
+       }
+</pre>
+   <p>becomes
+
+<pre class="smallexample">       void subfunction (void *data)
+       {
+         use data;
+         body;
+       }
+     
+       setup data;
+       GOMP_parallel_start (subfunction, &amp;data, num_threads);
+       subfunction (&amp;data);
+       GOMP_parallel_end ();
+</pre>
+   <pre class="smallexample">       void GOMP_parallel_start (void (*fn)(void *), void *data, unsigned num_threads)
+</pre>
+   <p>The <var>FN</var> argument is the subfunction to be run in parallel.
+
+   <p>The <var>DATA</var> argument is a pointer to a structure used to
+communicate data in and out of the subfunction, as discussed
+above with respect to FIRSTPRIVATE et al.
+
+   <p>The <var>NUM_THREADS</var> argument is 1 if an IF clause is present
+and false, or the value of the NUM_THREADS clause, if
+present, or 0.
+
+   <p>The function needs to create the appropriate number of
+threads and/or launch them from the dock.  It needs to
+create the team structure and assign team ids.
+
+<pre class="smallexample">       void GOMP_parallel_end (void)
+</pre>
+   <p>Tears down the team and returns us to the previous <code>omp_in_parallel()</code> state.
+
+   </body></html>
+

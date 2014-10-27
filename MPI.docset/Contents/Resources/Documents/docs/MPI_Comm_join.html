@@ -1,0 +1,419 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"><head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>MPI_Comm_join(int fd, 
+  MPI_Comm *intercomm
+) function</title>
+<link rel="stylesheet" href="../style.css" type="text/css" charset="utf-8">
+
+</head>
+
+<body>
+	<div class="background">
+    	<div class="tab_box">
+ 
+            <div class="tab_box_middle">
+            	<div class="main_box">
+                	<div class="text_box">
+                    	<div class="text_box_top">
+                        </div>
+                        <div class="text_box_middle">
+                        	<div class="text_box_middle_text">
+ 
+<a name="MPI_Comm_join"><h1><font size="5">MPI_Comm_join</font></h1></a>
+Create a communicator by joining two processes connected by  a socket. 
+<font size="3">
+<pre class="syntax" xml:space="preserve" style="background-color: #DDDDDD"><b>int MPI_Comm_join(</b>
+  <b>int</b> <i>fd</i><b>,</b>
+  <b>MPI_Comm</b> *<i>intercomm</i>
+<b>);</b>
+</pre></font>
+<h4>Parameters</h4>
+<dl><dt><i>fd </i></dt> <dd> [in] socket file descriptor 
+	</dd><dt><i>intercomm </i></dt>
+	<dd>[out] new intercommunicator (handle) 
+</dd></dl>
+<p>
+</p><h4>Remarks</h4>
+		<p>MPI_COMM_JOIN is intended for MPI implementations that exist in an 
+		environment supporting the Berkeley Socket interface [<a href="http://www.mpi-forum.org/docs/mpi-20-html/node250.htm#-Bib14">14</a>,<a href="http://www.mpi-forum.org/docs/mpi-20-html/node250.htm#-Bib17">17</a>]. 
+		Implementations that exist in an environment not supporting Berkeley 
+		Sockets should provide the entry point for MPI_COMM_JOIN and should 
+		return MPI_COMM_NULL. </p>
+		<p>This call creates an intercommunicator from the union of two MPI 
+		processes which are connected by a socket. MPI_COMM_JOIN should normally 
+		succeed if the local and remote processes have access to the same 
+		implementation-defined MPI communication universe. </p>
+		<p>The socket must be quiescent before <tt><font size="2">MPI_COMM_JOIN</font></tt> is called and after
+<tt><font size="2">MPI_COMM_JOIN</font></tt> returns. More specifically, on entry to <tt><font size="2">MPI_COMM_JOIN</font></tt>, a
+read on the socket will not read any data that was written to the socket
+before the remote process called <tt><font size="2">MPI_COMM_JOIN</font></tt>.</p>
+		<p><em>Advice to users.</em> An MPI implementation may require a 
+		specific communication medium for MPI communication, such as a shared 
+		memory segment or a special switch. In this case, it may not be possible 
+		for two processes to successfully join even if there is a socket 
+		connecting them and they are using the same MPI implementation.</p>
+<p>
+</p><h4>Thread and Interrupt Safety</h4>
+<p>
+This routine is thread-safe.  This means that this routine may be
+safely used by multiple threads without the need for any user-provided
+thread locks.  However, the routine is not interrupt safe.  Typically,
+this is due to the use of memory allocation routines such as <tt><font size="2">malloc
+</font></tt>or other non-MPICH runtime routines that are themselves not interrupt-safe.
+</p><p>
+</p><h4>Notes for Fortran</h4>
+All MPI routines in Fortran (except for <tt><font size="2">MPI_WTIME</font></tt> and <tt><font size="2">MPI_WTICK</font></tt>) have
+an additional argument <tt><font size="2">ierr</font></tt> at the end of the argument list.  <tt><font size="2">ierr
+</font></tt>is an integer and has the same meaning as the return value of the routine
+in C.  In Fortran, MPI routines are subroutines, and are invoked with the
+<tt><font size="2">call</font></tt> statement.
+<p>
+All MPI objects (e.g., <tt><font size="2">MPI_Datatype</font></tt>, <tt><font size="2">MPI_Comm</font></tt>) are of type <tt><font size="2">INTEGER
+</font></tt>in Fortran.
+</p><p>
+</p><h4>Errors</h4>
+<p>
+All MPI routines (except <tt><font size="2"><a href="MPI_Wtime.html">MPI_Wtime</a></font></tt> and <tt><font size="2"><a href="MPI_Wtick.html">MPI_Wtick</a></font></tt>) return an error value;
+C routines as the value of the function and Fortran routines in the last
+argument.  Before the value is returned, the current MPI error handler is
+called.  By default, this error handler aborts the MPI job.  The error handler
+may be changed with <tt><font size="2"><a href="MPI_Comm_set_errhandler.html">MPI_Comm_set_errhandler</a></font></tt> (for communicators),
+<tt><font size="2"><a href="MPI_File_set_errhandler.html">MPI_File_set_errhandler</a></font></tt> (for files), and <tt><font size="2"><a href="MPI_Win_set_errhandler.html">MPI_Win_set_errhandler</a></font></tt> (for
+RMA windows).  The MPI-1 routine <tt><font size="2"><a href="MPI_Errhandler_set.html">MPI_Errhandler_set</a></font></tt> may be used but
+its use is deprecated.  The predefined error handler
+<tt><font size="2">MPI_ERRORS_RETURN</font></tt> may be used to cause error values to be returned.
+Note that MPI does <em>not</em> guarentee that an MPI program can continue past
+an error; however, MPI implementations will attempt to continue whenever
+possible.
+</p><p>
+</p><dl><dt><i>MPI_SUCCESS </i></dt> <dd> No error; MPI routine completed successfully.
+</dd></dl>
+<dl><dt><i>MPI_ERR_ARG </i></dt> <dd> Invalid argument.  Some argument is invalid and is not
+identified by a specific error class (e.g., <tt><font size="2">MPI_ERR_RANK</font></tt>).
+</dd></dl>
+
+<h4>Example Code</h4>
+<p>The following sample code illustrates <a href="MPI_Comm_join.html">MPI_Comm_join</a>.
+</p>
+<font size="2" color="#0000ff">
+#include</font><font size="2"> "mpi.h"<br>
+</font><font size="2" color="#0000ff">
+#include</font><font size="2"> &lt;stdio.h&gt;<br>
+</font><font size="2" color="#0000ff">
+#include</font><font size="2"> &lt;winsock2.h&gt;<br>
+</font><font size="2" color="#0000ff">
+#include</font><font size="2"> &lt;ws2tcpip.h&gt; </font>
+<font size="2" color="#008000">/* socklen_t */<br>
+</font><font size="2" color="#0000ff">
+#include</font><font size="2"> &lt;string.h&gt;<br>
+</font><font size="2" color="#0000ff">
+<br>
+#define</font><font size="2"> COUNT 1024<br>
+</font>
+<br>
+<font size="2" color="#0000ff">
+int</font><font size="2"> main( </font><font size="2" color="#0000ff">int</font><font size="2"> 
+argc, </font><font size="2" color="#0000ff">char</font><font size="2"> *argv[] )<br>
+{<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">int</font><font size="2"> sendbuf[COUNT], 
+recvbuf[COUNT], i;<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">int</font><font size="2"> err=0, rank, 
+nprocs, errs=0;<br>
+&nbsp;&nbsp;&nbsp;
+MPI_Comm intercomm;<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">int</font><font size="2"> listenfd, 
+connfd, port, namelen;<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">struct</font><font size="2"> 
+sockaddr_in cliaddr, servaddr;<br>
+</font><font size="2" color="#0000ff">&nbsp;&nbsp;&nbsp; struct</font><font size="2"> hostent 
+*h;<br>
+</font><font size="2" color="#0000ff">&nbsp;&nbsp;&nbsp; char</font><font size="2"> 
+hostname[MPI_MAX_PROCESSOR_NAME];<br>
+&nbsp;&nbsp;&nbsp;
+socklen_t len, clilen;<br>
+<br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Init.html">MPI_Init</a>( &amp;argc, &amp;argv );<br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Comm_size.html">MPI_Comm_size</a>(MPI_COMM_WORLD,&amp;nprocs); <br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Comm_rank.html">MPI_Comm_rank</a>(MPI_COMM_WORLD, &amp;rank);<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">if</font><font size="2"> (nprocs != 2) 
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+printf("Run this program with 2 processes\n");fflush(stdout);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="MPI_Abort.html">MPI_Abort</a>(MPI_COMM_WORLD,1);<br>
+&nbsp;&nbsp;&nbsp;
+}<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">if</font><font size="2"> (rank == 1) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#008000">/* server */<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</font><font size="2">
+listenfd = socket(AF_INET, SOCK_STREAM, 0);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">if</font><font size="2"> (listenfd &lt; 0) 
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+printf("server cannot open socket\n");fflush(stdout);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="MPI_Abort.html">MPI_Abort</a>(MPI_COMM_WORLD,1);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+memset(&amp;servaddr, 0, </font><font size="2" color="#0000ff">sizeof</font><font size="2">(servaddr));<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+servaddr.sin_family = AF_INET;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+servaddr.sin_addr.s_addr = htonl(INADDR_ANY);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+servaddr.sin_port = 0;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+err = bind(listenfd, (</font><font size="2" color="#0000ff">struct</font><font size="2"> 
+sockaddr *) &amp;servaddr, </font><font size="2" color="#0000ff">sizeof</font><font size="2">(servaddr));<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">if</font><font size="2"> (err &lt; 0) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+errs++;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+printf("bind failed\n");fflush(stdout);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="MPI_Abort.html">MPI_Abort</a>(MPI_COMM_WORLD,1);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+len = </font><font size="2" color="#0000ff">sizeof</font><font size="2">(servaddr);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+err = getsockname(listenfd, (</font><font size="2" color="#0000ff">struct</font><font size="2"> 
+sockaddr *) &amp;servaddr, &amp;len);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">if</font><font size="2"> (err &lt; 0) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+errs++;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+printf("getsockname failed\n");fflush(stdout);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="MPI_Abort.html">MPI_Abort</a>(MPI_COMM_WORLD,1);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+port = ntohs(servaddr.sin_port);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="MPI_Get_processor_name.html">MPI_Get_processor_name</a>(hostname, &amp;namelen);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="MPI_Send.html">MPI_Send</a>(hostname, namelen+1, MPI_CHAR, 0, 0, MPI_COMM_WORLD);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="MPI_Send.html">MPI_Send</a>(&amp;port, 1, MPI_INT, 0, 1, MPI_COMM_WORLD);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+err = listen(listenfd, 5);<br>
+</font><font size="2" color="#0000ff">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if</font><font size="2"> (err &lt; 0) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+errs++;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+printf("listen failed\n");fflush(stdout);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="MPI_Abort.html">MPI_Abort</a>(MPI_COMM_WORLD, 1);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+clilen = </font><font size="2" color="#0000ff">sizeof</font><font size="2">(cliaddr);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+connfd = accept(listenfd, (</font><font size="2" color="#0000ff">struct</font><font size="2"> 
+sockaddr *) &amp;cliaddr, &amp;clilen);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">if</font><font size="2"> (connfd &lt; 0) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+printf("accept failed\n");fflush(stdout);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="MPI_Abort.html">MPI_Abort</a>(MPI_COMM_WORLD, 1);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}<br>
+&nbsp;&nbsp;&nbsp;
+}<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">else</font><font size="2"> {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#008000">/* client */<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</font><font size="2">
+<a href="MPI_Recv.html">MPI_Recv</a>(hostname, MPI_MAX_PROCESSOR_NAME, MPI_CHAR, 1, 0, MPI_COMM_WORLD, 
+MPI_STATUS_IGNORE);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="MPI_Recv.html">MPI_Recv</a>(&amp;port, 1, MPI_INT, 1, 1, MPI_COMM_WORLD, MPI_STATUS_IGNORE);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+h = gethostbyname(hostname);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">if</font><font size="2"> (h == NULL) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+printf("gethostbyname failed\n");fflush(stdout);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="MPI_Abort.html">MPI_Abort</a>(MPI_COMM_WORLD, 1);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+servaddr.sin_family = h-&gt;h_addrtype;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+memcpy((</font><font size="2" color="#0000ff">char</font><font size="2"> *) 
+&amp;servaddr.sin_addr.s_addr, h-&gt;h_addr_list[0], h-&gt;h_length);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+servaddr.sin_port = htons(port);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#008000">/* create socket */<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</font><font size="2">
+connfd = socket(AF_INET, SOCK_STREAM, 0);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">if</font><font size="2"> (connfd &lt; 0) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+printf("client cannot open socket\n");fflush(stdout);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="MPI_Abort.html">MPI_Abort</a>(MPI_COMM_WORLD, 1);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#008000">/* connect to server */<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</font><font size="2">
+err = connect(connfd, (</font><font size="2" color="#0000ff">struct</font><font size="2"> 
+sockaddr *) &amp;servaddr, </font><font size="2" color="#0000ff">sizeof</font><font size="2">(servaddr));<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">if</font><font size="2"> (err &lt; 0) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+errs++;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+printf("client cannot connect\n");fflush(stdout);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="MPI_Abort.html">MPI_Abort</a>(MPI_COMM_WORLD, 1);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}<br>
+&nbsp;&nbsp;&nbsp;
+}<br>
+<br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Barrier.html">MPI_Barrier</a>(MPI_COMM_WORLD);<br>
+</font><font size="2" color="#008000">&nbsp;&nbsp;&nbsp; /* To improve reporting of problems 
+about operations, we change the error handler to errors return */<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2">
+<a href="MPI_Comm_set_errhandler.html">MPI_Comm_set_errhandler</a>( MPI_COMM_WORLD, MPI_ERRORS_RETURN );<br>
+&nbsp;&nbsp;&nbsp;
+err = <a href="MPI_Comm_join.html">MPI_Comm_join</a>(connfd, &amp;intercomm);<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">if</font><font size="2"> (err)<br>
+&nbsp;&nbsp;&nbsp;
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+errs++;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+printf("Error in <a href="MPI_Comm_join.html">MPI_Comm_join</a> %d\n", err); fflush(stdout);<br>
+&nbsp;&nbsp;&nbsp;
+}<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#008000">/* To improve reporting of problems 
+about operations, we change the error handler to errors return */<br>
+</font><font size="2">
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Comm_set_errhandler.html">MPI_Comm_set_errhandler</a>( intercomm, MPI_ERRORS_RETURN );<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">for</font><font size="2"> (i=0; i&lt;COUNT; 
+i++) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+recvbuf[i] = -1;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+sendbuf[i] = i + COUNT*rank;<br>
+&nbsp;&nbsp;&nbsp;
+}<br>
+&nbsp;&nbsp;&nbsp;
+err = <a href="MPI_Sendrecv.html">MPI_Sendrecv</a>(sendbuf, COUNT, MPI_INT, 0, 0, recvbuf, COUNT, MPI_INT, 0, 
+0, intercomm, MPI_STATUS_IGNORE);<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">if</font><font size="2"> (err != 
+MPI_SUCCESS) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+errs++;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+printf( "Error in <a href="MPI_Sendrecv.html">MPI_Sendrecv</a> on new communicator\n" );fflush(stdout);<br>
+&nbsp;&nbsp;&nbsp;
+}<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">for</font><font size="2"> (i=0; i&lt;COUNT; 
+i++) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">if</font><font size="2"> (recvbuf[i] != 
+((rank+1)%2) * COUNT + i)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+errs++;<br>
+&nbsp;&nbsp;&nbsp;
+}<br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Barrier.html">MPI_Barrier</a>(MPI_COMM_WORLD);<br>
+&nbsp;&nbsp;&nbsp;
+err = <a href="MPI_Comm_disconnect.html">MPI_Comm_disconnect</a>(&amp;intercomm);<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">if</font><font size="2"> (err != 
+MPI_SUCCESS) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+errs++;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+printf( "Error in <a href="MPI_Comm_disconnect.html">MPI_Comm_disconnect</a>\n" );fflush(stdout);<br>
+&nbsp;&nbsp;&nbsp;
+}<br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Finalize.html">MPI_Finalize</a>();<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">return</font><font size="2"> errs;<br>
+}<br>
+</font>
+
+</div>
+                        </div>
+                        <div class="text_box_bottom">
+                        </div>
+                    </div>
+                    <div class="note_text_box">
+                        <div class="note_text_box_top"></div>
+                        <div class="note_text_box_middle">
+ 
+                        </div>
+                        <div class="note_text_box_bottom"></div>
+                    </div>
+                    <div class="ad_under_text_box">
+                        <div class="ad_under_text_box_top"></div>
+                        <div class="ad_under_text_box_middle">
+                            <div class="ad_under_text_box_middle_text">
+                            <script type="text/javascript"><!--
+google_ad_client = "pub-0347391630140593";
+/* Right panel wide skyscraper ad */
+google_ad_slot = "3437924454";
+google_ad_width = 160;
+google_ad_height = 600;
+//-->
+</script>
+<script type="text/javascript" src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script><ins style="display:inline-table;border:none;height:600px;margin:0;padding:0;position:relative;visibility:visible;width:160px;background-color:transparent"><ins id="aswift_0_anchor" style="display:block;border:none;height:600px;margin:0;padding:0;position:relative;visibility:visible;width:160px;background-color:transparent"><iframe width="160" height="600" frameborder="0" marginwidth="0" marginheight="0" vspace="0" hspace="0" allowtransparency="true" scrolling="no" onload="var i=this.id,s=window.google_iframe_oncopy,H=s&amp;&amp;s.handlers,h=H&amp;&amp;H[i],w=this.contentWindow,d;try{d=w.document}catch(e){}if(h&amp;&amp;d&amp;&amp;(!d.body||!d.body.firstChild)){if(h.call){setTimeout(h,0)}else if(h.match){try{h=s.upd(h,i)}catch(e){}w.location.replace(h)}}" id="aswift_0" name="aswift_0" style="left:0;position:absolute;top:0;"></iframe></ins></ins>
+                            </div>
+                        </div>
+                        <div class="ad_under_text_box_bottom"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="tab_box_bottom">
+            </div>
+        </div>
+        <div class="copyright">
+ 
+        </div>
+	</div>
+
+
+</body></html>

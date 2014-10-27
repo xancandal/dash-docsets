@@ -1,0 +1,317 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"><head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>MPI_Attr_put(MPI_Comm comm, 
+  int keyval, 
+  void *attr_value
+) function</title>
+<link rel="stylesheet" href="../style.css" type="text/css" charset="utf-8">
+
+</head>
+
+<body>
+	<div class="background">
+    	<div class="tab_box">
+
+            <div class="tab_box_middle">
+            	<div class="main_box">
+                	<div class="text_box">
+                    	<div class="text_box_top">
+                        </div>
+                        <div class="text_box_middle">
+                        	<div class="text_box_middle_text">
+
+<a name="MPI_Attr_put"><h1><font size="5">MPI_Attr_put</font></h1></a>
+Stores attribute value associated with a key 
+<font size="3">
+<pre class="syntax" xml:space="preserve" style="background-color: #DDDDDD"><b>int MPI_Attr_put(</b>
+  <b>MPI_Comm</b> <i>comm</i><b>,</b>
+  <b>int</b> <i>keyval</i><b>,</b>
+  <b>void</b> *<i>attr_value</i>
+<b>);</b>
+</pre></font>
+<h4>Parameters</h4>
+<dl>
+<dt><i>comm </i></dt><dd>[in] communicator to which attribute will be attached (handle) 
+
+</dd><dt><i>keyval </i></dt><dd>[in] key value, as returned by  <tt><font size="2">MPI_KEYVAL_CREATE</font></tt> (integer) 
+
+</dd><dt><i>attribute_val </i></dt><dd>[in] attribute value 
+</dd></dl>
+<p>
+</p><h4>Remarks</h4>
+		<p>This function stores the stipulated attribute value attribute_val for 
+		subsequent retrieval by MPI_ATTR_GET. If the value is already present, 
+		then the outcome is as if MPI_ATTR_DELETEwas first called to delete the 
+		previous value (and the callback function delete_fn was executed), and a 
+		new value was next stored. The call is erroneous if there is no key with 
+		value keyval; in particular MPI_KEYVAL_INVALID is an erroneous key 
+		value. The call will fail if the delete_fn function returned an error 
+		code other than MPI_SUCCESS. </p>
+Values of the permanent attributes <tt><font size="2">MPI_TAG_UB</font></tt>, <tt><font size="2">MPI_HOST</font></tt>, <tt><font size="2">MPI_IO</font></tt>,
+<tt><font size="2">MPI_WTIME_IS_GLOBAL</font></tt>, <tt><font size="2">MPI_UNIVERSE_SIZE</font></tt>, <tt><font size="2">MPI_LASTUSEDCODE</font></tt>, and
+<tt><font size="2">MPI_APPNUM</font></tt>  may not be changed.
+<p>
+The type of the attribute value depends on whether C, C++, or Fortran
+is being used.
+In C and C++, an attribute value is a pointer (<tt><font size="2">void *</font></tt>); in Fortran,
+it is a single
+integer (<em>not</em> a pointer, since Fortran has no pointers and there are systems
+for which a pointer does not fit in an integer (e.g., any &gt; 32 bit address
+system that uses 64 bits for Fortran <tt><font size="2">DOUBLE PRECISION</font></tt>).
+</p><p>
+If an attribute is already present, the delete function (specified when the
+corresponding keyval was created) will be called.
+</p><p>
+</p><h4>Thread and Interrupt Safety</h4>
+<p>
+This routine is thread-safe.  This means that this routine may be
+safely used by multiple threads without the need for any user-provided
+thread locks.  However, the routine is not interrupt safe.  Typically,
+this is due to the use of memory allocation routines such as <tt><font size="2">malloc
+</font></tt>or other non-MPICH runtime routines that are themselves not interrupt-safe.
+</p><p>
+</p><h4>Deprecated Function</h4>
+The MPI-2 standard deprecated a number of routines because MPI-2 provides
+better versions.  This routine is one of those that was deprecated.  The
+routine may continue to be used, but new code should use the replacement
+routine.
+The replacement for this routine is <tt><font size="2"><a href="MPI_Comm_set_attr.html">MPI_Comm_set_attr</a></font></tt>.
+<p>
+</p><h4>Notes for Fortran</h4>
+All MPI routines in Fortran (except for <tt><font size="2">MPI_WTIME</font></tt> and <tt><font size="2">MPI_WTICK</font></tt>) have
+an additional argument <tt><font size="2">ierr</font></tt> at the end of the argument list.  <tt><font size="2">ierr
+</font></tt>is an integer and has the same meaning as the return value of the routine
+in C.  In Fortran, MPI routines are subroutines, and are invoked with the
+<tt><font size="2">call</font></tt> statement.
+<p>
+All MPI objects (e.g., <tt><font size="2">MPI_Datatype</font></tt>, <tt><font size="2">MPI_Comm</font></tt>) are of type <tt><font size="2">INTEGER
+</font></tt>in Fortran.
+</p><p>
+</p><h4>Errors</h4>
+<p>
+All MPI routines (except <tt><font size="2"><a href="MPI_Wtime.html">MPI_Wtime</a></font></tt> and <tt><font size="2"><a href="MPI_Wtick.html">MPI_Wtick</a></font></tt>) return an error value;
+C routines as the value of the function and Fortran routines in the last
+argument.  Before the value is returned, the current MPI error handler is
+called.  By default, this error handler aborts the MPI job.  The error handler
+may be changed with <tt><font size="2"><a href="MPI_Comm_set_errhandler.html">MPI_Comm_set_errhandler</a></font></tt> (for communicators),
+<tt><font size="2"><a href="MPI_File_set_errhandler.html">MPI_File_set_errhandler</a></font></tt> (for files), and <tt><font size="2"><a href="MPI_Win_set_errhandler.html">MPI_Win_set_errhandler</a></font></tt> (for
+RMA windows).  The MPI-1 routine <tt><font size="2"><a href="MPI_Errhandler_set.html">MPI_Errhandler_set</a></font></tt> may be used but
+its use is deprecated.  The predefined error handler
+<tt><font size="2">MPI_ERRORS_RETURN</font></tt> may be used to cause error values to be returned.
+Note that MPI does <em>not</em> guarentee that an MPI program can continue past
+an error; however, MPI implementations will attempt to continue whenever
+possible.
+</p><p>
+</p><dl><dt><i>MPI_SUCCESS </i></dt> <dd> No error; MPI routine completed successfully.
+</dd></dl>
+<dl><dt><i>MPI_ERR_COMM </i></dt> <dd> Invalid communicator.  A common error is to use a null
+communicator in a call (not even allowed in <tt><font size="2"><a href="MPI_Comm_rank.html">MPI_Comm_rank</a></font></tt>).
+</dd></dl>
+<dl><dt><i>MPI_ERR_KEYVAL </i></dt> <dd> Invalid keyval
+</dd></dl>
+<dl><dt><i>MPI_ERR_ARG </i></dt> <dd> This error class is associated with an error code that 
+indicates that an attempt was made to free one of the permanent keys.
+</dd></dl>
+<p>
+</p><h4>See Also</h4>
+<a href="MPI_Attr_get.html">MPI_Attr_get</a>, <a href="MPI_Keyval_create.html">MPI_Keyval_create</a>, <a href="MPI_Attr_delete.html">MPI_Attr_delete</a>, 
+<a href="MPI_Comm_set_attr.html">MPI_Comm_set_attr</a>
+<br>
+<h4>Example Code</h4>
+<p>The following sample code illustrates <a href="MPI_Attr_put.html">MPI_Attr_put</a>.
+</p>
+<p>
+<font size="2" color="#0000ff">
+#include</font><font size="2"> "mpi.h"<br>
+</font><font size="2" color="#0000ff">
+#include</font><font size="2"> &lt;stdio.h&gt;<br>
+<br>
+</font><font size="2" color="#0000ff">
+int</font><font size="2"> checkAttrs( MPI_Comm comm, </font>
+<font size="2" color="#0000ff">int</font><font size="2"> n, </font>
+<font size="2" color="#0000ff">int</font><font size="2"> key[], </font>
+<font size="2" color="#0000ff">int</font><font size="2"> attrval[] );<br>
+</font><font size="2" color="#0000ff">
+int</font><font size="2"> checkNoAttrs( MPI_Comm comm, </font>
+<font size="2" color="#0000ff">int</font><font size="2"> n, </font>
+<font size="2" color="#0000ff">int</font><font size="2"> key[] );<br>
+<br>
+</font><font size="2" color="#0000ff">
+int</font><font size="2"> main( </font><font size="2" color="#0000ff">int</font><font size="2"> 
+argc, </font><font size="2" color="#0000ff">char</font><font size="2"> *argv[] )<br>
+{<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">int</font><font size="2"> errs = 0;<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">int</font><font size="2"> key[3], 
+attrval[3];<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">int</font><font size="2"> i;<br>
+&nbsp;&nbsp;&nbsp;
+MPI_Comm comm;<br>
+<br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Init.html">MPI_Init</a>(&amp;argc, &amp;argv);<br>
+&nbsp;&nbsp;&nbsp;
+comm = MPI_COMM_WORLD;<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#008000">/* Create key values */<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">for</font><font size="2"> (i=0; i&lt;3; 
+i++) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="MPI_Keyval_create.html">MPI_Keyval_create</a>( MPI_NULL_COPY_FN, MPI_NULL_DELETE_FN,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&amp;key[i], (</font><font size="2" color="#0000ff">void</font><font size="2"> 
+*)0 );<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+attrval[i] = 1024 * i;<br>
+&nbsp;&nbsp;&nbsp;
+}<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#008000">/* Insert attribute in several orders. 
+Test after put with get,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+then delete, then confirm delete with get. */<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2">
+<a href="MPI_Attr_put.html">MPI_Attr_put</a>( comm, key[2], &amp;attrval[2] );<br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Attr_put.html">MPI_Attr_put</a>( comm, key[1], &amp;attrval[1] );<br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Attr_put.html">MPI_Attr_put</a>( comm, key[0], &amp;attrval[0] );<br>
+<br>&nbsp;&nbsp;&nbsp;
+errs += checkAttrs( comm, 3, key, attrval );<br>
+<br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Attr_delete.html">MPI_Attr_delete</a>( comm, key[0] );<br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Attr_delete.html">MPI_Attr_delete</a>( comm, key[1] );<br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Attr_delete.html">MPI_Attr_delete</a>( comm, key[2] );<br>
+<br>&nbsp;&nbsp;&nbsp;
+errs += checkNoAttrs( comm, 3, key );<br>
+<br>&nbsp;&nbsp;&nbsp;
+<a href="MPI_Attr_put.html">MPI_Attr_put</a>( comm, key[1], &amp;attrval[1] );<br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Attr_put.html">MPI_Attr_put</a>( comm, key[2], &amp;attrval[2] );<br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Attr_put.html">MPI_Attr_put</a>( comm, key[0], &amp;attrval[0] );<br>
+<br>&nbsp;&nbsp;&nbsp;
+errs += checkAttrs( comm, 3, key, attrval );<br>
+<br>&nbsp;&nbsp;&nbsp;
+<a href="MPI_Attr_delete.html">MPI_Attr_delete</a>( comm, key[2] );<br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Attr_delete.html">MPI_Attr_delete</a>( comm, key[1] );<br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Attr_delete.html">MPI_Attr_delete</a>( comm, key[0] );<br>
+<br>&nbsp;&nbsp;&nbsp;
+errs += checkNoAttrs( comm, 3, key );<br>
+<br>&nbsp;&nbsp;&nbsp;
+<a href="MPI_Attr_put.html">MPI_Attr_put</a>( comm, key[0], &amp;attrval[0] );<br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Attr_put.html">MPI_Attr_put</a>( comm, key[1], &amp;attrval[1] );<br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Attr_put.html">MPI_Attr_put</a>( comm, key[2], &amp;attrval[2] );<br>
+<br>&nbsp;&nbsp;&nbsp;
+errs += checkAttrs( comm, 3, key, attrval );<br>
+<br>&nbsp;&nbsp;&nbsp;
+<a href="MPI_Attr_delete.html">MPI_Attr_delete</a>( comm, key[1] );<br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Attr_delete.html">MPI_Attr_delete</a>( comm, key[2] );<br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Attr_delete.html">MPI_Attr_delete</a>( comm, key[0] );<br>
+<br>&nbsp;&nbsp;&nbsp;
+errs += checkNoAttrs( comm, 3, key );<br>
+<br>&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">for</font><font size="2"> (i=0; i&lt;3; 
+i++) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="MPI_Keyval_free.html">MPI_Keyval_free</a>( &amp;key[i] );<br>
+&nbsp;&nbsp;&nbsp;
+}<br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Finalize.html">MPI_Finalize</a>();<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">return</font><font size="2"> 0;<br>
+}<br>
+<br>
+</font><font size="2" color="#0000ff">
+int</font><font size="2"> checkAttrs( MPI_Comm comm, </font>
+<font size="2" color="#0000ff">int</font><font size="2"> n, </font>
+<font size="2" color="#0000ff">int</font><font size="2"> key[], </font>
+<font size="2" color="#0000ff">int</font><font size="2"> attrval[] )<br>
+{<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">int</font><font size="2"> errs = 0;<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">int</font><font size="2"> i, flag, *val_p;<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">for</font><font size="2"> (i=0; i&lt;n; i++) 
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="MPI_Attr_get.html">MPI_Attr_get</a>( comm, key[i], &amp;val_p, &amp;flag );<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">if</font><font size="2"> (!flag) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+errs++;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+fprintf( stderr, "Attribute for key %d not set\n", i );<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+fflush(stderr);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">else</font><font size="2"> </font>
+<font size="2" color="#0000ff">if</font><font size="2"> (val_p != &amp;attrval[i]) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+errs++;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+fprintf( stderr, "Atribute value for key %d not correct\n", i );<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+fflush(stderr);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}<br>
+&nbsp;&nbsp;&nbsp;
+}<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">return</font><font size="2"> errs;<br>
+}<br>
+<br>
+</font><font size="2" color="#0000ff">
+int</font><font size="2"> checkNoAttrs( MPI_Comm comm, </font>
+<font size="2" color="#0000ff">int</font><font size="2"> n, </font>
+<font size="2" color="#0000ff">int</font><font size="2"> key[] )<br>
+{<br>
+</font><font size="2" color="#0000ff">&nbsp;&nbsp;&nbsp; int</font><font size="2"> errs = 0;<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">int</font><font size="2"> i, flag, *val_p;<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">for</font><font size="2"> (i=0; i&lt;n; i++) 
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="MPI_Attr_get.html">MPI_Attr_get</a>( comm, key[i], &amp;val_p, &amp;flag );<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">if</font><font size="2"> (flag) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+errs++;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+fprintf( stderr, "Attribute for key %d set but should be deleted\n", i );<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+fflush(stderr);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}<br>
+&nbsp;&nbsp;&nbsp;
+}<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">return</font><font size="2"> errs;<br>
+}<br>
+</font>
+
+</p></div>
+
+
+
+</body></html>

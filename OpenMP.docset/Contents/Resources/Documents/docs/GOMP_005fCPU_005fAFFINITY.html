@@ -1,0 +1,87 @@
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>GOMP_CPU_AFFINITY - GNU libgomp</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="GNU libgomp">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Environment-Variables.html#Environment-Variables" title="Environment Variables">
+<link rel="prev" href="OMP_005fWAIT_005fPOLICY.html#OMP_005fWAIT_005fPOLICY" title="OMP_WAIT_POLICY">
+<link rel="next" href="GOMP_005fSTACKSIZE.html#GOMP_005fSTACKSIZE" title="GOMP_STACKSIZE">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+Copyright (C) 2006-2013 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Funding Free Software'', the Front-Cover
+texts being (a) (see below), and with the Back-Cover Texts being (b)
+(see below).  A copy of the license is included in the section entitled
+``GNU Free Documentation License''.
+
+(a) The FSF's Front-Cover Text is:
+
+     A GNU Manual
+
+(b) The FSF's Back-Cover Text is:
+
+     You have freedom to copy and modify this GNU Manual, like GNU
+     software.  Copies published by the Free Software Foundation raise
+     funds for GNU development.-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="GOMP_CPU_AFFINITY"></a>
+<a name="GOMP_005fCPU_005fAFFINITY"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="GOMP_005fSTACKSIZE.html#GOMP_005fSTACKSIZE">GOMP_STACKSIZE</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="OMP_005fWAIT_005fPOLICY.html#OMP_005fWAIT_005fPOLICY">OMP_WAIT_POLICY</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Environment-Variables.html#Environment-Variables">Environment Variables</a>
+<hr>
+</div>
+
+<h3 class="section">3.14 <samp><span class="env">GOMP_CPU_AFFINITY</span></samp> &ndash; Bind threads to specific CPUs</h3>
+
+<p><a name="index-Environment-Variable-18"></a>
+     <dl>
+<dt><em>Description</em>:<dd>Binds threads to specific CPUs.  The variable should contain a space-separated
+or comma-separated list of CPUs.  This list may contain different kinds of
+entries: either single CPU numbers in any order, a range of CPUs (M-N)
+or a range with some stride (M-N:S).  CPU numbers are zero based.  For example,
+<code>GOMP_CPU_AFFINITY="0 3 1-2 4-15:2"</code> will bind the initial thread
+to CPU 0, the second to CPU 3, the third to CPU 1, the fourth to
+CPU 2, the fifth to CPU 4, the sixth through tenth to CPUs 6, 8, 10, 12,
+and 14 respectively and then start assigning back from the beginning of
+the list.  <code>GOMP_CPU_AFFINITY=0</code> binds all threads to CPU 0.
+
+     <p>There is no GNU OpenMP library routine to determine whether a CPU affinity
+specification is in effect.  As a workaround, language-specific library
+functions, e.g., <code>getenv</code> in C or <code>GET_ENVIRONMENT_VARIABLE</code> in
+Fortran, may be used to query the setting of the <code>GOMP_CPU_AFFINITY</code>
+environment variable.  A defined CPU affinity on startup cannot be changed
+or disabled during the runtime of the application.
+
+     <p>If both <samp><span class="env">GOMP_CPU_AFFINITY</span></samp> and <samp><span class="env">OMP_PROC_BIND</span></samp> are set,
+<samp><span class="env">OMP_PROC_BIND</span></samp> has a higher precedence.  If neither has been set and
+<samp><span class="env">OMP_PROC_BIND</span></samp> is unset, or when <samp><span class="env">OMP_PROC_BIND</span></samp> is set to
+<code>FALSE</code>, the host system will handle the assignment of threads to CPUs.
+
+     <br><dt><em>See also</em>:<dd><a href="OMP_005fPLACES.html#OMP_005fPLACES">OMP_PLACES</a>, <a href="OMP_005fPROC_005fBIND.html#OMP_005fPROC_005fBIND">OMP_PROC_BIND</a>
+</dl>
+
+   </body></html>
+

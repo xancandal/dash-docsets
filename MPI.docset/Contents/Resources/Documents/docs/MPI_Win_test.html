@@ -1,0 +1,240 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"><head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>MPI_Win_test(MPI_Win win, 
+  int *flag
+) function</title>
+<link rel="stylesheet" href="../style.css" type="text/css" charset="utf-8">
+
+</head>
+
+<body>
+	<div class="background">
+    	<div class="tab_box">
+ 
+            <div class="tab_box_middle">
+            	<div class="main_box">
+                	<div class="text_box">
+                    	<div class="text_box_top">
+                        </div>
+                        <div class="text_box_middle">
+                        	<div class="text_box_middle_text">
+ 
+<a name="MPI_Win_test"><h1><font size="5">MPI_Win_test</font></h1></a>
+Test whether an RMA exposure epoch has completed 
+<font size="3">
+<pre class="syntax" xml:space="preserve" style="background-color: #DDDDDD"><b>int MPI_Win_test(</b>
+  <b>MPI_Win</b> <i>win</i><b>,</b>
+  <b>int</b> *<i>flag</i>
+<b>);</b>
+</pre></font>
+<h4>Parameters</h4>
+<dl><dt><i>win </i></dt> <dd> [in] window object (handle) 
+	</dd><dt><i>flag </i></dt>
+	<dd>[out] success flag (logical) 
+</dd></dl>
+<p>
+</p><h4>Remarks</h4>
+This is the nonblocking version of <tt><font size="2"><a href="MPI_Win_wait.html">MPI_Win_wait</a></font></tt>.
+		<p>It returns flag = true if MPI_WIN_WAIT would return, flag = false, 
+		otherwise. The effect of return of MPI_WIN_TEST with flag = true is the 
+		same as the effect of a return of MPI_WIN_WAIT. If flag = false is 
+		returned, then the call has no visible effect. </p>
+		<p>MPI_WIN_TEST should be invoked only where MPI_WIN_WAIT can be 
+		invoked. Once the call has returned flag = true, it must not be invoked 
+		anew, until the window is posted anew. </p>
+		<p>Assume that window win is associated with a "hidden" communicator 
+		wincomm, used for communication by the processes of win. The rules for 
+		matching of post and start calls and for matching complete and wait call 
+		can be derived from the rules for matching sends and receives, by 
+		considering the following (partial) model implementation. </p>
+		<p>&nbsp;</p>
+		<dl>
+			<dt><b>{</b> MPI_WIN_POST(group,0,win)} </dt>
+			<dd>initiate a nonblocking send with tag tag0 to each process in 
+			group, using wincomm. No need to wait for the completion of these 
+			sends. 
+			</dd>
+			<dt><b>{</b> MPI_WIN_START(group,0,win)} </dt>
+			<dd>initiate a nonblocking receive with tag tag0 from each process 
+			in group, using wincomm. An RMA access to a window in target process 
+			i is delayed until the receive from i is completed. 
+			</dd>
+			<dt><b>{</b> MPI_WIN_COMPLETE(win)} </dt>
+			<dd>initiate a nonblocking send with tag tag1 to each process in the 
+			group of the preceding start call. No need to wait for the 
+			completion of these sends. 
+			</dd>
+			<dt><b>{</b> MPI_WIN_WAIT(win)} </dt>
+			<dd>initiate a nonblocking receive with tag tag1 from each process 
+			in the group of the preceding post call. Wait for the completion of 
+			all receives. 
+			</dd>
+		</dl>
+		<br>
+		No races can occur in a correct program: each of the sends matches a 
+		unique receive, and vice-versa. 
+<p>
+</p><h4>Thread and Interrupt Safety</h4>
+<p>
+This routine is thread-safe.  This means that this routine may be
+safely used by multiple threads without the need for any user-provided
+thread locks.  However, the routine is not interrupt safe.  Typically,
+this is due to the use of memory allocation routines such as <tt><font size="2">malloc
+</font></tt>or other non-MPICH runtime routines that are themselves not interrupt-safe.
+</p><p>
+</p><h4>Notes for Fortran</h4>
+All MPI routines in Fortran (except for <tt><font size="2">MPI_WTIME</font></tt> and <tt><font size="2">MPI_WTICK</font></tt>) have
+an additional argument <tt><font size="2">ierr</font></tt> at the end of the argument list.  <tt><font size="2">ierr
+</font></tt>is an integer and has the same meaning as the return value of the routine
+in C.  In Fortran, MPI routines are subroutines, and are invoked with the
+<tt><font size="2">call</font></tt> statement.
+<p>
+All MPI objects (e.g., <tt><font size="2">MPI_Datatype</font></tt>, <tt><font size="2">MPI_Comm</font></tt>) are of type <tt><font size="2">INTEGER
+</font></tt>in Fortran.
+</p><p>
+</p><h4>Errors</h4>
+<p>
+All MPI routines (except <tt><font size="2"><a href="MPI_Wtime.html">MPI_Wtime</a></font></tt> and <tt><font size="2"><a href="MPI_Wtick.html">MPI_Wtick</a></font></tt>) return an error value;
+C routines as the value of the function and Fortran routines in the last
+argument.  Before the value is returned, the current MPI error handler is
+called.  By default, this error handler aborts the MPI job.  The error handler
+may be changed with <tt><font size="2"><a href="MPI_Comm_set_errhandler.html">MPI_Comm_set_errhandler</a></font></tt> (for communicators),
+<tt><font size="2"><a href="MPI_File_set_errhandler.html">MPI_File_set_errhandler</a></font></tt> (for files), and <tt><font size="2"><a href="MPI_Win_set_errhandler.html">MPI_Win_set_errhandler</a></font></tt> (for
+RMA windows).  The MPI-1 routine <tt><font size="2"><a href="MPI_Errhandler_set.html">MPI_Errhandler_set</a></font></tt> may be used but
+its use is deprecated.  The predefined error handler
+<tt><font size="2">MPI_ERRORS_RETURN</font></tt> may be used to cause error values to be returned.
+Note that MPI does <em>not</em> guarentee that an MPI program can continue past
+an error; however, MPI implementations will attempt to continue whenever
+possible.
+</p><p>
+</p><dl><dt><i>MPI_SUCCESS </i></dt> <dd> No error; MPI routine completed successfully.
+</dd></dl>
+<dl><dt><i>MPI_ERR_WIN </i></dt> <dd> Invalid MPI window object
+</dd></dl>
+<dl><dt><i>MPI_ERR_OTHER </i></dt> <dd> Other error; use <tt><font size="2"><a href="MPI_Error_string.html">MPI_Error_string</a></font></tt> to get more information
+about this error code. 
+</dd></dl>
+<dl><dt><i>MPI_ERR_ARG </i></dt> <dd> Invalid argument.  Some argument is invalid and is not
+identified by a specific error class (e.g., <tt><font size="2">MPI_ERR_RANK</font></tt>).
+</dd></dl>
+<p>
+</p><h4>See Also</h4>
+ <a href="MPI_Win_wait.html">MPI_Win_wait</a>, <a href="MPI_Win_post.html">MPI_Win_post</a>
+<br>
+<h4>Example Code</h4>
+<p>The following sample code illustrates <a href="MPI_Win_test.html">MPI_Win_test</a>.
+</p>
+<font size="2" color="#0000ff">#include</font>&nbsp;"mpi.h"&nbsp;<br>
+<font size="2" color="#0000ff">#include</font>&nbsp;"stdio.h"<br>
+<br>
+<font size="2" color="#008000">/*&nbsp;tests&nbsp;put&nbsp;and&nbsp;get&nbsp;with&nbsp;post/start/complete/test&nbsp;on&nbsp;2&nbsp;processes&nbsp;*/<br>
+<br>
+</font><font size="2" color="#0000ff">#define</font>&nbsp;SIZE1&nbsp;10<br>
+<font size="2" color="#0000ff">#define</font>&nbsp;SIZE2&nbsp;20<br>
+<br>
+<font size="2" color="#0000ff">int</font>&nbsp;main(<font size="2" color="#0000ff">int</font>&nbsp;argc,&nbsp;<font size="2" color="#0000ff">char</font>&nbsp;*argv[])&nbsp;<br>
+{&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font size="2" color="#0000ff">int</font>&nbsp;rank,&nbsp;destrank,&nbsp;nprocs,&nbsp;A[SIZE2],&nbsp;B[SIZE2],&nbsp;i;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;MPI_Group&nbsp;comm_group,&nbsp;group;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;MPI_Win&nbsp;win;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font size="2" color="#0000ff">int</font>&nbsp;errs&nbsp;=&nbsp;0,&nbsp;flag;<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="MPI_Init.html">MPI_Init</a>(&amp;argc,&amp;argv);&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="MPI_Comm_size.html">MPI_Comm_size</a>(MPI_COMM_WORLD,&amp;nprocs);&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="MPI_Comm_rank.html">MPI_Comm_rank</a>(MPI_COMM_WORLD,&amp;rank);&nbsp;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font size="2" color="#0000ff">if</font>&nbsp;(nprocs&nbsp;!=&nbsp;2)&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;printf("Run&nbsp;this&nbsp;program&nbsp;with&nbsp;2&nbsp;processes\n");fflush(stdout);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="MPI_Abort.html">MPI_Abort</a>(MPI_COMM_WORLD,1);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="MPI_Comm_group.html">MPI_Comm_group</a>(MPI_COMM_WORLD,&nbsp;&amp;comm_group);<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font size="2" color="#0000ff">if</font>&nbsp;(rank&nbsp;==&nbsp;0)&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font size="2" color="#0000ff">for</font>&nbsp;(i=0;&nbsp;i&lt;SIZE2;&nbsp;i++)&nbsp;A[i]&nbsp;=&nbsp;B[i]&nbsp;=&nbsp;i;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="MPI_Win_create.html">MPI_Win_create</a>(NULL,&nbsp;0,&nbsp;1,&nbsp;MPI_INFO_NULL,&nbsp;MPI_COMM_WORLD,&nbsp;&amp;win);&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;destrank&nbsp;=&nbsp;1;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="MPI_Group_incl.html">MPI_Group_incl</a>(comm_group,&nbsp;1,&nbsp;&amp;destrank,&nbsp;&amp;group);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="MPI_Win_start.html">MPI_Win_start</a>(group,&nbsp;0,&nbsp;win);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font size="2" color="#0000ff">for</font>&nbsp;(i=0;&nbsp;i&lt;SIZE1;&nbsp;i++)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="MPI_Put.html">MPI_Put</a>(A+i,&nbsp;1,&nbsp;MPI_INT,&nbsp;1,&nbsp;i,&nbsp;1,&nbsp;MPI_INT,&nbsp;win);&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font size="2" color="#0000ff">for</font>&nbsp;(i=0;&nbsp;i&lt;SIZE1;&nbsp;i++)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="MPI_Get.html">MPI_Get</a>(B+i,&nbsp;1,&nbsp;MPI_INT,&nbsp;1,&nbsp;SIZE1+i,&nbsp;1,&nbsp;MPI_INT,&nbsp;win);<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="MPI_Win_complete.html">MPI_Win_complete</a>(win);<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font size="2" color="#0000ff">for</font>&nbsp;(i=0;&nbsp;i&lt;SIZE1;&nbsp;i++)&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font size="2" color="#0000ff">if</font>&nbsp;(B[i]&nbsp;!=&nbsp;(-4)*(i+SIZE1))&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;printf("Get&nbsp;Error:&nbsp;B[i]&nbsp;is&nbsp;%d,&nbsp;should&nbsp;be&nbsp;%d\n",&nbsp;B[i],&nbsp;(-4)*(i+SIZE1));fflush(stdout);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;errs++;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font size="2" color="#0000ff">else</font>&nbsp;{&nbsp;&nbsp;<font size="2" color="#008000">/*&nbsp;rank=1&nbsp;*/<br>
+</font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font size="2" color="#0000ff">for</font>&nbsp;(i=0;&nbsp;i&lt;SIZE2;&nbsp;i++)&nbsp;B[i]&nbsp;=&nbsp;(-4)*i;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="MPI_Win_create.html">MPI_Win_create</a>(B,&nbsp;SIZE2*<font size="2" color="#0000ff">sizeof</font>(<font size="2" color="#0000ff">int</font>),&nbsp;<font size="2" color="#0000ff">sizeof</font>(<font size="2" color="#0000ff">int</font>),&nbsp;MPI_INFO_NULL,&nbsp;MPI_COMM_WORLD,&nbsp;&amp;win);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;destrank&nbsp;=&nbsp;0;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="MPI_Group_incl.html">MPI_Group_incl</a>(comm_group,&nbsp;1,&nbsp;&amp;destrank,&nbsp;&amp;group);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="MPI_Win_post.html">MPI_Win_post</a>(group,&nbsp;0,&nbsp;win);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;flag&nbsp;=&nbsp;0;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font size="2" color="#0000ff">while</font>&nbsp;(!flag)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="MPI_Win_test.html">MPI_Win_test</a>(win,&nbsp;&amp;flag);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font size="2" color="#0000ff">for</font>&nbsp;(i=0;&nbsp;i&lt;SIZE1;&nbsp;i++)&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font size="2" color="#0000ff">if</font>&nbsp;(B[i]&nbsp;!=&nbsp;i)&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;printf("Put&nbsp;Error:&nbsp;B[i]&nbsp;is&nbsp;%d,&nbsp;should&nbsp;be&nbsp;%d\n",&nbsp;B[i],&nbsp;i);fflush(stdout);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;errs++;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="MPI_Group_free.html">MPI_Group_free</a>(&amp;group);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="MPI_Group_free.html">MPI_Group_free</a>(&amp;comm_group);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="MPI_Win_free.html">MPI_Win_free</a>(&amp;win);&nbsp;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="MPI_Finalize.html">MPI_Finalize</a>();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font size="2" color="#0000ff">return</font>&nbsp;errs;&nbsp;<br>
+}
+</div>
+                        </div>
+                        <div class="text_box_bottom">
+                        </div>
+                    </div>
+                    <div class="note_text_box">
+                        <div class="note_text_box_top"></div>
+                        <div class="note_text_box_middle">
+ 
+                        </div>
+                        <div class="note_text_box_bottom"></div>
+                    </div>
+                    <div class="ad_under_text_box">
+                        <div class="ad_under_text_box_top"></div>
+                        <div class="ad_under_text_box_middle">
+                            <div class="ad_under_text_box_middle_text">
+                            <script type="text/javascript"><!--
+google_ad_client = "pub-0347391630140593";
+/* Right panel wide skyscraper ad */
+google_ad_slot = "3437924454";
+google_ad_width = 160;
+google_ad_height = 600;
+//-->
+</script>
+<script type="text/javascript" src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script><ins style="display:inline-table;border:none;height:600px;margin:0;padding:0;position:relative;visibility:visible;width:160px;background-color:transparent"><ins id="aswift_0_anchor" style="display:block;border:none;height:600px;margin:0;padding:0;position:relative;visibility:visible;width:160px;background-color:transparent"><iframe width="160" height="600" frameborder="0" marginwidth="0" marginheight="0" vspace="0" hspace="0" allowtransparency="true" scrolling="no" onload="var i=this.id,s=window.google_iframe_oncopy,H=s&amp;&amp;s.handlers,h=H&amp;&amp;H[i],w=this.contentWindow,d;try{d=w.document}catch(e){}if(h&amp;&amp;d&amp;&amp;(!d.body||!d.body.firstChild)){if(h.call){setTimeout(h,0)}else if(h.match){try{h=s.upd(h,i)}catch(e){}w.location.replace(h)}}" id="aswift_0" name="aswift_0" style="left:0;position:absolute;top:0;"></iframe></ins></ins>
+                            </div>
+                        </div>
+                        <div class="ad_under_text_box_bottom"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="tab_box_bottom">
+            </div>
+        </div>
+        <div class="copyright">
+ 
+        </div>
+	</div>
+
+
+</body></html>

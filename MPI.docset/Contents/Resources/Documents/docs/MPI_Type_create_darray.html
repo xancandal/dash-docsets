@@ -1,0 +1,752 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"><head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>MPI_Type_create_darray(int size,
+  int rank,
+  int ndims,
+  int array_of_gsizes[],
+  int array_of_distribs[],
+  int array_of_dargs[],
+  int array_of_psizes[],
+  int order,
+  MPI_Datatype oldtype,
+  MPI_Datatype *newtype) function</title>
+<link rel="stylesheet" href="../style.css" type="text/css" charset="utf-8">
+
+</head>
+
+<body>
+	<div class="background">
+    	<div class="tab_box">
+ 
+            <div class="tab_box_middle">
+            	<div class="main_box">
+                	<div class="text_box">
+                    	<div class="text_box_top">
+                        </div>
+                        <div class="text_box_middle">
+                        	<div class="text_box_middle_text">
+ 
+<a name="MPI_Type_create_darray"><h1><font size="5">MPI_Type_create_darray</font></h1></a>
+Create a datatype representing a distributed array 
+<font size="3">
+<pre class="syntax" xml:space="preserve" style="background-color: #DDDDDD"><b>int MPI_Type_create_darray(</b>
+  <b>int</b> <i>size</i><b>,</b>
+  <b>int</b> <i>rank</i><b>,</b>
+  <b>int</b> <i>ndims</i><b>,</b>
+  <b>int</b> <i>array_of_gsizes</i>[]<b>,</b>
+  <b>int</b> <i>array_of_distribs</i>[]<b>,</b>
+  <b>int</b> <i>array_of_dargs</i>[]<b>,</b>
+  <b>int</b> <i>array_of_psizes</i>[]<b>,</b>
+  <b>int</b> <i>order</i><b>,</b>
+  <b>MPI_Datatype</b> <i>oldtype</i><b>,</b>
+  <b>MPI_Datatype</b> *<i>newtype</i>
+<b>);</b>
+</pre></font>
+<h4>Parameters</h4>
+<dl>
+<dt><i>size </i></dt><dd>[in] size of process group (positive integer) 
+
+</dd><dt><i>rank </i></dt><dd>[in] rank in process group (nonnegative integer) 
+
+</dd><dt><i>ndims </i></dt><dd>[in] number of array dimensions as well as process grid dimensions (positive integer) 
+
+</dd><dt><i>array_of_gsizes </i></dt><dd>[in] number of elements of type oldtype in each dimension of global array (array of positive integers) 
+
+</dd><dt><i>array_of_distribs </i></dt><dd>[in] distribution of array in each dimension (array of state) 
+
+</dd><dt><i>array_of_dargs </i></dt><dd>[in] distribution argument in each dimension (array of positive integers) 
+
+</dd><dt><i>array_of_psizes </i></dt><dd>[in] size of process grid in each dimension (array of positive integers) 
+
+</dd><dt><i>order </i></dt><dd>[in] array storage order flag (state) 
+
+</dd><dt><i>oldtype </i></dt><dd>[in] old datatype (handle) 
+</dd><dt><i>newtype </i></dt>
+<dd>[out] new datatype (handle) 
+</dd></dl>
+
+<h4>Remarks</h4>
+		<p>MPI_TYPE_CREATE_DARRAY can be used to generate the datatypes 
+		corresponding to the distribution of an ndims-dimensional array of 
+		oldtype elements onto an ndims-dimensional grid of logical processes. 
+		Unused dimensions of array_of_psizes should be set to 1. For a call to 
+		MPI_TYPE_CREATE_DARRAY to be correct, the equation <i>prod<sub>i=0</sub><sup>ndims-1</sup> 
+		array_of_psizes[i] = size </i>must be satisfied. The ordering of 
+		processes in the process grid is assumed to be row-major, as in the case 
+		of virtual Cartesian process topologies in MPI-1. <br>
+&nbsp;</p>
+		<p><em>Advice to users.</em> </p>
+		<p>For both Fortran and C arrays, the ordering of processes in the 
+		process grid is assumed to be row-major. This is consistent with the 
+		ordering used in virtual Cartesian process topologies in MPI-1. To 
+		create such virtual process topologies, or to find the coordinates of a 
+		process in the process grid, etc., users may use the corresponding 
+		functions provided in MPI-1. (<em> End of advice to users.</em>) <br>
+&nbsp;</p>
+		<p>Each dimension of the array can be distributed in one of three ways:
+		</p>
+		<ul>
+			<li>MPI_DISTRIBUTE_BLOCK - Block distribution 
+			</li>
+			<li>MPI_DISTRIBUTE_CYCLIC - Cyclic distribution 
+			</li>
+			<li>MPI_DISTRIBUTE_NONE - Dimension not distributed. </li>
+		</ul>
+		<br>
+		The constant MPI_DISTRIBUTE_DFLT_DARG specifies a default distribution 
+		argument. The distribution argument for a dimension that is not 
+		distributed is ignored. For any dimension <i>i</i> in which the 
+		distribution is MPI_DISTRIBUTE_BLOCK, it erroneous to specify 
+		array_of_dargs[i] <i>*</i> array_of_psizes[i] <i>&lt;</i> array_of_gsizes[i]. 
+		<p>For example, the HPF layout <tt>ARRAY(CYCLIC(15))</tt> corresponds to 
+		MPI_DISTRIBUTE_CYCLIC with a distribution argument of 15, and the HPF 
+		layout ARRAY(BLOCK) corresponds to MPI_DISTRIBUTE_BLOCK with a 
+		distribution argument of MPI_DISTRIBUTE_DFLT_DARG. </p>
+		<p>The order argument is used as in MPI_TYPE_CREATE_SUBARRAY to specify 
+		the storage order. Therefore, arrays described by this type constructor 
+		may be stored in Fortran (column-major) or C (row-major) order. Valid 
+		values for order are MPI_ORDER_FORTRAN and MPI_ORDER_C. </p>
+		<p>This routine creates a new MPI datatype with a typemap defined in 
+		terms of a function called "cyclic()" (see below). </p>
+		<p>Without loss of generality, it suffices to define the typemap for the 
+		MPI_DISTRIBUTE_CYCLIC case where MPI_DISTRIBUTE_DFLT_DARG is not used.
+		</p>
+		<p>MPI_DISTRIBUTE_BLOCK and MPI_DISTRIBUTE_NONE can be reduced to the 
+		MPI_DISTRIBUTE_CYCLIC case for dimension <i>i</i> as follows. </p>
+		<p>MPI_DISTRIBUTE_BLOCK with array_of_dargs[i] equal to 
+		MPI_DISTRIBUTE_DFLT_DARG is equivalent to MPI_DISTRIBUTE_CYCLIC with 
+		array_of_dargs[i] set to </p>
+		<p><i>(mpiargarray_of_gsizes[i] + mpiargarray_of_psizes[i] - 1) / 
+		mpiargarray_of_psizes[i]. </i></p>
+		<p>If array_of_dargs[i] is not MPI_DISTRIBUTE_DFLT_DARG, then 
+		MPI_DISTRIBUTE_BLOCK and MPI_DISTRIBUTE_CYCLIC are equivalent. </p>
+		<p>MPI_DISTRIBUTE_NONE is equivalent to MPI_DISTRIBUTE_CYCLIC with 
+		array_of_dargs[i] set to array_of_gsizes[i]. </p>
+		<p>Finally, MPI_DISTRIBUTE_CYCLIC with array_of_dargs[i] equal to 
+		MPI_DISTRIBUTE_DFLT_DARG is equivalent to MPI_DISTRIBUTE_CYCLIC with 
+		array_of_dargs[i] set to 1. </p>
+		<p>For MPI_ORDER_FORTRAN, an ndims-dimensional distributed array ( 
+		newtype) is defined by the following code fragment: </p>
+		<p><br>
+&nbsp;</p>
+		<pre><tt>    oldtype[0] = oldtype; 
+    for ( i = 0; i &lt; ndims; i++ ) { 
+       oldtype[i+1] = cyclic(array_of_dargs[i], 
+                             array_of_gsizes[i], 
+                             r[i],  
+                             array_of_psizes[i], 
+                             oldtype[i]); 
+    } 
+    newtype = oldtype[ndims]; 
+</tt></pre>
+		For MPI_ORDER_C, the code is: 
+		<p><br>
+&nbsp;</p>
+		<pre><tt>    oldtype[0] = oldtype; 
+    for ( i = 0; i &lt; ndims; i++ ) { 
+       oldtype[i + 1] = cyclic(array_of_dargs[ndims - i - 1],  
+                               array_of_gsizes[ndims - i - 1], 
+                               r[ndims - i - 1],  
+                               array_of_psizes[ndims - i - 1], 
+                               oldtype[i]); 
+    } 
+    newtype = oldtype[ndims]; 
+ 
+</tt></pre>
+		where <i>r[i]</i> is the position of the process (with rank rank) in the 
+		process grid at dimension <i>i</i>. The values of <i>r[i]</i> are given 
+		by the following code fragment: 
+		<p><br>
+&nbsp;</p>
+		<pre><tt>        t_rank = rank; 
+        t_size = 1; 
+        for (i = 0; i &lt; ndims; i++) 
+                t_size *= array_of_psizes[i]; 
+        for (i = 0; i &lt; ndims; i++) { 
+            t_size = t_size / array_of_psizes[i]; 
+            r[i] = t_rank / t_size; 
+            t_rank = t_rank % t_size; 
+        } 
+</tt></pre>
+		Let the typemap of oldtype have the form: <i>{(type<sub>0</sub>,disp<sub>0</sub>),(type<sub>1</sub>,disp<sub>1</sub>),...,(type<sub>n-1</sub>,disp<sub>n-1</sub>)}
+		</i>where <i>type<sub>i</sub></i> is a predefined MPI datatype, and let
+		<i>ex</i> be the extent of oldtype. 
+		<p>Given the above, the function cyclic() is defined as follows: </p>
+		<p><img height="480" src="img6.gif" width="398"> </p>
+		<p>where <i>count</i> is defined by this code fragment: <br>
+&nbsp;</p>
+		<pre><tt>        nblocks = (gsize + (darg - 1)) / darg; 
+        count = nblocks / psize; 
+        left_over = nblocks - count * psize; 
+        if (r &lt; left_over) 
+            count = count + 1; 
+</tt></pre>
+		Here, <i>nblocks</i> is the number of blocks that must be distributed 
+		among the processors. Finally, <i>darg<sub>last</sub></i> is defined by 
+		this code fragment: <br>
+&nbsp;<pre><tt>        if ((num_in_last_cyclic = gsize % (psize * darg)) == 0) 
+             darg_last = darg; 
+        else 
+             darg_last = num_in_last_cyclic - darg * r; 
+             if (darg_last &gt; darg) 
+                    darg_last = darg; 
+             if (darg_last &lt;= 0) 
+                    darg_last = darg; 
+</tt></pre>
+		<p><br>
+		<b>Example</b> Consider generating the filetypes corresponding to the 
+		HPF distribution: <br>
+&nbsp;</p>
+		<pre><tt>      &lt;oldtype&gt; FILEARRAY(100, 200, 300) 
+!HPF$ PROCESSORS PROCESSES(2, 3) 
+!HPF$ DISTRIBUTE FILEARRAY(CYCLIC(10), *, BLOCK) ONTO PROCESSES 
+</tt></pre>
+		This can be achieved by the following Fortran code, assuming there will 
+		be six processes attached to the run: <br>
+&nbsp;<pre><tt>    ndims = 3 
+    array_of_gsizes(1) = 100 
+    array_of_distribs(1) = MPI_DISTRIBUTE_CYCLIC 
+    array_of_dargs(1) = 10 
+    array_of_gsizes(2) = 200 
+    array_of_distribs(2) = MPI_DISTRIBUTE_NONE 
+    array_of_dargs(2) = 0 
+    array_of_gsizes(3) = 300 
+    array_of_distribs(3) = MPI_DISTRIBUTE_BLOCK 
+    array_of_dargs(3) = MPI_DISTRIBUTE_DFLT_ARG 
+    array_of_psizes(1) = 2 
+    array_of_psizes(2) = 1 
+    array_of_psizes(3) = 3 
+    call MPI_COMM_SIZE(MPI_COMM_WORLD, size, ierr) 
+    call MPI_COMM_RANK(MPI_COMM_WORLD, rank, ierr) 
+    call MPI_TYPE_CREATE_DARRAY(size, rank, ndims, array_of_gsizes, &amp; 
+         array_of_distribs, array_of_dargs, array_of_psizes,        &amp; 
+         MPI_ORDER_FORTRAN, oldtype, newtype, ierr) 
+</tt></pre>
+		<h4>Thread and Interrupt Safety</h4>
+
+This routine is thread-safe.  This means that this routine may be
+safely used by multiple threads without the need for any user-provided
+thread locks.  However, the routine is not interrupt safe.  Typically,
+this is due to the use of memory allocation routines such as <tt><font size="2">malloc
+</font></tt>or other non-MPICH runtime routines that are themselves not interrupt-safe.
+
+<h4>Notes for Fortran</h4>
+All MPI routines in Fortran (except for <tt><font size="2">MPI_WTIME</font></tt> and <tt><font size="2">MPI_WTICK</font></tt>) have
+an additional argument <tt><font size="2">ierr</font></tt> at the end of the argument list.  <tt><font size="2">ierr
+</font></tt>is an integer and has the same meaning as the return value of the routine
+in C.  In Fortran, MPI routines are subroutines, and are invoked with the
+<tt><font size="2">call</font></tt> statement.
+
+All MPI objects (e.g., <tt><font size="2">MPI_Datatype</font></tt>, <tt><font size="2">MPI_Comm</font></tt>) are of type <tt><font size="2">INTEGER
+</font></tt>in Fortran.
+
+<h4>Errors</h4>
+
+All MPI routines (except <tt><font size="2"><a href="MPI_Wtime.html">MPI_Wtime</a></font></tt> and <tt><font size="2"><a href="MPI_Wtick.html">MPI_Wtick</a></font></tt>) return an error value;
+C routines as the value of the function and Fortran routines in the last
+argument.  Before the value is returned, the current MPI error handler is
+called.  By default, this error handler aborts the MPI job.  The error handler
+may be changed with <tt><font size="2"><a href="MPI_Comm_set_errhandler.html">MPI_Comm_set_errhandler</a></font></tt> (for communicators),
+<tt><font size="2"><a href="MPI_File_set_errhandler.html">MPI_File_set_errhandler</a></font></tt> (for files), and <tt><font size="2"><a href="MPI_Win_set_errhandler.html">MPI_Win_set_errhandler</a></font></tt> (for
+RMA windows).  The MPI-1 routine <tt><font size="2"><a href="MPI_Errhandler_set.html">MPI_Errhandler_set</a></font></tt> may be used but
+its use is deprecated.  The predefined error handler
+<tt><font size="2">MPI_ERRORS_RETURN</font></tt> may be used to cause error values to be returned.
+Note that MPI does <em>not</em> guarentee that an MPI program can continue past
+an error; however, MPI implementations will attempt to continue whenever
+possible.
+
+<dl><dt><i>MPI_SUCCESS </i></dt> <dd> No error; MPI routine completed successfully.
+</dd></dl>
+<dl><dt><i>MPI_ERR_TYPE </i></dt> <dd> Invalid datatype argument.  May be an uncommitted 
+MPI_Datatype (see <tt><font size="2"><a href="MPI_Type_commit.html">MPI_Type_commit</a></font></tt>).
+</dd></dl>
+<dl><dt><i>MPI_ERR_ARG </i></dt> <dd> Invalid argument.  Some argument is invalid and is not
+identified by a specific error class (e.g., <tt><font size="2">MPI_ERR_RANK</font></tt>).
+</dd></dl>
+<p>
+</p><h4>Example Code</h4>
+The following sample code illustrates <a href="MPI_Type_create_darray.html">MPI_Type_create_darray</a>.
+<p></p>
+<font size="2" color="#0000ff">
+#include</font><font size="2"> "mpi.h"<br>
+</font><font size="2" color="#0000ff">
+#include</font><font size="2"> &lt;stdio.h&gt;<br>
+</font><font size="2" color="#0000ff">
+#include</font><font size="2"> &lt;stdlib.h&gt;<br>
+</font><font size="2" color="#0000ff">
+#include</font><font size="2"> &lt;string.h&gt;<br>
+&nbsp;<br>
+</font><font size="2" color="#008000">
+/* tests */<br>
+</font><font size="2" color="#0000ff">
+int</font><font size="2"> darray_2d_c_test1(</font><font size="2" color="#0000ff">void</font><font size="2">);<br>
+</font><font size="2" color="#0000ff">
+int</font><font size="2"> darray_4d_c_test1(</font><font size="2" color="#0000ff">void</font><font size="2">);<br>
+</font><font size="2" color="#008000">
+/* helper functions */<br>
+</font><font size="2" color="#0000ff">
+static</font><font size="2"> </font><font size="2" color="#0000ff">int</font><font size="2"> 
+parse_args(</font><font size="2" color="#0000ff">int</font><font size="2"> argc,
+</font><font size="2" color="#0000ff">char</font><font size="2"> **argv);<br>
+</font><font size="2" color="#0000ff">
+static</font><font size="2"> </font><font size="2" color="#0000ff">int</font><font size="2"> 
+pack_and_unpack(</font><font size="2" color="#0000ff">char</font><font size="2"> 
+*typebuf, </font><font size="2" color="#0000ff">int</font><font size="2"> count, 
+MPI_Datatype datatype, </font><font size="2" color="#0000ff">int</font><font size="2"> 
+typebufsz);<br>
+&nbsp;<br>
+</font><font size="2" color="#0000ff">
+int</font><font size="2"> main(</font><font size="2" color="#0000ff">int</font><font size="2"> 
+argc, </font><font size="2" color="#0000ff">char</font><font size="2"> **argv)<br>
+{<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">int</font><font size="2"> err, errs = 
+0;<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Init.html">MPI_Init</a>(&amp;argc, &amp;argv);<br>
+</font><font size="2" color="#008000">&nbsp;&nbsp;&nbsp; /* To improve reporting of problems 
+about operations, we change the error handler to errors return */<br>
+</font><font size="2">&nbsp;&nbsp;&nbsp;
+<a href="MPI_Comm_set_errhandler.html">MPI_Comm_set_errhandler</a>( MPI_COMM_WORLD, MPI_ERRORS_RETURN );<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#008000">/* perform some tests */<br>
+</font><font size="2">&nbsp;&nbsp;&nbsp;
+err = darray_2d_c_test1();<br>
+</font><font size="2" color="#0000ff">&nbsp;&nbsp;&nbsp; if</font><font size="2"> (err) { 
+fprintf(stderr, "%d errors in 2d darray c test 1.\n", err);fflush(stderr); }<br>
+&nbsp;&nbsp;&nbsp;
+errs += err;<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;
+err = darray_4d_c_test1();<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">if</font><font size="2"> (err) { 
+fprintf(stderr, "%d errors in 4d darray c test 1.\n", err);fflush(stderr); }<br>
+&nbsp;&nbsp;&nbsp;
+errs += err;<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Finalize.html">MPI_Finalize</a>();<br>
+</font><font size="2" color="#0000ff">&nbsp;&nbsp;&nbsp; return</font><font size="2"> errs;<br>
+}<br>
+&nbsp;<br>
+</font><font size="2" color="#008000">
+/* darray_2d_test1()<br>
+&nbsp;*<br>
+&nbsp;* Performs a sequence of tests building darrays with single-element<br>
+&nbsp;* blocks, running through all the various positions that the element might<br>
+&nbsp;* come from.<br>
+&nbsp;*<br>
+&nbsp;* Returns the number of errors encountered.<br>
+&nbsp;*/<br>
+</font><font size="2" color="#0000ff">
+int</font><font size="2"> darray_2d_c_test1(</font><font size="2" color="#0000ff">void</font><font size="2">)<br>
+{<br>
+&nbsp;&nbsp;&nbsp;
+MPI_Datatype darray;<br>
+</font><font size="2" color="#0000ff">&nbsp;&nbsp;&nbsp; int</font><font size="2"> array[9];
+</font><font size="2" color="#008000">/* initialized below */<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">int</font><font size="2"> array_size[2] 
+= {3, 3};<br>
+</font><font size="2" color="#0000ff">&nbsp;&nbsp;&nbsp; int</font><font size="2"> 
+array_distrib[2] = {MPI_DISTRIBUTE_BLOCK, MPI_DISTRIBUTE_BLOCK};<br>
+</font><font size="2" color="#0000ff">&nbsp;&nbsp;&nbsp; int</font><font size="2"> 
+array_dargs[2] = {MPI_DISTRIBUTE_DFLT_DARG, MPI_DISTRIBUTE_DFLT_DARG};<br>
+</font><font size="2" color="#0000ff">&nbsp;&nbsp;&nbsp; int</font><font size="2"> 
+array_psizes[2] = {3, 3};<br>
+</font><font size="2" color="#0000ff">&nbsp;&nbsp;&nbsp; int</font><font size="2"> i, rank, err, 
+errs = 0, sizeoftype;<br>
+&nbsp;<br>
+</font><font size="2" color="#008000">&nbsp;&nbsp;&nbsp; /* pretend we are each rank, one at a 
+time */<br>
+</font><font size="2" color="#0000ff">&nbsp;&nbsp;&nbsp; for</font><font size="2"> (rank=0; rank 
+&lt; 9; rank++) {<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#008000">&nbsp;&nbsp;&nbsp; /* set up buffer */<br>
+</font><font size="2" color="#0000ff">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; for</font><font size="2"> (i=0; i &lt; 9; 
+i++) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+array[i] = i;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}<br>
+</font><font size="2" color="#008000">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* set up type */<br>
+</font><font size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+err = <a href="MPI_Type_create_darray.html">MPI_Type_create_darray</a>(9 </font><font size="2" color="#008000">/* size 
+*/</font><font size="2">, rank, 2 </font><font size="2" color="#008000">/* dims 
+*/</font><font size="2">, array_size, array_distrib, array_dargs, array_psizes, 
+MPI_ORDER_C, MPI_INT, &amp;darray);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">if</font><font size="2"> (err != 
+MPI_SUCCESS) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+errs++;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+fprintf(stderr, "error in <a href="MPI_Type_create_darray.html">MPI_Type_create_darray</a> call; aborting after %d 
+errors\n", errs); fflush(stderr);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">return</font><font size="2"> errs;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="MPI_Type_commit.html">MPI_Type_commit</a>(&amp;darray);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="MPI_Type_size.html">MPI_Type_size</a>(darray, &amp;sizeoftype);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">if</font><font size="2"> (sizeoftype !=
+</font><font size="2" color="#0000ff">sizeof</font><font size="2">(</font><font size="2" color="#0000ff">int</font><font size="2">)) 
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+errs++;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+fprintf(stderr, "size of type = %d; should be %d\n", sizeoftype, (</font><font size="2" color="#0000ff">int</font><font size="2">)
+</font><font size="2" color="#0000ff">sizeof</font><font size="2">(</font><font size="2" color="#0000ff">int</font><font size="2">));fflush(stderr);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">return</font><font size="2"> errs;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+err = pack_and_unpack((</font><font size="2" color="#0000ff">char</font><font size="2"> 
+*) array, 1, darray, 9*</font><font size="2" color="#0000ff">sizeof</font><font size="2">(</font><font size="2" color="#0000ff">int</font><font size="2">));<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">for</font><font size="2"> (i=0; i &lt; 9; 
+i++) {<br>
+</font><font size="2" color="#0000ff">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if</font><font size="2"> ((i == rank) 
+&amp;&amp; (array[i] != rank)) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+errs++;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+fprintf(stderr, "array[%d] = %d; should be %d\n", i, array[i], 
+rank);fflush(stderr);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">else</font><font size="2"> </font>
+<font size="2" color="#0000ff">if</font><font size="2"> ((i != rank) &amp;&amp; (array[i] 
+!= 0)) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+errs++;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+fprintf(stderr, "array[%d] = %d; should be %d\n", i, array[i], 0);fflush(stderr);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="MPI_Type_free.html">MPI_Type_free</a>(&amp;darray);<br>
+&nbsp;&nbsp;&nbsp;
+}<br>
+</font><font size="2" color="#0000ff">&nbsp;&nbsp;&nbsp; return</font><font size="2"> errs;<br>
+}<br>
+&nbsp;<br>
+</font><font size="2" color="#008000">
+/* darray_4d_c_test1()<br>
+&nbsp;*<br>
+&nbsp;* Returns the number of errors encountered.<br>
+&nbsp;*/<br>
+</font><font size="2" color="#0000ff">
+int</font><font size="2"> darray_4d_c_test1(</font><font size="2" color="#0000ff">void</font><font size="2">)<br>
+{<br>
+&nbsp;&nbsp;&nbsp;
+MPI_Datatype darray;<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">int</font><font size="2"> array[72];<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">int</font><font size="2"> array_size[4] 
+= {6, 3, 2, 2};<br>
+</font><font size="2" color="#0000ff">&nbsp;&nbsp;&nbsp; int</font><font size="2"> 
+array_distrib[4] = { MPI_DISTRIBUTE_BLOCK,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+MPI_DISTRIBUTE_BLOCK,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+MPI_DISTRIBUTE_NONE,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+MPI_DISTRIBUTE_NONE };<br>
+</font><font size="2" color="#0000ff">&nbsp;&nbsp;&nbsp; int</font><font size="2"> 
+array_dargs[4] = { MPI_DISTRIBUTE_DFLT_DARG,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+MPI_DISTRIBUTE_DFLT_DARG,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+MPI_DISTRIBUTE_DFLT_DARG,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+MPI_DISTRIBUTE_DFLT_DARG };<br>
+</font><font size="2" color="#0000ff">&nbsp;&nbsp;&nbsp; int</font><font size="2"> 
+array_psizes[4] = {6, 3, 1, 1};<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">int</font><font size="2"> i, rank, err, 
+errs = 0, sizeoftype;<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">for</font><font size="2"> (rank=0; rank 
+&lt; 18; rank++) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#008000">/* set up array */<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">for</font><font size="2"> (i=0; i &lt; 72; 
+i++) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+array[i] = i;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}<br>
+&nbsp;<br>
+</font><font size="2" color="#008000">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* set up type */<br>
+</font><font size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+err = <a href="MPI_Type_create_darray.html">MPI_Type_create_darray</a>(18 </font><font size="2" color="#008000">/* size 
+*/</font><font size="2">, rank, 4 </font><font size="2" color="#008000">/* dims 
+*/</font><font size="2">, array_size, array_distrib, array_dargs, array_psizes, 
+MPI_ORDER_C, MPI_INT, &amp;darray);<br>
+</font><font size="2" color="#0000ff">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if</font><font size="2"> (err != 
+MPI_SUCCESS) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+errs++;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+fprintf(stderr, "error in <a href="MPI_Type_create_darray.html">MPI_Type_create_darray</a> call; aborting after %d 
+errors\n", errs);fflush(stderr);<br>
+</font><font size="2" color="#0000ff">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return</font><font size="2"> errs;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="MPI_Type_commit.html">MPI_Type_commit</a>(&amp;darray);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#008000">/* verify the size of the type */<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</font><font size="2">
+<a href="MPI_Type_size.html">MPI_Type_size</a>(darray, &amp;sizeoftype);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">if</font><font size="2"> (sizeoftype != 
+4*</font><font size="2" color="#0000ff">sizeof</font><font size="2">(</font><font size="2" color="#0000ff">int</font><font size="2">)) 
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+errs++;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+fprintf(stderr, "size of type = %d; should be %d\n", sizeoftype, (</font><font size="2" color="#0000ff">int</font><font size="2">) 
+(4*</font><font size="2" color="#0000ff">sizeof</font><font size="2">(</font><font size="2" color="#0000ff">int</font><font size="2">)));fflush(stderr);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">return</font><font size="2"> errs;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#008000">/* pack and unpack the type, zero'ing 
+out all other values */<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</font><font size="2">
+err = pack_and_unpack((</font><font size="2" color="#0000ff">char</font><font size="2"> 
+*) array, 1, darray, 72*</font><font size="2" color="#0000ff">sizeof</font><font size="2">(</font><font size="2" color="#0000ff">int</font><font size="2">));<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">for</font><font size="2"> (i=0; i &lt; 
+4*rank; i++) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">if</font><font size="2"> (array[i] != 
+0) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+errs++;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+fprintf(stderr, "array[%d] = %d; should be %d\n", i, array[i], 
+0);fflush(stderr);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">for</font><font size="2"> (i=4*rank; i 
+&lt; 4*rank + 4; i++) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">if</font><font size="2"> (array[i] != i) 
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+errs++;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+fprintf(stderr, "array[%d] = %d; should be %d\n", i, array[i], 
+i);fflush(stderr);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}<br>
+</font><font size="2" color="#0000ff">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; for</font><font size="2"> (i=4*rank+4; 
+i &lt; 72; i++) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">if</font><font size="2"> (array[i] != 
+0) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+errs++;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+fprintf(stderr, "array[%d] = %d; should be %d\n", i, array[i], 0);fflush(stderr);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="MPI_Type_free.html">MPI_Type_free</a>(&amp;darray);<br>
+&nbsp;&nbsp;&nbsp;
+}<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">return</font><font size="2"> errs;<br>
+}<br>
+&nbsp;<br>
+</font><font size="2" color="#008000">
+/******************************************************************/<br>
+/* pack_and_unpack()<br>
+&nbsp;*<br>
+&nbsp;* Perform packing and unpacking of a buffer for the purposes of checking<br>
+&nbsp;* to see if we are processing a type correctly. Zeros the buffer between<br>
+&nbsp;* these two operations, so the data described by the type should be in<br>
+&nbsp;* place upon return but all other regions of the buffer should be zero.<br>
+&nbsp;*<br>
+&nbsp;* Parameters:<br>
+&nbsp;* typebuf - pointer to buffer described by datatype and count that<br>
+&nbsp;* will be packed and then unpacked into<br>
+&nbsp;* count, datatype - description of typebuf<br>
+&nbsp;* typebufsz - size of typebuf; used specifically to zero the buffer<br>
+&nbsp;* between the pack and unpack steps<br>
+&nbsp;*<br>
+&nbsp;*/<br>
+</font><font size="2" color="#0000ff">
+static</font><font size="2"> </font><font size="2" color="#0000ff">int</font><font size="2"> 
+pack_and_unpack(</font><font size="2" color="#0000ff">char</font><font size="2"> 
+*typebuf, </font><font size="2" color="#0000ff">int</font><font size="2"> count, 
+MPI_Datatype datatype, </font><font size="2" color="#0000ff">int</font><font size="2"> 
+typebufsz)<br>
+{<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">char</font><font size="2"> *packbuf;<br>
+</font><font size="2" color="#0000ff">&nbsp;&nbsp;&nbsp; int</font><font size="2"> err, errs = 
+0, pack_size, type_size, position;<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;
+err = <a href="MPI_Type_size.html">MPI_Type_size</a>(datatype, &amp;type_size);<br>
+</font><font size="2" color="#0000ff">&nbsp;&nbsp;&nbsp; if</font><font size="2"> (err != 
+MPI_SUCCESS) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+errs++;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+fprintf(stderr, "error in <a href="MPI_Type_size.html">MPI_Type_size</a> call; aborting after %d errors\n", 
+errs);fflush(stderr);<br>
+</font><font size="2" color="#0000ff">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return</font><font size="2"> errs;<br>
+&nbsp;&nbsp;&nbsp;
+}<br>
+&nbsp;&nbsp;&nbsp;
+type_size *= count;<br>
+&nbsp;&nbsp;&nbsp;
+err = <a href="MPI_Pack_size.html">MPI_Pack_size</a>(count, datatype, MPI_COMM_SELF, &amp;pack_size);<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">if</font><font size="2"> (err != 
+MPI_SUCCESS) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+errs++;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+fprintf(stderr, "error in <a href="MPI_Pack_size.html">MPI_Pack_size</a> call; aborting after %d errors\n", 
+errs);fflush(stderr);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">return</font><font size="2"> errs;<br>
+&nbsp;&nbsp;&nbsp;
+}<br>
+&nbsp;&nbsp;&nbsp;
+packbuf = (</font><font size="2" color="#0000ff">char</font><font size="2"> 
+*) malloc(pack_size);<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">if</font><font size="2"> (packbuf == 
+NULL) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+errs++;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+fprintf(stderr, "error in malloc call; aborting after %d errors\n", 
+errs);fflush(stderr);<br>
+</font><font size="2" color="#0000ff">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return</font><font size="2"> errs;<br>
+&nbsp;&nbsp;&nbsp;
+}<br>
+&nbsp;&nbsp;&nbsp;
+position = 0;<br>
+&nbsp;&nbsp;&nbsp;
+err = <a href="MPI_Pack.html">MPI_Pack</a>(typebuf, count, datatype, packbuf, type_size, &amp;position, 
+MPI_COMM_SELF);<br>
+</font><font size="2" color="#0000ff">&nbsp;&nbsp;&nbsp; if</font><font size="2"> (position != 
+type_size) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+errs++;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+fprintf(stderr, "position = %d; should be %d (pack)\n", position, 
+type_size);fflush(stderr);<br>
+&nbsp;&nbsp;&nbsp;
+}<br>
+&nbsp;&nbsp;&nbsp;
+memset(typebuf, 0, typebufsz);<br>
+&nbsp;&nbsp;&nbsp;
+position = 0;<br>
+&nbsp;&nbsp;&nbsp;
+err = <a href="MPI_Unpack.html">MPI_Unpack</a>(packbuf, type_size, &amp;position, typebuf, count, datatype, 
+MPI_COMM_SELF);<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">if</font><font size="2"> (err != 
+MPI_SUCCESS) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+errs++;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+fprintf(stderr, "error in <a href="MPI_Unpack.html">MPI_Unpack</a> call; aborting after %d errors\n", 
+errs);fflush(stderr);<br>
+</font><font size="2" color="#0000ff">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return</font><font size="2"> errs;<br>
+&nbsp;&nbsp;&nbsp;
+}<br>
+&nbsp;&nbsp;&nbsp;
+free(packbuf);<br>
+</font><font size="2" color="#0000ff">&nbsp;&nbsp;&nbsp; if</font><font size="2"> (position != 
+type_size) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+errs++;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+fprintf(stderr, "position = %d; should be %d (unpack)\n", position, 
+type_size);fflush(stderr);<br>
+&nbsp;&nbsp;&nbsp;
+}<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">return</font><font size="2"> errs;<br>
+}<br>
+</font>
+</div>
+                        </div>
+                        <div class="text_box_bottom">
+                        </div>
+                    </div>
+                    <div class="note_text_box">
+                        <div class="note_text_box_top"></div>
+                        <div class="note_text_box_middle">
+ 
+                        </div>
+                        <div class="note_text_box_bottom"></div>
+                    </div>
+                    <div class="ad_under_text_box">
+                        <div class="ad_under_text_box_top"></div>
+                        <div class="ad_under_text_box_middle">
+                            <div class="ad_under_text_box_middle_text">
+                            <script type="text/javascript"><!--
+google_ad_client = "pub-0347391630140593";
+/* Right panel wide skyscraper ad */
+google_ad_slot = "3437924454";
+google_ad_width = 160;
+google_ad_height = 600;
+//-->
+</script>
+<script type="text/javascript" src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script><ins style="display:inline-table;border:none;height:600px;margin:0;padding:0;position:relative;visibility:visible;width:160px;background-color:transparent"><ins id="aswift_0_anchor" style="display:block;border:none;height:600px;margin:0;padding:0;position:relative;visibility:visible;width:160px;background-color:transparent"><iframe width="160" height="600" frameborder="0" marginwidth="0" marginheight="0" vspace="0" hspace="0" allowtransparency="true" scrolling="no" onload="var i=this.id,s=window.google_iframe_oncopy,H=s&amp;&amp;s.handlers,h=H&amp;&amp;H[i],w=this.contentWindow,d;try{d=w.document}catch(e){}if(h&amp;&amp;d&amp;&amp;(!d.body||!d.body.firstChild)){if(h.call){setTimeout(h,0)}else if(h.match){try{h=s.upd(h,i)}catch(e){}w.location.replace(h)}}" id="aswift_0" name="aswift_0" style="left:0;position:absolute;top:0;"></iframe></ins></ins>
+                            </div>
+                        </div>
+                        <div class="ad_under_text_box_bottom"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="tab_box_bottom">
+            </div>
+        </div>
+        <div class="copyright">
+ 
+        </div>
+	</div>
+
+
+</body></html>

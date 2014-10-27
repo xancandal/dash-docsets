@@ -1,0 +1,227 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"><head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>MPI_Win_free_keyval(int *win_keyval) function</title>
+<link rel="stylesheet" href="../style.css" type="text/css" charset="utf-8">
+
+</head>
+
+<body>
+	<div class="background">
+    	<div class="tab_box">
+ 
+            <div class="tab_box_middle">
+            	<div class="main_box">
+                	<div class="text_box">
+                    	<div class="text_box_top">
+                        </div>
+                        <div class="text_box_middle">
+                        	<div class="text_box_middle_text">
+ 
+<a name="MPI_Win_free_keyval"><h1><font size="5">MPI_Win_free_keyval</font></h1></a>
+Frees an attribute key for MPI RMA windows 
+<font size="3">
+<pre class="syntax" xml:space="preserve" style="background-color: #DDDDDD"><b>int MPI_Win_free_keyval(</b>
+  <b>int</b> *<i>win_keyval</i>
+<b>);</b>
+</pre></font>
+<h4>Parameters</h4>
+<dl><dt><i>win_keyval </i></dt> <dd> [in] key value (integer) 
+</dd></dl>
+<p>
+</p><h4>Remarks</h4>
+		<p>Frees an attribute key for MPI RMA windows.</p>
+		<h4>Thread and Interrupt Safety</h4>
+<p>
+This routine is thread-safe.  This means that this routine may be
+safely used by multiple threads without the need for any user-provided
+thread locks.  However, the routine is not interrupt safe.  Typically,
+this is due to the use of memory allocation routines such as <tt><font size="2">malloc
+</font></tt>or other non-MPICH runtime routines that are themselves not interrupt-safe.
+</p><p>
+</p><h4>Notes for Fortran</h4>
+All MPI routines in Fortran (except for <tt><font size="2">MPI_WTIME</font></tt> and <tt><font size="2">MPI_WTICK</font></tt>) have
+an additional argument <tt><font size="2">ierr</font></tt> at the end of the argument list.  <tt><font size="2">ierr
+</font></tt>is an integer and has the same meaning as the return value of the routine
+in C.  In Fortran, MPI routines are subroutines, and are invoked with the
+<tt><font size="2">call</font></tt> statement.
+<p>
+All MPI objects (e.g., <tt><font size="2">MPI_Datatype</font></tt>, <tt><font size="2">MPI_Comm</font></tt>) are of type <tt><font size="2">INTEGER
+</font></tt>in Fortran.
+</p><p>
+</p><h4>Errors</h4>
+<p>
+All MPI routines (except <tt><font size="2"><a href="MPI_Wtime.html">MPI_Wtime</a></font></tt> and <tt><font size="2"><a href="MPI_Wtick.html">MPI_Wtick</a></font></tt>) return an error value;
+C routines as the value of the function and Fortran routines in the last
+argument.  Before the value is returned, the current MPI error handler is
+called.  By default, this error handler aborts the MPI job.  The error handler
+may be changed with <tt><font size="2"><a href="MPI_Comm_set_errhandler.html">MPI_Comm_set_errhandler</a></font></tt> (for communicators),
+<tt><font size="2"><a href="MPI_File_set_errhandler.html">MPI_File_set_errhandler</a></font></tt> (for files), and <tt><font size="2"><a href="MPI_Win_set_errhandler.html">MPI_Win_set_errhandler</a></font></tt> (for
+RMA windows).  The MPI-1 routine <tt><font size="2"><a href="MPI_Errhandler_set.html">MPI_Errhandler_set</a></font></tt> may be used but
+its use is deprecated.  The predefined error handler
+<tt><font size="2">MPI_ERRORS_RETURN</font></tt> may be used to cause error values to be returned.
+Note that MPI does <em>not</em> guarentee that an MPI program can continue past
+an error; however, MPI implementations will attempt to continue whenever
+possible.
+</p><p>
+</p><dl><dt><i>MPI_SUCCESS </i></dt> <dd> No error; MPI routine completed successfully.
+</dd></dl>
+<dl><dt><i>MPI_ERR_WIN </i></dt> <dd> Invalid MPI window object
+</dd></dl>
+<dl><dt><i>MPI_ERR_OTHER </i></dt> <dd> Other error; use <tt><font size="2"><a href="MPI_Error_string.html">MPI_Error_string</a></font></tt> to get more information
+about this error code. 
+</dd></dl>
+<dl><dt><i>MPI_ERR_KEYVAL </i></dt> <dd> Invalid keyval
+</dd></dl>
+
+<h4>Example Code</h4>
+<p>The following sample code illustrates <a href="MPI_Win_free_keyval.html">MPI_Win_free_keyval</a>.
+</p>
+<font size="2" color="#0000ff">#include</font>&nbsp;"mpi.h"<br>
+<font size="2" color="#0000ff">#include</font>&nbsp;&lt;stdio.h&gt;<br>
+<br>
+<font size="2" color="#008000">/*&nbsp;Test&nbsp;creating&nbsp;and&nbsp;inserting&nbsp;attributes&nbsp;in&nbsp;different&nbsp;orders&nbsp;*/<br>
+<br>
+</font><font size="2" color="#0000ff">int</font>&nbsp;checkAttrs(&nbsp;MPI_Win&nbsp;win,&nbsp;<font size="2" color="#0000ff">int</font>&nbsp;n,&nbsp;<font size="2" color="#0000ff">int</font>&nbsp;key[],&nbsp;<font size="2" color="#0000ff">int</font>&nbsp;attrval[]&nbsp;);<br>
+<font size="2" color="#0000ff">int</font>&nbsp;checkNoAttrs(&nbsp;MPI_Win&nbsp;win,&nbsp;<font size="2" color="#0000ff">int</font>&nbsp;n,&nbsp;<font size="2" color="#0000ff">int</font>&nbsp;key[]&nbsp;);<br>
+<br>
+<font size="2" color="#0000ff">int</font>&nbsp;main(&nbsp;<font size="2" color="#0000ff">int</font>&nbsp;argc,&nbsp;<font size="2" color="#0000ff">char</font>&nbsp;*argv[]&nbsp;)<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font size="2" color="#0000ff">int</font>&nbsp;errs&nbsp;=&nbsp;0;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font size="2" color="#0000ff">int</font>&nbsp;key[3],&nbsp;attrval[3];<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font size="2" color="#0000ff">int</font>&nbsp;i;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font size="2" color="#0000ff">int</font>&nbsp;buf[1];<br>
+&nbsp;&nbsp;&nbsp;&nbsp;MPI_Comm&nbsp;comm;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;MPI_Win&nbsp;&nbsp;win;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="MPI_Init.html">MPI_Init</a>(&nbsp;&amp;argc,&nbsp;&amp;argv&nbsp;);<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;comm&nbsp;=&nbsp;MPI_COMM_WORLD;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="MPI_Win_create.html">MPI_Win_create</a>(&nbsp;buf,&nbsp;<font size="2" color="#0000ff">sizeof</font>(<font size="2" color="#0000ff">int</font>),&nbsp;<font size="2" color="#0000ff">sizeof</font>(<font size="2" color="#0000ff">int</font>),&nbsp;MPI_INFO_NULL,&nbsp;comm,&nbsp;&amp;win&nbsp;);<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font size="2" color="#008000">/*&nbsp;Create&nbsp;key&nbsp;values&nbsp;*/<br>
+</font>&nbsp;&nbsp;&nbsp;&nbsp;<font size="2" color="#0000ff">for</font>&nbsp;(i=0;&nbsp;i&lt;3;&nbsp;i++)&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="MPI_Win_create_keyval.html">MPI_Win_create_keyval</a>(&nbsp;MPI_NULL_COPY_FN,&nbsp;MPI_NULL_DELETE_FN,&nbsp;&amp;key[i],&nbsp;(<font size="2" color="#0000ff">void</font>&nbsp;*)0&nbsp;);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;attrval[i]&nbsp;=&nbsp;1024&nbsp;*&nbsp;i;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font size="2" color="#008000">/*&nbsp;Insert&nbsp;attribute&nbsp;in&nbsp;several&nbsp;orders.&nbsp;&nbsp;Test&nbsp;after&nbsp;put&nbsp;with&nbsp;get,&nbsp;then&nbsp;delete,&nbsp;then&nbsp;confirm&nbsp;delete&nbsp;with&nbsp;get.&nbsp;*/<br>
+<br>
+</font>&nbsp;&nbsp;&nbsp;&nbsp;<a href="MPI_Win_set_attr.html">MPI_Win_set_attr</a>(&nbsp;win,&nbsp;key[2],&nbsp;&amp;attrval[2]&nbsp;);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="MPI_Win_set_attr.html">MPI_Win_set_attr</a>(&nbsp;win,&nbsp;key[1],&nbsp;&amp;attrval[1]&nbsp;);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="MPI_Win_set_attr.html">MPI_Win_set_attr</a>(&nbsp;win,&nbsp;key[0],&nbsp;&amp;attrval[0]&nbsp;);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;errs&nbsp;+=&nbsp;checkAttrs(&nbsp;win,&nbsp;3,&nbsp;key,&nbsp;attrval&nbsp;);<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="MPI_Win_delete_attr.html">MPI_Win_delete_attr</a>(&nbsp;win,&nbsp;key[0]&nbsp;);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="MPI_Win_delete_attr.html">MPI_Win_delete_attr</a>(&nbsp;win,&nbsp;key[1]&nbsp;);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="MPI_Win_delete_attr.html">MPI_Win_delete_attr</a>(&nbsp;win,&nbsp;key[2]&nbsp;);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;errs&nbsp;+=&nbsp;checkNoAttrs(&nbsp;win,&nbsp;3,&nbsp;key&nbsp;);<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="MPI_Win_set_attr.html">MPI_Win_set_attr</a>(&nbsp;win,&nbsp;key[1],&nbsp;&amp;attrval[1]&nbsp;);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="MPI_Win_set_attr.html">MPI_Win_set_attr</a>(&nbsp;win,&nbsp;key[2],&nbsp;&amp;attrval[2]&nbsp;);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="MPI_Win_set_attr.html">MPI_Win_set_attr</a>(&nbsp;win,&nbsp;key[0],&nbsp;&amp;attrval[0]&nbsp;);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;errs&nbsp;+=&nbsp;checkAttrs(&nbsp;win,&nbsp;3,&nbsp;key,&nbsp;attrval&nbsp;);<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="MPI_Win_delete_attr.html">MPI_Win_delete_attr</a>(&nbsp;win,&nbsp;key[2]&nbsp;);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="MPI_Win_delete_attr.html">MPI_Win_delete_attr</a>(&nbsp;win,&nbsp;key[1]&nbsp;);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="MPI_Win_delete_attr.html">MPI_Win_delete_attr</a>(&nbsp;win,&nbsp;key[0]&nbsp;);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;errs&nbsp;+=&nbsp;checkNoAttrs(&nbsp;win,&nbsp;3,&nbsp;key&nbsp;);<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="MPI_Win_set_attr.html">MPI_Win_set_attr</a>(&nbsp;win,&nbsp;key[0],&nbsp;&amp;attrval[0]&nbsp;);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="MPI_Win_set_attr.html">MPI_Win_set_attr</a>(&nbsp;win,&nbsp;key[1],&nbsp;&amp;attrval[1]&nbsp;);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="MPI_Win_set_attr.html">MPI_Win_set_attr</a>(&nbsp;win,&nbsp;key[2],&nbsp;&amp;attrval[2]&nbsp;);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;errs&nbsp;+=&nbsp;checkAttrs(&nbsp;win,&nbsp;3,&nbsp;key,&nbsp;attrval&nbsp;);<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="MPI_Win_delete_attr.html">MPI_Win_delete_attr</a>(&nbsp;win,&nbsp;key[1]&nbsp;);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="MPI_Win_delete_attr.html">MPI_Win_delete_attr</a>(&nbsp;win,&nbsp;key[2]&nbsp;);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="MPI_Win_delete_attr.html">MPI_Win_delete_attr</a>(&nbsp;win,&nbsp;key[0]&nbsp;);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;errs&nbsp;+=&nbsp;checkNoAttrs(&nbsp;win,&nbsp;3,&nbsp;key&nbsp;);<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font size="2" color="#0000ff">for</font>&nbsp;(i=0;&nbsp;i&lt;3;&nbsp;i++)&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="MPI_Win_free_keyval.html">MPI_Win_free_keyval</a>(&nbsp;&amp;key[i]&nbsp;);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="MPI_Win_free.html">MPI_Win_free</a>(&nbsp;&amp;win&nbsp;);<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="MPI_Finalize.html">MPI_Finalize</a>();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font size="2" color="#0000ff">return</font>&nbsp;errs;<br>
+}<br>
+<br>
+<font size="2" color="#0000ff">int</font>&nbsp;checkAttrs(&nbsp;MPI_Win&nbsp;win,&nbsp;<font size="2" color="#0000ff">int</font>&nbsp;n,&nbsp;<font size="2" color="#0000ff">int</font>&nbsp;key[],&nbsp;<font size="2" color="#0000ff">int</font>&nbsp;attrval[]&nbsp;)<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font size="2" color="#0000ff">int</font>&nbsp;errs&nbsp;=&nbsp;0;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font size="2" color="#0000ff">int</font>&nbsp;i,&nbsp;flag,&nbsp;*val_p;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font size="2" color="#0000ff">for</font>&nbsp;(i=0;&nbsp;i&lt;n;&nbsp;i++)&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="MPI_Win_get_attr.html">MPI_Win_get_attr</a>(&nbsp;win,&nbsp;key[i],&nbsp;&amp;val_p,&nbsp;&amp;flag&nbsp;);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font size="2" color="#0000ff">if</font>&nbsp;(!flag)&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;errs++;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fprintf(&nbsp;stderr,&nbsp;"Attribute&nbsp;for&nbsp;key&nbsp;%d&nbsp;not&nbsp;set\n",&nbsp;i&nbsp;);fflush(stderr);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font size="2" color="#0000ff">else</font>&nbsp;<font size="2" color="#0000ff">if</font>&nbsp;(val_p&nbsp;!=&nbsp;&amp;attrval[i])&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;errs++;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fprintf(&nbsp;stderr,&nbsp;"Atribute&nbsp;value&nbsp;for&nbsp;key&nbsp;%d&nbsp;not&nbsp;correct\n",&nbsp;i&nbsp;);fflush(stderr);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font size="2" color="#0000ff">return</font>&nbsp;errs;<br>
+}<br>
+<br>
+<font size="2" color="#0000ff">int</font>&nbsp;checkNoAttrs(&nbsp;MPI_Win&nbsp;win,&nbsp;<font size="2" color="#0000ff">int</font>&nbsp;n,&nbsp;<font size="2" color="#0000ff">int</font>&nbsp;key[]&nbsp;)<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font size="2" color="#0000ff">int</font>&nbsp;errs&nbsp;=&nbsp;0;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font size="2" color="#0000ff">int</font>&nbsp;i,&nbsp;flag,&nbsp;*val_p;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font size="2" color="#0000ff">for</font>&nbsp;(i=0;&nbsp;i&lt;n;&nbsp;i++)&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="MPI_Win_get_attr.html">MPI_Win_get_attr</a>(&nbsp;win,&nbsp;key[i],&nbsp;&amp;val_p,&nbsp;&amp;flag&nbsp;);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font size="2" color="#0000ff">if</font>&nbsp;(flag)&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;errs++;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fprintf(&nbsp;stderr,&nbsp;"Attribute&nbsp;for&nbsp;key&nbsp;%d&nbsp;set&nbsp;but&nbsp;should&nbsp;be&nbsp;deleted\n",&nbsp;i&nbsp;);fflush(stderr);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font size="2" color="#0000ff">return</font>&nbsp;errs;<br>
+}<br>
+
+</div>
+                        </div>
+                        <div class="text_box_bottom">
+                        </div>
+                    </div>
+                    <div class="note_text_box">
+                        <div class="note_text_box_top"></div>
+                        <div class="note_text_box_middle">
+ 
+                        </div>
+                        <div class="note_text_box_bottom"></div>
+                    </div>
+                    <div class="ad_under_text_box">
+                        <div class="ad_under_text_box_top"></div>
+                        <div class="ad_under_text_box_middle">
+                            <div class="ad_under_text_box_middle_text">
+                            <script type="text/javascript"><!--
+google_ad_client = "pub-0347391630140593";
+/* Right panel wide skyscraper ad */
+google_ad_slot = "3437924454";
+google_ad_width = 160;
+google_ad_height = 600;
+//-->
+</script>
+<script type="text/javascript" src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script><ins style="display:inline-table;border:none;height:600px;margin:0;padding:0;position:relative;visibility:visible;width:160px;background-color:transparent"><ins id="aswift_0_anchor" style="display:block;border:none;height:600px;margin:0;padding:0;position:relative;visibility:visible;width:160px;background-color:transparent"><iframe width="160" height="600" frameborder="0" marginwidth="0" marginheight="0" vspace="0" hspace="0" allowtransparency="true" scrolling="no" onload="var i=this.id,s=window.google_iframe_oncopy,H=s&amp;&amp;s.handlers,h=H&amp;&amp;H[i],w=this.contentWindow,d;try{d=w.document}catch(e){}if(h&amp;&amp;d&amp;&amp;(!d.body||!d.body.firstChild)){if(h.call){setTimeout(h,0)}else if(h.match){try{h=s.upd(h,i)}catch(e){}w.location.replace(h)}}" id="aswift_0" name="aswift_0" style="left:0;position:absolute;top:0;"></iframe></ins></ins>
+                            </div>
+                        </div>
+                        <div class="ad_under_text_box_bottom"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="tab_box_bottom">
+            </div>
+        </div>
+        <div class="copyright">
+ 
+        </div>
+	</div>
+
+
+</body></html>

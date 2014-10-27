@@ -1,0 +1,105 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"><head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>MPI_Abort(MPI_Comm comm, int errorcode) function</title>
+<link rel="stylesheet" href="../style.css" type="text/css" charset="utf-8">
+</head>
+
+<body>
+	<div class="background">
+    	<div class="tab_box">
+            <div class="tab_box_middle">
+            	<div class="main_box">
+                	<div class="text_box">
+                    	<div class="text_box_top">
+                        </div>
+                        <div class="text_box_middle">
+                        	<div class="text_box_middle_text">
+
+            <a name="MPI_Abort"><h1><font size="5">MPI_Abort</font></h1></a>
+            Terminates MPI execution environment 
+            <font size="3">
+<pre class="syntax" xml:space="preserve" style="background-color: #DDDDDD"><b>int MPI_Abort(</b>
+  <b>MPI_Comm</b> <i>comm</i><b>,</b>
+  <b>int</b> <i>errorcode</i>
+<b>);</b>
+</pre></font>
+            <h4>Parameters</h4>
+            <dl>
+                <dt><i>comm </i></dt><dd>[in] communicator of tasks to abort 
+
+                </dd><dt><i>errorcode </i></dt><dd>[in] error code to return to invoking environment 
+            </dd></dl>
+<p>
+</p><h4>Remarks</h4>
+Terminates all MPI processes associated with the communicator <tt><font size="2">comm</font></tt>; 
+currently this function terminates <em>all</em> processes.&nbsp; This 
+function does not return so any return value is an error.&nbsp; The process 
+calling <tt><font size="2"><a href="MPI_Abort.html">MPI_Abort</a></font></tt> must be a member of the communicator passed in.&nbsp; If the 
+communicator is invalid or the process is not a member of the communicator, 
+<tt><font size="2"><a href="MPI_Abort.html">MPI_Abort</a></font></tt> is called on <tt><font size="2">MPI_COMM_WORLD</font></tt>.<p></p><h4>
+		Standard</h4>
+		<p>This routine makes a "best attempt" to abort all tasks in the group 
+		of comm. This function does not require that the invoking environment 
+		take any action with the error code. However, a Unix or POSIX 
+		environment should handle this as a <tt>return errorcode</tt> from the 
+		main program or an <tt>abort(errorcode)</tt>. </p>
+		<p>MPI implementations are required to define the behavior of MPI_ABORT 
+		at least for a <tt>comm</tt> of MPI_COMM_WORLD. MPI implementations may 
+		ignore the <tt>comm</tt> argument and act as if the <tt>comm</tt> was 
+		MPI_COMM_WORLD.</p>
+		<p>
+</p><h4>Thread and Interrupt Safety</h4>
+<p>
+The user is responsible for ensuring that multiple threads do not try to
+update the same MPI object from different threads.  This routine should
+not be used from within a signal handler.
+</p><p>
+The MPI standard defined a thread-safe interface but this does not
+mean that all routines may be called without any thread locks.  For
+example, two threads must not attempt to change the contents of the
+same <tt><font size="2">MPI_Info</font></tt> object concurrently.  The user is responsible in this
+case for using some mechanism, such as thread locks, to ensure that
+only one thread at a time makes use of this routine.
+Because the <tt><font size="2"><a href="MPI_Abort.html">MPI_Abort</a></font></tt> routine is intended to ensure that an MPI
+process exits (and possibly an entire job), it cannot wait for a thread to
+release a lock or other mechanism for atomic access.
+</p><p>
+</p><h4>Notes for Fortran</h4>
+All MPI routines in Fortran (except for <tt><font size="2">MPI_WTIME</font></tt> and <tt><font size="2">MPI_WTICK</font></tt>) have
+an additional argument <tt><font size="2">ierr</font></tt> at the end of the argument list.  <tt><font size="2">ierr
+</font></tt>is an integer and has the same meaning as the return value of the routine
+in C.  In Fortran, MPI routines are subroutines, and are invoked with the
+<tt><font size="2">call</font></tt> statement.
+<p></p><p>
+All MPI objects (e.g., <tt><font size="2">MPI_Datatype</font></tt>, <tt><font size="2">MPI_Comm</font></tt>) are of type <tt><font size="2">INTEGER
+</font></tt>in Fortran.
+</p>
+<h4>Errors</h4>
+<p>
+This function does not return so any return value is erroneous, even <i>
+MPI_SUCCESS</i>.</p>
+<h4>Example Code</h4>
+<p>The following sample code illustrates <a href="MPI_Abort.html">MPI_Abort</a>.
+</p>
+<font size="2" color="#0000ff">
+#include</font><font size="2"> &lt;mpi.h&gt;<br>
+</font><font size="2" color="#0000ff">
+int</font><font size="2"> main(</font><font size="2" color="#0000ff">int</font><font size="2"> 
+argc, </font><font size="2" color="#0000ff">char</font><font size="2"> *argv[])<br>
+{<br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Init.html">MPI_Init</a>(NULL, NULL);<br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Abort.html">MPI_Abort</a>(MPI_COMM_WORLD, 911);<br>
+</font><font size="2" color="#008000">&nbsp;&nbsp;&nbsp; /* No further code will execute */<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2">
+<a href="MPI_Finalize.html">MPI_Finalize</a>();<br>
+</font><font size="2" color="#0000ff">&nbsp;&nbsp;&nbsp; return</font><font size="2"> 0;<br>
+}<br>
+</font>
+</div>
+
+</body></html>

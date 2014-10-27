@@ -1,0 +1,324 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"><head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>MPI_Alltoallv(void *sendbuf, 
+  int *sendcnts, 
+  int *sdispls, 
+  MPI_Datatype sendtype, 
+  void *recvbuf, 
+  int *recvcnts, 
+  int *rdispls, 
+  MPI_Datatype recvtype, 
+  MPI_Comm comm
+) function</title>
+<link rel="stylesheet" href="../style.css" type="text/css" charset="utf-8">
+
+</head>
+
+<body>
+	<div class="background">
+    	<div class="tab_box">
+
+            <div class="tab_box_middle">
+            	<div class="main_box">
+                	<div class="text_box">
+                    	<div class="text_box_top">
+                        </div>
+                        <div class="text_box_middle">
+                        	<div class="text_box_middle_text">
+
+<a name="MPI_Alltoallv"><h1><font size="5">MPI_Alltoallv</font></h1></a>
+Sends data from all to all processes; each process may  send a different amount of data and provide displacements for the input and output data. 
+<font size="3">
+<pre class="syntax" xml:space="preserve" style="background-color: #DDDDDD"><b>int MPI_Alltoallv(</b>
+  <b>void</b> *<i>sendbuf</i><b>,</b>
+  <b>int</b> *<i>sendcnts</i><b>,</b>
+  <b>int</b> *<i>sdispls</i><b>,</b>
+  <b>MPI_Datatype</b> <i>sendtype</i><b>,</b>
+  <b>void</b> *<i>recvbuf</i><b>,</b>
+  <b>int</b> *<i>recvcnts</i><b>,</b>
+  <b>int</b> *<i>rdispls</i><b>,</b>
+  <b>MPI_Datatype</b> <i>recvtype</i><b>,</b>
+  <b>MPI_Comm</b> <i>comm</i>
+<b>);</b>
+</pre></font>
+<h4>Parameters</h4>
+<dl>
+<dt><i>sendbuf </i></dt><dd>[in] starting address of send buffer (choice) 
+
+</dd><dt><i>sendcounts </i></dt><dd>[in] integer array equal to the group size 
+specifying the number of elements to send to each processor 
+
+</dd><dt><i>sdispls </i></dt><dd>[in] integer array (of length group size). Entry 
+<tt><font size="2">j</font></tt>  specifies the displacement (relative to sendbuf  from
+which to take the outgoing data destined for process  <tt><font size="2">j</font></tt>  
+
+</dd><dt><i>sendtype </i></dt><dd>[in] data type of send buffer elements (handle) 
+
+<dl>
+<dt><i>recvbuf </i></dt>
+<dd>[out] address of receive buffer (choice) 
+</dd></dl>
+
+</dd><dt><i>recvcounts </i></dt><dd>[in] integer array equal to the group size 
+specifying the maximum number of elements that can be received from
+each processor 
+
+</dd><dt><i>rdispls </i></dt><dd>[in] integer array (of length group size). Entry 
+<tt><font size="2">i</font></tt>  specifies the displacement (relative to recvbuf  at
+which to place the incoming data from process  <tt><font size="2">i</font></tt>  
+
+</dd><dt><i>recvtype </i></dt><dd>[in] data type of receive buffer elements (handle) 
+
+</dd><dt><i>comm </i></dt><dd>[in] communicator (handle) 
+</dd></dl>
+<h4>Remarks</h4>
+		<p>MPI_ALLTOALLV adds flexibility to MPI_ALLTOALL in that the location 
+		of data for the send is specified by sdispls and the location of the 
+		placement of the data on the receive side is specified by rdispls. </p>
+		<p>The <tt>j</tt>th block sent from process <tt>i</tt> is received by 
+		process <tt>j</tt> and is placed in the <tt>i</tt>th block of recvbuf. 
+		These blocks need not all have the same size. </p>
+		<p>The type signature associated with sendcount[j], sendtype at process
+		<tt>i</tt> must be equal to the type signature associated with 
+		recvcount[i], recvtype at process <tt>j</tt>. This implies that the 
+		amount of data sent must be equal to the amount of data received, 
+		pairwise between every pair of processes. Distinct type maps between 
+		sender and receiver are still allowed. </p>
+		<p>The outcome is as if each process sent a message to every other 
+		process with, </p>
+		<p><img src="img121.gif"> </p>
+		<p>and received a message from every other process with a call to </p>
+		<p><img src="img122.gif"> </p>
+		<p>All arguments on all processes are significant. The argument comm 
+		must have identical values on all processes. </p>
+		<p>No "in place" option is supported. </p>
+		<p>If comm is an intercommunicator, then the outcome is as if each 
+		process in group A sends a message to each process in group B, and vice 
+		versa. The <i>j</i>-th send buffer of process <i>i</i> in group A should 
+		be consistent with the <i>i</i>-th receive buffer of process <i>j</i> in 
+		group B, and vice versa.</p>
+		<p><em>Rationale.</em> </p>
+		<p>The definitions of MPI_ALLTOALL and MPI_ALLTOALLV give as much 
+		flexibility as one would achieve by specifying <tt>n</tt> independent, 
+		point-to-point communications, with two exceptions: all messages use the 
+		same datatype, and messages are scattered from (or gathered to) 
+		sequential storage.</p>
+		<h4>Thread and Interrupt Safety</h4>
+<p>
+This routine is thread-safe.  This means that this routine may be
+safely used by multiple threads without the need for any user-provided
+thread locks.  However, the routine is not interrupt safe.  Typically,
+this is due to the use of memory allocation routines such as <tt><font size="2">malloc
+</font></tt>or other non-MPICH runtime routines that are themselves not interrupt-safe.
+</p><p>
+</p><h4>Notes for Fortran</h4>
+All MPI routines in Fortran (except for <tt><font size="2">MPI_WTIME</font></tt> and <tt><font size="2">MPI_WTICK</font></tt>) have
+an additional argument <tt><font size="2">ierr</font></tt> at the end of the argument list.  <tt><font size="2">ierr
+</font></tt>is an integer and has the same meaning as the return value of the routine
+in C.  In Fortran, MPI routines are subroutines, and are invoked with the
+<tt><font size="2">call</font></tt> statement.
+<p>
+All MPI objects (e.g., <tt><font size="2">MPI_Datatype</font></tt>, <tt><font size="2">MPI_Comm</font></tt>) are of type <tt><font size="2">INTEGER
+</font></tt>in Fortran.
+</p><p>
+</p><h4>Errors</h4>
+<p>
+All MPI routines (except <tt><font size="2"><a href="MPI_Wtime.html">MPI_Wtime</a></font></tt> and <tt><font size="2"><a href="MPI_Wtick.html">MPI_Wtick</a></font></tt>) return an error value;
+C routines as the value of the function and Fortran routines in the last
+argument.  Before the value is returned, the current MPI error handler is
+called.  By default, this error handler aborts the MPI job.  The error handler
+may be changed with <tt><font size="2"><a href="MPI_Comm_set_errhandler.html">MPI_Comm_set_errhandler</a></font></tt> (for communicators),
+<tt><font size="2"><a href="MPI_File_set_errhandler.html">MPI_File_set_errhandler</a></font></tt> (for files), and <tt><font size="2"><a href="MPI_Win_set_errhandler.html">MPI_Win_set_errhandler</a></font></tt> (for
+RMA windows).  The MPI-1 routine <tt><font size="2"><a href="MPI_Errhandler_set.html">MPI_Errhandler_set</a></font></tt> may be used but
+its use is deprecated.  The predefined error handler
+<tt><font size="2">MPI_ERRORS_RETURN</font></tt> may be used to cause error values to be returned.
+Note that MPI does <em>not</em> guarentee that an MPI program can continue past
+an error; however, MPI implementations will attempt to continue whenever
+possible.
+</p><p>
+</p><dl><dt><i>MPI_ERR_COMM </i></dt> <dd> Invalid communicator.  A common error is to use a null
+communicator in a call (not even allowed in <tt><font size="2"><a href="MPI_Comm_rank.html">MPI_Comm_rank</a></font></tt>).
+</dd></dl>
+<dl><dt><i>MPI_ERR_COUNT </i></dt> <dd> Invalid count argument.  Count arguments must be 
+non-negative; a count of zero is often valid.
+</dd></dl>
+<dl><dt><i>MPI_ERR_TYPE </i></dt> <dd> Invalid datatype argument.  May be an uncommitted 
+MPI_Datatype (see <tt><font size="2"><a href="MPI_Type_commit.html">MPI_Type_commit</a></font></tt>).
+</dd></dl>
+<dl><dt><i>MPI_ERR_BUFFER </i></dt> <dd> Invalid buffer pointer.  Usually a null buffer where
+one is not valid.
+</dd></dl>
+
+<h4>Example Code</h4>
+<p>The following sample code illustrates <a href="MPI_Alltoallv.html">MPI_Alltoallv</a>.
+</p><p>
+<br>
+<font size="2" color="#0000ff">
+#include</font><font size="2"> "mpi.h"<br>
+</font><font size="2" color="#0000ff">
+#include</font><font size="2"> &lt;stdlib.h&gt;<br>
+</font><font size="2" color="#0000ff">
+#include</font><font size="2"> &lt;stdio.h&gt;<br>
+</font><font size="2" color="#008000">
+/*<br>
+This program tests <a href="MPI_Alltoallv.html">MPI_Alltoallv</a> by having processor i send different<br>
+amounts of data to each processor.<br>
+The first test sends i items to processor i from all processors.<br>
+*/<br>
+</font><font size="2" color="#0000ff">
+int</font><font size="2"> main( </font><font size="2" color="#0000ff">int</font><font size="2"> 
+argc, </font><font size="2" color="#0000ff">char</font><font size="2"> **argv )<br>
+{<br>
+&nbsp;&nbsp;&nbsp;
+MPI_Comm comm;<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">int</font><font size="2"> *sbuf, *rbuf;<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">int</font><font size="2"> rank, size;<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">int</font><font size="2"> *sendcounts, 
+*recvcounts, *rdispls, *sdispls;<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">int</font><font size="2"> i, j, *p, 
+err;<br>
+<br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Init.html">MPI_Init</a>( &amp;argc, &amp;argv );<br>
+&nbsp;&nbsp;&nbsp;
+err = 0;<br>
+&nbsp;&nbsp;&nbsp;
+comm = MPI_COMM_WORLD;<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#008000">/* Create the buffer */<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2">
+<a href="MPI_Comm_size.html">MPI_Comm_size</a>( comm, &amp;size );<br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Comm_rank.html">MPI_Comm_rank</a>( comm, &amp;rank );<br>
+&nbsp;&nbsp;&nbsp;
+sbuf = (</font><font size="2" color="#0000ff">int</font><font size="2"> *)malloc( 
+size * size * </font><font size="2" color="#0000ff">sizeof</font><font size="2">(</font><font size="2" color="#0000ff">int</font><font size="2">) 
+);<br>
+&nbsp;&nbsp;&nbsp;
+rbuf = (</font><font size="2" color="#0000ff">int</font><font size="2"> *)malloc( 
+size * size * </font><font size="2" color="#0000ff">sizeof</font><font size="2">(</font><font size="2" color="#0000ff">int</font><font size="2">) 
+);<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">if</font><font size="2"> (!sbuf || !rbuf) 
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+fprintf( stderr, "Could not allocated buffers!\n" );<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="MPI_Abort.html">MPI_Abort</a>( comm, 1 );<br>
+&nbsp;&nbsp;&nbsp;
+}<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#008000">/* Load up the buffers */<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">for</font><font size="2"> (i=0; i&lt;size*size; 
+i++) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+sbuf[i] = i + 100*rank;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+rbuf[i] = -i;<br>
+&nbsp;&nbsp;&nbsp;
+}<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#008000">/* Create and load the arguments to 
+alltoallv */<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2">
+sendcounts = (</font><font size="2" color="#0000ff">int</font><font size="2"> 
+*)malloc( size * </font><font size="2" color="#0000ff">sizeof</font><font size="2">(</font><font size="2" color="#0000ff">int</font><font size="2">) 
+);<br>
+&nbsp;&nbsp;&nbsp;
+recvcounts = (</font><font size="2" color="#0000ff">int</font><font size="2"> 
+*)malloc( size * </font><font size="2" color="#0000ff">sizeof</font><font size="2">(</font><font size="2" color="#0000ff">int</font><font size="2">) 
+);<br>
+&nbsp;&nbsp;&nbsp;
+rdispls = (</font><font size="2" color="#0000ff">int</font><font size="2"> *)malloc( 
+size * </font><font size="2" color="#0000ff">sizeof</font><font size="2">(</font><font size="2" color="#0000ff">int</font><font size="2">) 
+);<br>
+&nbsp;&nbsp;&nbsp;
+sdispls = (</font><font size="2" color="#0000ff">int</font><font size="2"> *)malloc( 
+size * </font><font size="2" color="#0000ff">sizeof</font><font size="2">(</font><font size="2" color="#0000ff">int</font><font size="2">) 
+);<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">if</font><font size="2"> (!sendcounts 
+|| !recvcounts || !rdispls || !sdispls) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+fprintf( stderr, "Could not allocate arg items!\n" );fflush(stderr);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="MPI_Abort.html">MPI_Abort</a>( comm, 1 );<br>
+&nbsp;&nbsp;&nbsp;
+}<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">for</font><font size="2"> (i=0; i&lt;size; 
+i++) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+sendcounts[i] = i;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+recvcounts[i] = rank;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+rdispls[i] = i * rank;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+sdispls[i] = (i * (i+1))/2;<br>
+&nbsp;&nbsp;&nbsp;
+}<br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Alltoallv.html">MPI_Alltoallv</a>( sbuf, sendcounts, sdispls, MPI_INT,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+rbuf, recvcounts, rdispls, MPI_INT, comm );<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#008000">/* Check rbuf */<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">for</font><font size="2"> (i=0; i&lt;size; 
+i++) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+p = rbuf + rdispls[i];<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">for</font><font size="2"> (j=0; j&lt;rank; 
+j++) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">if</font><font size="2"> (p[j] != i * 
+100 + (rank*(rank+1))/2 + j) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+fprintf( stderr, "[%d] got %d expected %d for %dth\n",<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+rank, p[j],(i*(i+1))/2 + j, j );<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+fflush(stderr);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+err++;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}<br>
+&nbsp;&nbsp;&nbsp;
+}<br>
+&nbsp;&nbsp;&nbsp;
+free( sdispls );<br>
+&nbsp;&nbsp;&nbsp;
+free( rdispls );<br>
+&nbsp;&nbsp;&nbsp;
+free( recvcounts );<br>
+&nbsp;&nbsp;&nbsp;
+free( sendcounts );<br>
+&nbsp;&nbsp;&nbsp;
+free( rbuf );<br>
+&nbsp;&nbsp;&nbsp;
+free( sbuf );<br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Finalize.html">MPI_Finalize</a>();<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">return</font><font size="2"> 0;<br>
+}<br>
+</font>
+
+</p></div>
+
+
+
+</body></html>

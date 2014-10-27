@@ -1,0 +1,139 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"><head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>MPI_File_close(MPI_File *mpi_fh) function</title>
+<link rel="stylesheet" href="../style.css" type="text/css" charset="utf-8">
+
+</head>
+
+<body>
+	<div class="background">
+    	<div class="tab_box">
+ 
+            <div class="tab_box_middle">
+            	<div class="main_box">
+                	<div class="text_box">
+                    	<div class="text_box_top">
+                        </div>
+                        <div class="text_box_middle">
+                        	<div class="text_box_middle_text">
+ 
+<a name="MPI_File_close"><h1><font size="5">MPI_File_close</font></h1></a>
+Closes a file 
+<font size="3">
+<pre class="syntax" xml:space="preserve" style="background-color: #DDDDDD"><b>int MPI_File_close(</b>
+  <b>MPI_File</b> *<i>mpi_fh</i>
+<b>);</b>
+</pre></font>
+<h4>Parameters</h4>
+<dl><dt><i>fh </i></dt> <dd> [in] file handle (handle)
+</dd></dl>
+<p>
+
+</p><h4>Remarks</h4>
+		<p>MPI_FILE_CLOSE first synchronizes file state (equivalent to 
+		performing an MPI_FILE_SYNC), then closes the file associated with fh. 
+		The file is deleted if it was opened with access mode 
+		MPI_MODE_DELETE_ON_CLOSE (equivalent to performing an MPI_FILE_DELETE). 
+		MPI_FILE_CLOSE is a collective routine. </p>
+		<p><br>
+		<em>Advice to users.</em> </p>
+		<p>If the file is deleted on close, and there are other processes 
+		currently accessing the file, the status of the file and the behavior of 
+		future accesses by these processes are implementation dependent. (<em> 
+		End of advice to users.</em>) <br>
+		The user is responsible for ensuring that all outstanding nonblocking 
+		requests and split collective operations associated with fh made by a 
+		process have completed before that process calls MPI_FILE_CLOSE. </p>
+		<p>The MPI_FILE_CLOSE routine deallocates the file handle object and 
+		sets fh to MPI_FILE_NULL.</p>
+		<h4>Example Code</h4>
+<p>The following sample code illustrates <a href="MPI_File_close.html">MPI_File_close</a>.
+</p>
+<font size="2" color="#0000ff">
+#include</font><font size="2"> "mpi.h"<br>
+</font><font size="2" color="#0000ff">
+#include</font><font size="2"> &lt;stdio.h&gt;<br>
+<br>
+</font><font size="2" color="#0000ff">
+int</font><font size="2"> main( </font><font size="2" color="#0000ff">int</font><font size="2"> 
+argc, </font><font size="2" color="#0000ff">char</font><font size="2"> *argv[] )<br>
+{<br>
+&nbsp;&nbsp;&nbsp;
+MPI_Fint handleA, handleB;<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">int</font><font size="2"> rc;<br>
+</font><font size="2" color="#0000ff">&nbsp;&nbsp;&nbsp; int</font><font size="2"> errs = 0;<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">int</font><font size="2"> rank;<br>
+&nbsp;&nbsp;&nbsp;
+MPI_File cFile;<br>
+<br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Init.html">MPI_Init</a>( &amp;argc, &amp;argv );<br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Comm_rank.html">MPI_Comm_rank</a>( MPI_COMM_WORLD, &amp;rank );<br>
+&nbsp;&nbsp;&nbsp;
+rc = <a href="MPI_File_open.html">MPI_File_open</a>( MPI_COMM_WORLD, "temp",
+MPI_MODE_RDWR | MPI_MODE_DELETE_ON_CLOSE | MPI_MODE_CREATE,
+MPI_INFO_NULL, &amp;cFile );<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">if</font><font size="2"> (rc) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+printf( "Unable to open file \"temp\"\n" );fflush(stdout);<br>
+&nbsp;&nbsp;&nbsp;
+}<br>
+</font><font size="2" color="#0000ff">&nbsp;&nbsp;&nbsp; else</font><font size="2"> {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="MPI_File_close.html">MPI_File_close</a>( &amp;cFile );<br>
+&nbsp;&nbsp;&nbsp;
+}<br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Finalize.html">MPI_Finalize</a>();<br>
+</font><font size="2" color="#0000ff">&nbsp;&nbsp;&nbsp; return</font><font size="2"> 0;<br>
+}<br>
+</font>
+
+</div>
+                        </div>
+                        <div class="text_box_bottom">
+                        </div>
+                    </div>
+                    <div class="note_text_box">
+                        <div class="note_text_box_top"></div>
+                        <div class="note_text_box_middle">
+ 
+                        </div>
+                        <div class="note_text_box_bottom"></div>
+                    </div>
+                    <div class="ad_under_text_box">
+                        <div class="ad_under_text_box_top"></div>
+                        <div class="ad_under_text_box_middle">
+                            <div class="ad_under_text_box_middle_text">
+                            <script type="text/javascript"><!--
+google_ad_client = "pub-0347391630140593";
+/* Right panel wide skyscraper ad */
+google_ad_slot = "3437924454";
+google_ad_width = 160;
+google_ad_height = 600;
+//-->
+</script>
+<script type="text/javascript" src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script><ins style="display:inline-table;border:none;height:600px;margin:0;padding:0;position:relative;visibility:visible;width:160px;background-color:transparent"><ins id="aswift_0_anchor" style="display:block;border:none;height:600px;margin:0;padding:0;position:relative;visibility:visible;width:160px;background-color:transparent"><iframe width="160" height="600" frameborder="0" marginwidth="0" marginheight="0" vspace="0" hspace="0" allowtransparency="true" scrolling="no" onload="var i=this.id,s=window.google_iframe_oncopy,H=s&amp;&amp;s.handlers,h=H&amp;&amp;H[i],w=this.contentWindow,d;try{d=w.document}catch(e){}if(h&amp;&amp;d&amp;&amp;(!d.body||!d.body.firstChild)){if(h.call){setTimeout(h,0)}else if(h.match){try{h=s.upd(h,i)}catch(e){}w.location.replace(h)}}" id="aswift_0" name="aswift_0" style="left:0;position:absolute;top:0;"></iframe></ins></ins>
+                            </div>
+                        </div>
+                        <div class="ad_under_text_box_bottom"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="tab_box_bottom">
+            </div>
+        </div>
+        <div class="copyright">
+ 
+        </div>
+	</div>
+
+
+</body></html>

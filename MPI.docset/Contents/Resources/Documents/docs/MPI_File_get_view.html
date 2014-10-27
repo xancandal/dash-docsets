@@ -1,0 +1,115 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"><head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>MPI_File_get_view(MPI_File mpi_fh,
+  MPI_Offset *disp,
+  MPI_Datatype *etype,
+  MPI_Datatype *filetype,
+  char *datarep) function</title>
+<link rel="stylesheet" href="../style.css" type="text/css" charset="utf-8">
+
+</head>
+
+<body>
+	<div class="background">
+    	<div class="tab_box">
+ 
+            <div class="tab_box_middle">
+            	<div class="main_box">
+                	<div class="text_box">
+                    	<div class="text_box_top">
+                        </div>
+                        <div class="text_box_middle">
+                        	<div class="text_box_middle_text">
+ 
+<a name="MPI_File_get_view"><h1><font size="5">MPI_File_get_view</font></h1></a>
+Returns the file view 
+<font size="3">
+<pre class="syntax" xml:space="preserve" style="background-color: #DDDDDD"><b>int MPI_File_get_view(</b>
+  <b>MPI_File</b> <i>mpi_fh</i><b>,</b>
+  <b>MPI_Offset</b> *<i>disp</i><b>,</b>
+  <b>MPI_Datatype</b> *<i>etype</i><b>,</b>
+  <b>MPI_Datatype</b> *<i>filetype</i><b>,</b>
+  <b>char</b> *<i>datarep</i>
+<b>);</b>
+
+<b>int MPI_File_get_view(</b>
+  <b>MPI_File</b> <i>mpi_fh</i><b>,</b>
+  <b>MPI_Offset</b> *<i>disp</i><b>,</b>
+  <b>MPI_Datatype</b> *<i>etype</i><b>,</b>
+  <b>MPI_Datatype</b> *<i>filetype</i><b>,</b>
+  <b>wchar_t</b> *<i>datarep</i>
+<b>);</b>
+</pre></font>
+<h4>Parameters</h4>
+<dl>
+<dt><i>mpi_fh </i></dt> <dd> [in] file handle (handle)
+</dd><dt><i>disp </i></dt><dd>[out] displacement (nonnegative integer)
+</dd><dt><i>etype </i></dt> <dd> [out] elementary datatype (handle)
+</dd><dt><i>filetype </i></dt> <dd> [out] filetype (handle)
+</dd><dt><i>datarep </i></dt> <dd> [out] data representation (string)
+</dd></dl>
+<p>
+
+</p><h4>Remarks</h4>
+		<p>MPI_FILE_GET_VIEW returns the process's view of the data in the file. 
+		The current value of the displacement is returned in disp. The etype and 
+		filetype are new datatypes with typemaps equal to the typemaps of the 
+		current etype and filetype, respectively. </p>
+		<p>The data representation is returned in datarep. The user is 
+		responsible for ensuring that datarep is large enough to hold the 
+		returned data representation string. The length of a data representation 
+		string is limited to the value of MPI_MAX_DATAREP_STRING. </p>
+		<p>In addition, if a portable datatype was used to set the current view, 
+		then the corresponding datatype returned by MPI_FILE_GET_VIEW is also a 
+		portable datatype. If etype or filetype are derived datatypes, the user 
+		is responsible for freeing them. The etype and filetype returned are 
+		both in a committed state. </p>
+		<h4>Example Code</h4>
+<p>The following sample code illustrates <a href="MPI_File_get_view.html">MPI_File_get_view</a>.</p>
+<p>Insert code here.
+</p>
+
+</div>
+                        </div>
+                        <div class="text_box_bottom">
+                        </div>
+                    </div>
+                    <div class="note_text_box">
+                        <div class="note_text_box_top"></div>
+                        <div class="note_text_box_middle">
+ 
+                        </div>
+                        <div class="note_text_box_bottom"></div>
+                    </div>
+                    <div class="ad_under_text_box">
+                        <div class="ad_under_text_box_top"></div>
+                        <div class="ad_under_text_box_middle">
+                            <div class="ad_under_text_box_middle_text">
+                            <script type="text/javascript"><!--
+google_ad_client = "pub-0347391630140593";
+/* Right panel wide skyscraper ad */
+google_ad_slot = "3437924454";
+google_ad_width = 160;
+google_ad_height = 600;
+//-->
+</script>
+<script type="text/javascript" src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script><ins style="display:inline-table;border:none;height:600px;margin:0;padding:0;position:relative;visibility:visible;width:160px;background-color:transparent"><ins id="aswift_0_anchor" style="display:block;border:none;height:600px;margin:0;padding:0;position:relative;visibility:visible;width:160px;background-color:transparent"><iframe width="160" height="600" frameborder="0" marginwidth="0" marginheight="0" vspace="0" hspace="0" allowtransparency="true" scrolling="no" onload="var i=this.id,s=window.google_iframe_oncopy,H=s&amp;&amp;s.handlers,h=H&amp;&amp;H[i],w=this.contentWindow,d;try{d=w.document}catch(e){}if(h&amp;&amp;d&amp;&amp;(!d.body||!d.body.firstChild)){if(h.call){setTimeout(h,0)}else if(h.match){try{h=s.upd(h,i)}catch(e){}w.location.replace(h)}}" id="aswift_0" name="aswift_0" style="left:0;position:absolute;top:0;"></iframe></ins></ins>
+                            </div>
+                        </div>
+                        <div class="ad_under_text_box_bottom"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="tab_box_bottom">
+            </div>
+        </div>
+        <div class="copyright">
+ 
+        </div>
+	</div>
+
+
+</body></html>

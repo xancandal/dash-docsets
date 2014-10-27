@@ -1,0 +1,303 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"><head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>MPI_Accumulate(void *origin_addr, 
+  int origin_count, 
+  MPI_Datatype origin_datatype, 
+  int target_rank, 
+  MPI_Aint target_disp, 
+  int target_count, 
+  MPI_Datatype target_datatype, 
+  MPI_Op op, 
+  MPI_Win win
+) function</title>
+<link rel="stylesheet" href="../style.css" type="text/css" charset="utf-8">
+</head>
+
+<body>
+	<div class="background">
+    	<div class="tab_box">
+
+            <div class="tab_box_middle">
+            	<div class="main_box">
+                	<div class="text_box">
+                    	<div class="text_box_top">
+                        </div>
+                        <div class="text_box_middle">
+                        	<div class="text_box_middle_text">
+
+<a name="MPI_Accumulate"><h1><font size="5">MPI_Accumulate</font></h1></a>
+Accumulate data into the target process using remote  memory access  
+<font size="3">
+
+<pre class="syntax" xml:space="preserve" style="background-color: #DDDDDD"><b>int MPI_Accumulate(</b>
+  <b>void</b> *<i>origin_addr</i><b>,</b>
+  <b>int</b> <i>origin_count</i><b>,</b>
+  <b>MPI_Datatype</b> <i>origin_datatype</i><b>,</b>
+  <b>int</b> <i>target_rank</i><b>,</b>
+  <b>MPI_Aint</b> <i>target_disp</i><b>,</b>
+  <b>int</b> <i>target_count</i><b>,</b>
+  <b>MPI_Datatype</b> <i>target_datatype</i><b>,</b>
+  <b>MPI_Op</b> <i>op</i><b>,</b>
+  <b>MPI_Win</b> <i>win</i>
+) ;
+</pre></font>
+<h4>Parameters</h4>
+<dl>
+<dt><i>origin_addr </i></dt><dd>[in] initial address of buffer (choice) 
+
+</dd><dt><i>origin_count </i></dt><dd>[in] number of entries in buffer (nonnegative integer) 
+
+</dd><dt><i>origin_datatype </i></dt><dd>[in] datatype of each buffer entry (handle) 
+
+</dd><dt><i>target_rank </i></dt><dd>[in] rank of target (nonnegative integer) 
+
+</dd><dt><i>target_disp </i></dt><dd>[in] displacement from start of window to beginning of target 
+buffer (nonnegative integer)  
+
+</dd><dt><i>target_count </i></dt><dd>[in] number of entries in target buffer (nonnegative integer) 
+
+</dd><dt><i>target_datatype </i></dt><dd>[in] datatype of each entry in target buffer (handle) 
+
+</dd><dt><i>op </i></dt><dd>[in] predefined reduce operation (handle) 
+
+</dd><dt><i>win </i></dt><dd>[in] window object (handle) 
+</dd></dl>
+<p>
+</p><h4>Remarks</h4>
+		<p>It is often useful in a put operation to combine the data moved to 
+		the target process with the data that resides at that process, rather 
+		then replacing the data there. This will allow, for example, the 
+		accumulation of a sum by having all involved processes add their 
+		contribution to the sum variable in the memory of one process. </p>
+		<p>Accumulate the contents of the origin buffer (as defined by 
+		origin_addr, origin_count and origin_datatype) to the buffer specified 
+		by arguments target_count and target_datatype, at offset target_disp, in 
+		the target window specified by target_rank and win, using the operation 
+		op. This is like MPI_PUT except that data is combined into the target 
+		area instead of overwriting it. </p>
+		<p>Any of the predefined operations for MPI_REDUCE can be used. 
+		User-defined functions cannot be used. For example, if op is MPI_SUM, 
+		each element of the origin buffer is added to the corresponding element 
+		in the target, replacing the former value in the target. </p>
+		<p>Each datatype argument must be a predefined datatype or a derived 
+		datatype, where all basic components are of the same predefined datatype. 
+		Both datatype arguments must be constructed from the same predefined 
+		datatype. The operation op applies to elements of that predefined type. 
+		target_datatype must not specify overlapping entries, and the target 
+		buffer must fit in the target window. </p>
+		<p>A new predefined operation, MPI_REPLACE, is defined. It corresponds 
+		to the associative function <i>f(a,b) = b</i>; i.e., the current value 
+		in the target memory is replaced by the value supplied by the origin.
+		</p>
+The basic components of both the origin and target datatype must be the same
+predefined datatype (e.g., all <tt><font size="2">MPI_INT</font></tt> or all <tt><font size="2">MPI_DOUBLE_PRECISION</font></tt>).
+<p>
+</p><h4>Notes for Fortran</h4>
+All MPI routines in Fortran (except for <tt><font size="2">MPI_WTIME</font></tt> and <tt><font size="2">MPI_WTICK</font></tt>) have
+an additional argument <tt><font size="2">ierr</font></tt> at the end of the argument list.  <tt><font size="2">ierr
+</font></tt>is an integer and has the same meaning as the return value of the routine
+in C.  In Fortran, MPI routines are subroutines, and are invoked with the
+<tt><font size="2">call</font></tt> statement.
+<p>
+All MPI objects (e.g., <tt><font size="2">MPI_Datatype</font></tt>, <tt><font size="2">MPI_Comm</font></tt>) are of type <tt><font size="2">INTEGER
+</font></tt>in Fortran.
+</p><p>
+</p><h4>Errors</h4>
+<p>
+All MPI routines (except <tt><font size="2"><a href="MPI_Wtime.html">MPI_Wtime</a></font></tt> and <tt><font size="2"><a href="MPI_Wtick.html">MPI_Wtick</a></font></tt>) return an error value;
+C routines as the value of the function and Fortran routines in the last
+argument.  Before the value is returned, the current MPI error handler is
+called.  By default, this error handler aborts the MPI job.  The error handler
+may be changed with <tt><font size="2"><a href="MPI_Comm_set_errhandler.html">MPI_Comm_set_errhandler</a></font></tt> (for communicators),
+<tt><font size="2"><a href="MPI_File_set_errhandler.html">MPI_File_set_errhandler</a></font></tt> (for files), and <tt><font size="2"><a href="MPI_Win_set_errhandler.html">MPI_Win_set_errhandler</a></font></tt> (for
+RMA windows).  The MPI-1 routine <tt><font size="2"><a href="MPI_Errhandler_set.html">MPI_Errhandler_set</a></font></tt> may be used but
+its use is deprecated.  The predefined error handler
+<tt><font size="2">MPI_ERRORS_RETURN</font></tt> may be used to cause error values to be returned.
+Note that MPI does <em>not</em> guarentee that an MPI program can continue past
+an error; however, MPI implementations will attempt to continue whenever
+possible.
+</p><p>
+</p><dl><dt><i>MPI_SUCCESS </i></dt> <dd> No error; MPI routine completed successfully.
+</dd></dl>
+<dl><dt><i>MPI_ERR_ARG </i></dt> <dd> Invalid argument.  Some argument is invalid and is not
+identified by a specific error class (e.g., <tt><font size="2">MPI_ERR_RANK</font></tt>).
+</dd></dl>
+<dl><dt><i>MPI_ERR_COUNT </i></dt> <dd> Invalid count argument.  Count arguments must be 
+non-negative; a count of zero is often valid.
+</dd></dl>
+<dl><dt><i>MPI_ERR_RANK </i></dt> <dd> Invalid source or destination rank.  Ranks must be between
+zero and the size of the communicator minus one; ranks in a receive
+(<tt><font size="2"><a href="MPI_Recv.html">MPI_Recv</a></font></tt>, <tt><font size="2"><a href="MPI_Irecv.html">MPI_Irecv</a></font></tt>, <tt><font size="2"><a href="MPI_Sendrecv.html">MPI_Sendrecv</a></font></tt>, etc.) may also be <tt><font size="2">MPI_ANY_SOURCE</font></tt>.
+</dd></dl>
+<dl><dt><i>MPI_ERR_TYPE </i></dt> <dd> Invalid datatype argument.  May be an uncommitted 
+MPI_Datatype (see <tt><font size="2"><a href="MPI_Type_commit.html">MPI_Type_commit</a></font></tt>).
+</dd></dl>
+<dl><dt><i>MPI_ERR_WIN </i></dt> <dd> Invalid MPI window object
+</dd></dl>
+
+<h4>Example Code</h4>
+<p>The following sample code illustrates <a href="MPI_Accumulate.html">MPI_Accumulate</a>.
+</p>
+<font size="2" color="#0000ff">
+#include</font><font size="2"> "mpi.h" <br>
+</font><font size="2" color="#0000ff">
+#include</font><font size="2"> "stdio.h"<br>
+</font><font size="2" color="#008000">
+/* This does a transpose-cum-accumulate operation. Uses vector and<br>
+hvector datatypes (Example 3.32 from MPI 1.1 Standard). Run on 2<br>
+processes */</font><font size="2"> <br>
+</font><font size="2" color="#0000ff">
+#define</font><font size="2"> NROWS 100<br>
+</font><font size="2" color="#0000ff">
+#define</font><font size="2"> NCOLS 100<br>
+</font><font size="2" color="#0000ff">
+int</font><font size="2"> main(</font><font size="2" color="#0000ff">int</font><font size="2"> 
+argc, </font><font size="2" color="#0000ff">char</font><font size="2"> *argv[])
+<br>
+{ <br>
+</font><font size="2" color="#0000ff">&nbsp;&nbsp;&nbsp; int</font><font size="2"> rank, nprocs, 
+A[NROWS][NCOLS], i, j;<br>
+&nbsp;&nbsp;&nbsp;
+MPI_Win win;<br>
+&nbsp;&nbsp;&nbsp;
+MPI_Datatype column, xpose;<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">int</font><font size="2"> errs = 0;<br>
+<br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Init.html">MPI_Init</a>(&amp;argc,&amp;argv); <br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Comm_size.html">MPI_Comm_size</a>(MPI_COMM_WORLD,&amp;nprocs); <br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Comm_rank.html">MPI_Comm_rank</a>(MPI_COMM_WORLD,&amp;rank); <br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">if</font><font size="2"> (nprocs != 2)<br>
+&nbsp;&nbsp;&nbsp;
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+printf("Run this program with 2 processes\n");fflush(stdout);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="MPI_Abort.html">MPI_Abort</a>(MPI_COMM_WORLD,1);<br>
+&nbsp;&nbsp;&nbsp;
+}<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">if</font><font size="2"> (rank == 0)<br>
+&nbsp;&nbsp;&nbsp;
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">for</font><font size="2"> (i=0; i&lt;NROWS; 
+i++)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">for</font><font size="2"> (j=0; j&lt;NCOLS; 
+j++)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+A[i][j] = i*NCOLS + j;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#008000">/* create datatype for one column */<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</font><font size="2">
+<a href="MPI_Type_vector.html">MPI_Type_vector</a>(NROWS, 1, NCOLS, MPI_INT, &amp;column);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#008000">/* create datatype for matrix in 
+column-major order */<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</font><font size="2">
+<a href="MPI_Type_hvector.html">MPI_Type_hvector</a>(NCOLS, 1, </font><font size="2" color="#0000ff">sizeof</font><font size="2">(</font><font size="2" color="#0000ff">int</font><font size="2">), 
+column, &amp;xpose);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="MPI_Type_commit.html">MPI_Type_commit</a>(&amp;xpose);<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="MPI_Win_create.html">MPI_Win_create</a>(NULL, 0, 1, MPI_INFO_NULL, MPI_COMM_WORLD, &amp;win); <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="MPI_Win_fence.html">MPI_Win_fence</a>(0, win); <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="MPI_Accumulate.html">MPI_Accumulate</a>(A, NROWS*NCOLS, MPI_INT, 1, 0, 1, xpose, MPI_SUM, win);<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="MPI_Type_free.html">MPI_Type_free</a>(&amp;column);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="MPI_Type_free.html">MPI_Type_free</a>(&amp;xpose);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="MPI_Win_fence.html">MPI_Win_fence</a>(0, win); <br>
+&nbsp;&nbsp;&nbsp;
+} <br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">else<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2">
+{ </font><font size="2" color="#008000">/* rank = 1 */<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">for</font><font size="2"> (i=0; i&lt;NROWS; 
+i++) <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">for</font><font size="2"> (j=0; j&lt;NCOLS; 
+j++)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+A[i][j] = i*NCOLS + j;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="MPI_Win_create.html">MPI_Win_create</a>(A, NROWS*NCOLS*</font><font size="2" color="#0000ff">sizeof</font><font size="2">(</font><font size="2" color="#0000ff">int</font><font size="2">),
+</font><font size="2" color="#0000ff">sizeof</font><font size="2">(</font><font size="2" color="#0000ff">int</font><font size="2">), 
+MPI_INFO_NULL, <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+MPI_COMM_WORLD, &amp;win); <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="MPI_Win_fence.html">MPI_Win_fence</a>(0, win); <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="MPI_Win_fence.html">MPI_Win_fence</a>(0, win); <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">for</font><font size="2"> (j=0; j&lt;NCOLS; 
+j++)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">for</font><font size="2"> (i=0; i&lt;NROWS; 
+i++)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">if</font><font size="2"> (A[j][i] != i*NCOLS 
++ j + j*NCOLS + i)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">if</font><font size="2"> (errs &lt; 50)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+printf("Error: A[%d][%d]=%d should be %d\n", j, i,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+A[j][i], i*NCOLS + j + j*NCOLS + i);fflush(stdout);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+errs++;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">if</font><font size="2"> (errs &gt;= 50)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+printf("Total number of errors: %d\n", errs);fflush(stdout);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}<br>
+&nbsp;&nbsp;&nbsp;
+}<br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Win_free.html">MPI_Win_free</a>(&amp;win);<br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Finalize.html">MPI_Finalize</a>(); <br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">return</font><font size="2"> 0; <br>
+} <br>
+&nbsp;</font>
+</div>
+ 
+</body></html>

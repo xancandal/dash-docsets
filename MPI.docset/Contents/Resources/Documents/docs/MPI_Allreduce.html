@@ -1,0 +1,227 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"><head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>MPI_Allreduce(void *sendbuf, 
+  void *recvbuf, 
+  int count, 
+  MPI_Datatype datatype, 
+  MPI_Op op, 
+  MPI_Comm comm) function</title>
+<link rel="stylesheet" href="../style.css" type="text/css" charset="utf-8">
+
+</head>
+
+<body>
+	<div class="background">
+    	<div class="tab_box">
+
+            <div class="tab_box_middle">
+            	<div class="main_box">
+                	<div class="text_box">
+                    	<div class="text_box_top">
+                        </div>
+                        <div class="text_box_middle">
+                        	<div class="text_box_middle_text">
+
+<a name="MPI_Allreduce"><h1><font size="5">MPI_Allreduce</font></h1></a>
+Combines values from all processes and distributes the result back to all processes 
+<font size="3">
+<pre class="syntax" xml:space="preserve" style="background-color: #DDDDDD"><b>int MPI_Allreduce(</b>
+  <b>void</b> *<i>sendbuf</i><b>,</b>
+  <b>void</b> *<i>recvbuf</i><b>,</b>
+  <b>int</b> <i>count</i><b>,</b>
+  <b>MPI_Datatype</b> <i>datatype</i><b>,</b>
+  <b>MPI_Op</b> <i>op</i><b>,</b>
+  <b>MPI_Comm</b> <i>comm</i>
+<b>);</b>
+</pre></font>
+<h4>Parameters</h4>
+<dl>
+<dt><i>sendbuf </i></dt><dd>[in] starting address of send buffer (choice) 
+
+<dl>
+<dt><i>recvbuf </i></dt>
+<dd>[out] starting address of receive buffer (choice) 
+</dd></dl>
+
+</dd><dt><i>count </i></dt><dd>[in] number of elements in send buffer (integer) 
+
+</dd><dt><i>datatype </i></dt><dd>[in] data type of elements of send buffer (handle) 
+
+</dd><dt><i>op </i></dt><dd>[in] operation (handle) 
+
+</dd><dt><i>comm </i></dt><dd>[in] communicator (handle) 
+</dd></dl>
+<h4>Remarks</h4>
+		<p>MPI includes variants of each of the reduce operations where the 
+		result is returned to all processes in the group. MPI requires that all 
+		processes participating in these operations receive identical results.</p>
+		<p>Same as MPI_REDUCE except that the result appears in the receive 
+		buffer of all the group members.</p>
+		<p>The "in place" option for intracommunicators is specified by 
+		passing the value MPI_IN_PLACE to the argument sendbuf at the root. In 
+		such case, the input data is taken at each process from the receive 
+		buffer, where it will be replaced by the output data. </p>
+		<p>If comm is an intercommunicator, then the result of the reduction of 
+		the data provided by processes in group A is stored at each process in 
+		group B, and vice versa. Both groups should provide the same count 
+		value. </p>
+		<h4>Thread and Interrupt Safety</h4>
+<p>
+This routine is thread-safe.  This means that this routine may be
+safely used by multiple threads without the need for any user-provided
+thread locks.  However, the routine is not interrupt safe.  Typically,
+this is due to the use of memory allocation routines such as <tt><font size="2">malloc
+</font></tt>or other non-MPICH runtime routines that are themselves not interrupt-safe.
+</p><p>
+</p><h4>Notes for Fortran</h4>
+All MPI routines in Fortran (except for <tt><font size="2">MPI_WTIME</font></tt> and <tt><font size="2">MPI_WTICK</font></tt>) have
+an additional argument <tt><font size="2">ierr</font></tt> at the end of the argument list.  <tt><font size="2">ierr
+</font></tt>is an integer and has the same meaning as the return value of the routine
+in C.  In Fortran, MPI routines are subroutines, and are invoked with the
+<tt><font size="2">call</font></tt> statement.
+<p>
+All MPI objects (e.g., <tt><font size="2">MPI_Datatype</font></tt>, <tt><font size="2">MPI_Comm</font></tt>) are of type <tt><font size="2">INTEGER
+</font></tt>in Fortran.
+</p><p>
+</p><h4>Notes on collective operations</h4>
+<p>
+The reduction functions (<tt><font size="2">MPI_Op</font></tt>) do not return an error value.  As a result,
+if the functions detect an error, all they can do is either call <tt><font size="2">MPI_Abort
+</font></tt>or silently skip the problem.  Thus, if you change the error handler from
+<tt><font size="2">MPI_ERRORS_ARE_FATAL</font></tt> to something else, for example, <tt><font size="2">MPI_ERRORS_RETURN</font></tt>,
+then no error may be indicated.
+</p><p>
+The reason for this is the performance problems in ensuring that
+all collective routines return the same error value.
+</p><p>
+</p><h4>Errors</h4>
+<p>
+All MPI routines (except <tt><font size="2"><a href="MPI_Wtime.html">MPI_Wtime</a></font></tt> and <tt><font size="2"><a href="MPI_Wtick.html">MPI_Wtick</a></font></tt>) return an error value;
+C routines as the value of the function and Fortran routines in the last
+argument.  Before the value is returned, the current MPI error handler is
+called.  By default, this error handler aborts the MPI job.  The error handler
+may be changed with <tt><font size="2"><a href="MPI_Comm_set_errhandler.html">MPI_Comm_set_errhandler</a></font></tt> (for communicators),
+<tt><font size="2"><a href="MPI_File_set_errhandler.html">MPI_File_set_errhandler</a></font></tt> (for files), and <tt><font size="2"><a href="MPI_Win_set_errhandler.html">MPI_Win_set_errhandler</a></font></tt> (for
+RMA windows).  The MPI-1 routine <tt><font size="2"><a href="MPI_Errhandler_set.html">MPI_Errhandler_set</a></font></tt> may be used but
+its use is deprecated.  The predefined error handler
+<tt><font size="2">MPI_ERRORS_RETURN</font></tt> may be used to cause error values to be returned.
+Note that MPI does <em>not</em> guarentee that an MPI program can continue past
+an error; however, MPI implementations will attempt to continue whenever
+possible.
+</p><p>
+</p><dl><dt><i>MPI_ERR_BUFFER </i></dt> <dd> Invalid buffer pointer.  Usually a null buffer where
+one is not valid.
+</dd></dl>
+<dl><dt><i>MPI_ERR_COUNT </i></dt> <dd> Invalid count argument.  Count arguments must be 
+non-negative; a count of zero is often valid.
+</dd></dl>
+<dl><dt><i>MPI_ERR_TYPE </i></dt> <dd> Invalid datatype argument.  May be an uncommitted 
+MPI_Datatype (see <tt><font size="2"><a href="MPI_Type_commit.html">MPI_Type_commit</a></font></tt>).
+</dd></dl>
+<dl><dt><i>MPI_ERR_OP </i></dt> <dd> Invalid operation.  MPI operations (objects of type <tt><font size="2">MPI_Op</font></tt>)
+must either be one of the predefined operations (e.g., <tt><font size="2">MPI_SUM</font></tt>) or
+created with <tt><font size="2"><a href="MPI_Op_create.html">MPI_Op_create</a></font></tt>.
+</dd></dl>
+<dl><dt><i>MPI_ERR_COMM </i></dt> <dd> Invalid communicator.  A common error is to use a null
+communicator in a call (not even allowed in <tt><font size="2"><a href="MPI_Comm_rank.html">MPI_Comm_rank</a></font></tt>).
+</dd></dl>
+
+<h4>Example Code</h4>
+<p>The following sample code illustrates <a href="MPI_Allreduce.html">MPI_Allreduce</a>.
+</p>
+<font size="2" color="#0000ff">
+#include</font><font size="2"> "mpi.h"<br>
+</font><font size="2" color="#0000ff">
+#include</font><font size="2"> &lt;stdio.h&gt;<br>
+</font><font size="2"> <br>
+</font><font size="2" color="#0000ff">
+int</font><font size="2"> main(</font><font size="2" color="#0000ff">int</font><font size="2"> 
+argc, </font><font size="2" color="#0000ff">char</font><font size="2"> *argv[])<br>
+{<br>
+</font><font size="2" color="#0000ff">&nbsp;&nbsp;&nbsp; int</font><font size="2"> count = 1000;<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">int</font><font size="2"> *in, *out, 
+*sol;<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">int</font><font size="2"> i, fnderr=0;<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">int</font><font size="2"> rank, size;<br>
+<br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Init.html">MPI_Init</a>(&amp;argc, &amp;argv);<br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Comm_size.html">MPI_Comm_size</a>(MPI_COMM_WORLD, &amp;size);<br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Comm_rank.html">MPI_Comm_rank</a>(MPI_COMM_WORLD, &amp;rank);<br>
+&nbsp;&nbsp;&nbsp;
+in = (</font><font size="2" color="#0000ff">int</font><font size="2"> *)malloc( 
+count * </font><font size="2" color="#0000ff">sizeof</font><font size="2">(</font><font size="2" color="#0000ff">int</font><font size="2">) 
+);<br>
+&nbsp;&nbsp;&nbsp;
+out = (</font><font size="2" color="#0000ff">int</font><font size="2"> *)malloc( 
+count * </font><font size="2" color="#0000ff">sizeof</font><font size="2">(</font><font size="2" color="#0000ff">int</font><font size="2">) 
+);<br>
+&nbsp;&nbsp;&nbsp;
+sol = (</font><font size="2" color="#0000ff">int</font><font size="2"> *)malloc( 
+count * </font><font size="2" color="#0000ff">sizeof</font><font size="2">(</font><font size="2" color="#0000ff">int</font><font size="2">) 
+);<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">for</font><font size="2"> (i=0; i&lt;count; 
+i++)<br>
+&nbsp;&nbsp;&nbsp;
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+*(in + i) = i;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+*(sol + i) = i*size;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+*(out + i) = 0;<br>
+&nbsp;&nbsp;&nbsp;
+}<br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Allreduce.html">MPI_Allreduce</a>( in, out, count, MPI_INT, MPI_SUM, MPI_COMM_WORLD );<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">for</font><font size="2"> (i=0; i&lt;count; 
+i++)<br>
+&nbsp;&nbsp;&nbsp;
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">if</font><font size="2"> (*(out + i) != 
+*(sol + i))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+fnderr++;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}<br>
+&nbsp;&nbsp;&nbsp;
+}<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">if</font><font size="2"> (fnderr)<br>
+&nbsp;&nbsp;&nbsp;
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+fprintf( stderr, "(%d) Error for type MPI_INT and op MPI_SUM\n", rank );<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+fflush(stderr);<br>
+&nbsp;&nbsp;&nbsp;
+}<br>
+&nbsp;&nbsp;&nbsp;
+free( in );<br>
+&nbsp;&nbsp;&nbsp;
+free( out );<br>
+&nbsp;&nbsp;&nbsp;
+free( sol );<br>
+&nbsp;&nbsp;&nbsp;
+<a href="MPI_Finalize.html">MPI_Finalize</a>();<br>
+&nbsp;&nbsp;&nbsp;
+</font><font size="2" color="#0000ff">return</font><font size="2"> fnderr;<br>
+}<br>
+</font>
+
+</div>
+              
+
+</body></html>
